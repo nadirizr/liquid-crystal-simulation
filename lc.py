@@ -1,120 +1,85 @@
 import __future__
-import random
+import itertools
 import math
+import random
 
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#'                     Natural Constants                          '
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+##################################################################
+#                     Natural Constants                          #
+##################################################################
 
-Kb=1.3806488*(10**(-16)) #Boltzman constant in [cm^2][g]/([s^2][K])
+# Boltzmann constant in [erg]/[K].
+kB = 1.3806488*(10**(-16))
 
+##################################################################
+#                     System Properties                          #
+##################################################################
 
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#'                     System Properties                          '
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# These are the system dimensions.
+DIMENSIONS = [2, 2]
 
-N=2 #num of columns
-M=2  #num of rows
-delta=1 #cahnge of temperature in each step in [K]
+# Change of temperature in each cooling step in [K].
+TEMPERATURE_DELTA = 10
+# Initial temperature in [K].
+INITIAL_TEMPERATURE = 298
+# Final temperature to cool the system to.
+FINAL_TEMPERATURE = 100
 
-d = 2   #dimentions of the system
-
-T0=298  #initial temperature in [K]
-
-ang=[[random.uniform(0,2*math.pi) for i in xrange(N)] for j in xrange(M)]  #initial angles of the spins with room temperature (random)
-
-MIN_TEMPERATURE = 0
-NUM_METROPOLIS_STEPS = 1000
+# Number of Metropolis steps to perform in each cooling steps.
+METROPOLIS_NUM_STEPS = 1000
+# The standard deviation of the gaussian random selection in Metropolis.
+METROPOLIS_STDEV = 1.0
+# Number of steps in the cooling process to wait if there is no improvement
+# before lowering the temperature further.
 MAX_NON_IMPROVING_STEPS = 3
 
-#pos=[[j*2 for j in xrange(N)] for i in xrange(M)]   #location of the spins
+##################################################################
+#                     Potential Functions                        #
+##################################################################
 
+def P2(x):
+    """
+    Second order legendre polynomial.
+    """
+    return (3.0 * (x**2) - 1.0) / 2.0
 
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#'                        Methods                                 '
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+def UNearestNeighbours(angles, dimensions, indices):
+    """
+    Calculates the potential from the interactions of a single spin given by
+    the indices, using only the nearest neighbour spins at the given angles.
+    """
+    u = 0
 
-def print_angs(angs):                                           #prints the spins
-    st=""
-    for i in xrange(N):
-        for j in xrange(M):
-            st+= " "+str(angs[i][j])
-        print st
-        print "\n"
-        st=""
-    return 0
+    # Calculate the current angle pointed to by the indices.
+    current_angle = angles
+    for i in indices:
+        current_angle = current_angle[i]
 
+    # Go over each of the dimensions, and check the nearest neighbours.
+    for (dindex, dsize) in enumerate(dimensions):
+        # Check the -1 neighbour for the current dimension.
+        if indices[dindex] > 0:
+            indices[dindex] -= 1
 
+            neighbour_angle = angles
+            for i in indices:
+                neighbour_angle = neighbour_angle[i]
 
+            u += P2(math.cos(current_angle - neighbour_angle))
 
+            indices[dindex] += 1
 
-def r(i,j): #returns the distance between 2 spins
-    return abs(pos[i]-pos[j])
+        # Check the +1 neighbour for the current dimension.
+        if indices[dindex] < dsize - 1:
+            indices[dindex] += 1
 
+            neighbour_angle = angles
+            for i in indices:
+                neighbour_angle = neighbour_angle[i]
 
+            u += P2(math.cos(current_angle - neighbour_angle))
 
+            indices[dindex] -= 1
 
-
-
-def P2(x):                                                    #second order legendre polinomial
-    return (3*(x**2)-1)/2
-
-
-
-
-def prob(E,T):                                              #probability of the canonial ensamble
-    return math.exp(-(abs(E)/(Kb*T)))
-
-
-
-
-
-def is_equilliberated(T):                                   #calculate the total potential energy
-                                                            #return 1 if so, 0 else
-    e=E(ang)
-    t=thermo_energy(T)
-    print float(e+t-E0)
-    return (float(e+t-E0))                                  #TODO:!!!!!!!!!!
-
-
-
-
-
-
-
-def E(angles):                                              #returns the current potential energy of the system
-    h=0
-    
-    for part_x in xrange(N):
-        for part_y in xrange(M):
-            h=h+Unear((part_x,part_y),angles)
-               
-    return (10**(-16))*h
-
-
-
-
-
-def thermo_energy(T):                                   #returns the current thermic energy of the system
-    return d*0.5*N*M*Kb*T
-
-
-
-
-
-    
-def Unear(part,angles):                                 #calcutes the potential of particle part from its nearest neighbours
-    u=0
-    new_angle=angles[part[0]][part[1]]
-    
-    if (part[0]<N-1):
-        u=u+P2(math.cos((new_angle-angles[part[0]+1][part[1]])%360))
-    if (part[1]<M-1):
-        u=u+P2(math.cos((new_angle-angles[part[0]][part[1]+1])%360))
-#    if (part[0]>0):
-#        u=u+P2(cos((new_angle-angles[part[0]-1][part[1]])%360))
-#    if (part[1]>0):
-#        u=u+P2(cos((new_angle-angles[part[0]][part[1]-1])%360))
     return u
 
 #def U1(part,angles):  #calculates the potential between part and all the othe particles the come after it in their order
@@ -134,107 +99,285 @@ def Unear(part,angles):                                 #calcutes the potential 
 #        
 #    return u
 
+##################################################################
+#                     System Class                               #
+##################################################################
 
-def choose_next(angles, T): #foreach particle from the first to the last:
-                        #if there is a new orientation with a lower potential- changethe particle's angle
-                        #else - choose an angle with a probabilty exp(-(Enew-Ecurr)/(KbT))
-                        #multiply the number of times this change apear in the options array by the probablity out of the sum of probabilities (make an int)
-                        #choose one angle randomly from the options array and change the ang array.
-                        
-    '''
-    #foreach slight change in the position calculate the new hemiltonain and its prob.
-    #multiply the number of times this change apear in the options array by the probablity out of the sum of probabilities (make an int)
-    #choose one change randomly from the options array and change the positions array.
+class LiquidCrystalSystem:
+    """
+    This class represents the system that we are cooling.
+    It holds the positions and angles of molecules in a liquid crystal, and can
+    perform a Monte Carlo Metropolis cooling of the liquid crystal.
+    """
+    def __init__(self,
+                 temperature=INITIAL_TEMPERATURE,
+                 potential=UNearestNeighbours,
+                 dimensions=DIMENSIONS,
+                 initial_angles=None):
+        """
+        Initializes the system from the given dimensions (or the default) and
+        an initial nested list of initial angles, as well as the temperature.
+        If no initial system properties are given it is randomly set up.
+        """
+        self.temperature = temperature
+        self.potential = potential
+        self.dimensions = dimensions[:]
+
+        if initial_angles is None:
+            initial_angles = self._createPropertyList(
+                    lambda indices: random.uniform(0, 2*math.pi))
+        self.angles = initial_angles
+
+    def getThermalEnergy(self):
+        """
+        Calculates and returns the thermal energy of the system.
+        """
+        d = len(self.dimensions)
+        N = reduce(lambda a,b: a*b, self.dimensions, 1)
+        T = self.temperature
+        return d * 0.5 * N * kB * T
+
+    def getPotentialEnergy(self):
+        """
+        Calculates and returns the potential energy of the system.
+        """
+        h = 0
+
+        index_iterator = self._getSystemIndexIterator()
+        for indices in index_iterator:
+            h += self.potential(self.angles, self.dimensions, indices)
+
+        return h * (10**(-16))
+
+    def getCanonicalEnsembleProbability(self):
+        """
+        Calculates the non-normalized canonical ensemble probability of the
+        system, which is: e^(-E/(kB*T))
+        """
+        E = self.getPotentialEnergy()
+        T = self.temperature
+        return math.exp(-(abs(E) / (kB * T)))
+
+    def performMonteCarloCooling(self,
+                                 final_tempareture=FINAL_TEMPERATURE,
+                                 temperature_delta=TEMPERATURE_DELTA):
+        """
+        Run the Monte Carlo cooling algorithm for this system, from the current
+        system temperature to the given final temperature, in the temperature
+        delta decrements that were given.
+        """
+        print "Running Monte Carlo cooling on the system:"
+        print
+        while self.temperature > FINAL_TEMPERATURE:
+            print ("--------------------(T = %s[K])--------------------" %
+                   str(self.temperature))
+            self._print2DSystem()
     
-    part=(random.random(N),random.random(M))
+            # Continue running Metropolis steps until we reach a point where in
+            # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
+            best_energy = self.getPotentialEnergy()
+            k = 0
+            while k < MAX_NON_IMPROVING_STEPS:
+                print "Performing Metropolis step... ",
+                current_angles = self._copyPropertyList(self.angles)
+                self._performMetropolisStep()
+                new_energy = self.getPotentialEnergy()
+
+                if new_energy < best_energy:
+                    best_energy = new_energy
+                    k = 0
+                    print "Got better energy."
+                else:
+                    self.angles = current_angles
+                    k += 1
+                    print "Didn't get better energy (k=%s)" % k
+            
+            # Next step with lower temperature.
+            print ("Cooling... (T=%s[K]->%s[K])" %
+                   (self.temperature, self.temperature - temperature_delta))
+            print
+            self.temperature -= temperature_delta
+
+        print "End of Simulation."
+        #TODO:do something
+
+    def _getSystemIndexIterator(self):
+        """
+        Returns an iterator that returns a list of indices to the system.
+        Each call to next() will return the next set of indices.
+        """
+        class SystemIndexIterator:
+            def __init__(self, dimensions):
+                self._dimensions = dimensions
+                self._current_indices = [0 for d in dimensions]
+                self._current_indices[0] -= 1
+
+            def __iter__(self):
+                return self
+
+            def next(self):
+                self._current_indices[0] += 1
+                for i in range(len(self._current_indices)):
+                    if self._current_indices[i] < self._dimensions[i]:
+                        break
+
+                    if i == len(self._dimensions) - 1:
+                        raise StopIteration
+
+                    self._current_indices[i] = 0
+                    self._current_indices[i+1] += 1
+
+                return self._current_indices
+
+        return SystemIndexIterator(self.dimensions)
+
+    def _getSystemPropertyIterator(self, property_values):
+        """
+        Returns an iterator that returns on each call to next a value from the
+        given system property list, such as angles.
+        The system property values must be of the system dimensions.
+        """
+        class SystemPropertyIterator:
+            def __init__(self, propety_values, index_iterator):
+                self._property_values = property_values
+                self._index_iterator = index_iterator
+
+            def __iter__(self):
+                return self
+
+            def next(self):
+                index_list = self._index_iterator.next()
+                value_list = self._property_values
+                for i in index_list:
+                    value_list = value_list[i]
+                return value_list
+
+        index_iterator = self._getSystemIndexIterator()
+        return SystemPropertyIterator(property_values, index_iterator)
     
-    
-    prob_plus=prob(Unear(part,ang[part[0]][part[1]]+1)-Unear(part))
-    prob_minus=prob(Unear(part,ang[part[0]][part[1]]-1)-Unear(part))
-    
-    plus_normalized=int((prob_plus*100)/(prob_plus+prob_minus))
-    
-    for i in xrange(plus_normalized):
-        opts.append(1)
-    for i in xrange(100-plus_normalized):
-        opts.append(-1)
-        
-    ang[part[0]][part[1]] = ang[part[0]][part[1]]+opts[random.uniform(0,len(opts))] #changing the angle
-    '''
-    # Go over all of the particles, and change the angles for each one.
-    for part_x in xrange(N):
-        for part_y in xrange(M):
+    def _createPropertyList(self, value_generator):
+        """
+        Creates and returns a multi-dimensional list populated with values
+        returned from the given value generator function that is given the
+        list of indices of the current value to generate.
+        """
+        index_iterator = self._getSystemIndexIterator()
+        value_list = []
+        for indices in index_iterator:
+            current_values = value_list
+            for (i, index) in enumerate(indices):
+                if index >= len(current_values):
+                    current_values.extend(
+                            [[] for j in range(self.dimensions[i])])
+                if i == len(self.dimensions) - 1:
+                    current_values[index] = value_generator(indices)
+                else:
+                    current_values = current_values[index]
+
+        return value_list
+
+    def _copyPropertyList(self, property_values):
+        """
+        Returns a complete deep copy of the given property values
+        multi-dimensional list.
+        """
+        return self._createPropertyList(
+            lambda indices: self._getProperty(property_values, indices))
+
+    def _getProperty(self, property_values, indices):
+        """
+        Returns the property value pointed to by the given indices into the
+        given property values multi-dimensional list.
+        """
+        current_values = property_values
+        for index in indices:
+            current_values = current_values[index]
+        return current_values
+
+    def _setProperty(self, property_values, indices, new_value):
+        """
+        Sets the property value pointed to by the given indices into the given
+        property values multi-dimensional list to the given new value.
+        """
+        current_values = property_values
+        for (d, index) in enumerate(indices):
+          if d == len(self.dimensions) - 1:
+              current_values[index] = new_value
+          else:
+              current_values = current_values[index]
+
+    def _performMetropolisStep(self):
+        """
+        Go over each of the spins in the system, and find a new random angle for
+        them, according to the canonical ensemble probability density function.
+        This is done using the Metropolis algorithm, in the following way:
+        1) Use a gaussian random function to select a new angle for the spin.
+        2) Calculate the new energy of the entire system.
+        3) If it is lower than the original energy, accept it.
+        4) If not, pick it with a probability of P(NewE)/P(OldE), where P is the
+           canonical probability distribution function.
+        5) Continue performing these improvements NUM_METROPOLIS_STEPS times.
+        """
+        # Go over all of the particles, and change the angles for each one.
+        index_iterator = self._getSystemIndexIterator()
+        for indices in index_iterator:
             # TODO: Select the initial angle.
-            # Perform NUM_METROPOLIS_STEPS steps and each time select a new
+            # Perform METROPOLIS_NUM_STEPS steps and each time select a new
             # angle from a distribution that should become more and more as the
-            # boltzman energy distribution.
-            for step in xrange(NUM_METROPOLIS_STEPS):
+            # boltzmann energy distribution.
+            for step in xrange(METROPOLIS_NUM_STEPS):
                 # Select a new angle based on the current one using a Gaussian
                 # distribution.
-                curr_angle = angles[part_x][part_y]
-                new_angle = random.gauss(curr_angle, 1)
+                current_angle = self._getProperty(self.angles, indices)
+                new_angle = random.gauss(current_angle, METROPOLIS_STDEV)
 
                 # Calculate the coefficient that is proportional to the density
-                # of the boltzman distibution.
-                Ep=E(angles)
-                angles[part_x][part_y] = new_angle
-                En=E(angles)
-                alpha = prob(En,T)/prob(Ep,T)
+                # of the boltzmann distibution.
+                old_probability = self.getCanonicalEnsembleProbability()
+                self._setProperty(self.angles, indices, new_angle)
+                new_probability = self.getCanonicalEnsembleProbability()
+                alpha = new_probability / old_probability
 
                 alpha = min(1.0, alpha)
                 p = random.random()
                 if p > alpha:
-                    angles[part_x][part_y] = curr_angle
+                    self._setProperty(self.angles, indices, current_angle)
 
+    def _print2DSystem(self):
+        """
+        Prints the system properties (energy, temperature, angles).
+        This method only prints the system itself if there are 2 dimensions.
+        """
+        print "Potential Energy: %s[erg]" % self.getPotentialEnergy()
+        print "Temperature: %s[K]" % self.temperature
 
-def MC(T):                                                                                  #Monte Carlo Step
-    global ang
-    while T > MIN_TEMPERATURE:
-        print "--------------------(T = %s[K])--------------------" % str(T)
-        print_angs(ang)
-        print "Energy: %s" % E(ang)
-    
-        # Continue choosing angles using the Metropolis algorithm until we reach
-        # equlibrium.
-        ebest = E(ang)
-        k = 0
-        while k < MAX_NON_IMPROVING_STEPS:
-            print "Performing Metropolis step... ",
-            new_angles = [row[:] for row in ang]
-            choose_next(new_angles, T)
-            e = E(new_angles)
-
-            if e < ebest:
-                ebest = e
-                ang = new_angles
-                k = 0
-                print "Got better energy."
-            else:
-                k += 1
-                print "Didn't get better energy (k=%s)" % k
-            
-#        while not is_equilliberated(T):
-#            choose_next(T)
+        if len(self.dimensions) != 2:
+            return
         
-        # Next step with lower temperature.
-        print "Cooling... (T=%s[K]->%s[K])" % (T, T-delta)
-        T -= delta
+        print "Spin Angles:",
+        index_iterator = self._getSystemIndexIterator()
+        angle_iterator = self._getSystemPropertyIterator(self.angles)
+        for (indices, angle) in itertools.izip(index_iterator, angle_iterator):
+            if indices[0] == 0:
+                print
+                print
+            print "%.3f  " % angle,
+        print
+        print
 
-    print("End of Simulation.\n")
-    #TODO:do something
+##################################################################
+#                         Main                                   #
+##################################################################
 
+def main():
+    print "*"*70
+    print "*"*70
+    print ("Starting the Simulation with T=%s[K] and N=%s, M=%s" %
+           (INITIAL_TEMPERATURE, DIMENSIONS[0], DIMENSIONS[1]))
+    print "*"*70
+    print "*"*70
+    system = LiquidCrystalSystem()
+    system.performMonteCarloCooling()
 
-
-
-
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#'                         Main                                   '
-#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-E0=E(ang)+thermo_energy(T0) # initial energy of the system
-print "*"*70
-print "*"*70
-print "Starting the Simulation with T=%s[K] and N=%s, M=%s" % (str(T0), str(N), str(M))
-print "*"*70
-print "*"*70
-MC(T0)
+if __name__ == "__main__":
+    main()
