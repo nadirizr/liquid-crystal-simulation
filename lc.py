@@ -2,16 +2,16 @@ import __future__
 import random
 import math
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'               Natural constants                                '
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#'                     Natural Constants                          '
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Kb=1.3806488*(10**(-16)) #Boltzman constant in [cm^2][g]/([s^2][K])
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'                     system properties                          '
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#'                     System Properties                          '
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 N=2 #num of columns
 M=2  #num of rows
@@ -21,14 +21,18 @@ d = 2   #dimentions of the system
 
 T0=298  #initial temperature in [K]
 
-ang=[[random.uniform(0,359) for i in xrange(N)] for j in xrange(M)]  #initial angles of the spins with room temperature (random)
+ang=[[random.uniform(0,2*math.pi) for i in xrange(N)] for j in xrange(M)]  #initial angles of the spins with room temperature (random)
+
+MIN_TEMPERATURE = 0
+NUM_METROPOLIS_STEPS = 1000
+MAX_NON_IMPROVING_STEPS = 3
 
 #pos=[[j*2 for j in xrange(N)] for i in xrange(M)]   #location of the spins
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'                        methods                                 '
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#'                        Methods                                 '
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 def print_angs(angs):                                           #prints the spins
     st=""
@@ -107,35 +111,31 @@ def Unear(part,angles):                                 #calcutes the potential 
         u=u+P2(math.cos((new_angle-angles[part[0]+1][part[1]])%360))
     if (part[1]<M-1):
         u=u+P2(math.cos((new_angle-angles[part[0]][part[1]+1])%360))
-    '''
-    if (part[0]>0):
-        u=u+P2(cos((new_angle-angles[part[0]-1][part[1]])%360))
-    if (part[1]>0):
-        u=u+P2(cos((new_angle-angles[part[0]][part[1]-1])%360))
-    '''    
+#    if (part[0]>0):
+#        u=u+P2(cos((new_angle-angles[part[0]-1][part[1]])%360))
+#    if (part[1]>0):
+#        u=u+P2(cos((new_angle-angles[part[0]][part[1]-1])%360))
     return u
 
-'''
-def U1(part,angles):  #calculates the potential between part and all the othe particles the come after it in their order
-    u=0
-    new_angle=angles[part[0]][part[1]]
-    
-    if part[0]<N:
-        for i in xrange(part[0]+1,N):
-            u=u+P2(cos((new_angle-angles[i][part[1]])%360))
-        for part2_x in xrange(part[0]+1,N):
-            if part[1]<M:
-                for part2_y in xrange(part[1]+1,M):
-                    u=u+P2(cos((new_angle-angles[part2_x][part2_y])%360))
-    if part[1]<M:
-        for i in xrange(part[1]+1,M):
-            u=u+P2(cos((new_angle-angles[part[0]][i])%360))
-        
-    return u
-'''
+#def U1(part,angles):  #calculates the potential between part and all the othe particles the come after it in their order
+#    u=0
+#    new_angle=angles[part[0]][part[1]]
+#    
+#    if part[0]<N:
+#        for i in xrange(part[0]+1,N):
+#            u=u+P2(cos((new_angle-angles[i][part[1]])%360))
+#        for part2_x in xrange(part[0]+1,N):
+#            if part[1]<M:
+#                for part2_y in xrange(part[1]+1,M):
+#                    u=u+P2(cos((new_angle-angles[part2_x][part2_y])%360))
+#    if part[1]<M:
+#        for i in xrange(part[1]+1,M):
+#            u=u+P2(cos((new_angle-angles[part[0]][i])%360))
+#        
+#    return u
 
 
-def choose_next(T): #foreach particle from the first to the last:
+def choose_next(angles, T): #foreach particle from the first to the last:
                         #if there is a new orientation with a lower potential- changethe particle's angle
                         #else - choose an angle with a probabilty exp(-(Enew-Ecurr)/(KbT))
                         #multiply the number of times this change apear in the options array by the probablity out of the sum of probabilities (make an int)
@@ -161,67 +161,80 @@ def choose_next(T): #foreach particle from the first to the last:
         
     ang[part[0]][part[1]] = ang[part[0]][part[1]]+opts[random.uniform(0,len(opts))] #changing the angle
     '''
-    
-    opts=[]   #array with the changing options
-    new_angles=[row[:] for row in ang]
-    
+    # Go over all of the particles, and change the angles for each one.
     for part_x in xrange(N):
         for part_y in xrange(M):
-            for new_angle in xrange(359):
-                if new_angle == int(ang[part_x][part_y]):
-                    continue
-                new_angles[part_x][part_y]=new_angle
-                En=E(new_angles)
-                Ep=E(ang)
-                #if En < Ep:
-                #    ang[part_x][part_y] = new_angle #changing the angle
-                #    break
-                #else:
-                ang_prob=prob(En-Ep,T)
-                
-                for i in xrange(int((ang_prob*1000)%10)):#TODO: check this
-                    opts.append(new_angle)
-            
-            #if new_angle>=359:
-            ang[part_x][part_y] = random.choice(opts) #changing the angle 
-            new_angles[part_x][part_y]=ang[part_x][part_y]
-            
-    return 0
+            # TODO: Select the initial angle.
+            # Perform NUM_METROPOLIS_STEPS steps and each time select a new
+            # angle from a distribution that should become more and more as the
+            # boltzman energy distribution.
+            for step in xrange(NUM_METROPOLIS_STEPS):
+                # Select a new angle based on the current one using a Gaussian
+                # distribution.
+                curr_angle = angles[part_x][part_y]
+                new_angle = random.gauss(curr_angle, 1)
+
+                # Calculate the coefficient that is proportional to the density
+                # of the boltzman distibution.
+                Ep=E(angles)
+                angles[part_x][part_y] = new_angle
+                En=E(angles)
+                alpha = prob(En,T)/prob(Ep,T)
+
+                alpha = min(1.0, alpha)
+                p = random.random()
+                if p > alpha:
+                    angles[part_x][part_y] = curr_angle
 
 
 def MC(T):                                                                                  #Monte Carlo Step
-    print "--------------------(T = "+str(T)+ "[K])--------------------"
-    print_angs(ang)
-    print E(ang)          
+    global ang
+    while T > MIN_TEMPERATURE:
+        print "--------------------(T = %s[K])--------------------" % str(T)
+        print_angs(ang)
+        print "Energy: %s" % E(ang)
     
-    if T==0:
-        print("end of simulation\n")
-                                            #TODO:do something
-        return 0
-    
-    while  not is_equilliberated(T):
-        choose_next(T)
-    
+        # Continue choosing angles using the Metropolis algorithm until we reach
+        # equlibrium.
+        ebest = E(ang)
+        k = 0
+        while k < MAX_NON_IMPROVING_STEPS:
+            print "Performing Metropolis step... ",
+            new_angles = [row[:] for row in ang]
+            choose_next(new_angles, T)
+            e = E(new_angles)
+
+            if e < ebest:
+                ebest = e
+                ang = new_angles
+                k = 0
+                print "Got better energy."
+            else:
+                k += 1
+                print "Didn't get better energy (k=%s)" % k
+            
+#        while not is_equilliberated(T):
+#            choose_next(T)
         
-    print("cooling...\n")
-    return MC(T-delta)  #next step with lower temperature
+        # Next step with lower temperature.
+        print "Cooling... (T=%s[K]->%s[K])" % (T, T-delta)
+        T -= delta
+
+    print("End of Simulation.\n")
+    #TODO:do something
 
 
 
 
 
-
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'                         main prog                              '
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#'                         Main                                   '
+#''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 E0=E(ang)+thermo_energy(T0) # initial energy of the system
-print "********************************************************************"
-print "********************************************************************"
-print "starting the simulation with "+ str(T0) +"[K] and N = "+str(N)+", M = "+str(M)+"\n"
-print "********************************************************************"
-print "********************************************************************"
+print "*"*70
+print "*"*70
+print "Starting the Simulation with T=%s[K] and N=%s, M=%s" % (str(T0), str(N), str(M))
+print "*"*70
+print "*"*70
 MC(T0)
-    
-    
