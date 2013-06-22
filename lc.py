@@ -330,6 +330,7 @@ class LiquidCrystalSystem:
                 # distribution.
                 current_angle = self._getProperty(self.angles, indices)
                 new_angle = random.gauss(current_angle, METROPOLIS_STDEV)
+                new_angle %= 2 * math.pi
 
                 # Calculate the coefficient that is proportional to the density
                 # of the boltzmann distibution.
@@ -361,7 +362,7 @@ class LiquidCrystalSystem:
             if indices[0] == 0:
                 print
                 print
-            print "%.3f  " % angle,
+            print "%.3f Pi   " % (angle / math.pi),
         print
         print
 
