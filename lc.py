@@ -42,6 +42,12 @@ def P2(x):
     """
     return (3.0 * (x**2) - 1.0) / 2.0
 
+def dot(v1, v2):
+    """
+    Returns the dot product of the two given vectors.
+    """
+    return reduce(lambda s, (a,b): s + a*b, zip(v1, v2), 0)
+
 def UNearestNeighbours(angles, dimensions, indices):
     """
     Calculates the potential from the interactions of a single spin given by
