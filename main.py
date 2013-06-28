@@ -15,6 +15,9 @@ FINAL_TEMPERATURE = 100
 # Change of temperature in each cooling step in [K].
 TEMPERATURE_DELTA = 10
 
+# The potential to use.
+POTENTIAL = LenardJonesPotential(epsilon0=(10**(-16)))
+
 ##################################################################
 #                         Main                                   #
 ##################################################################
@@ -28,7 +31,7 @@ def main():
     print "*"*70
     system = LiquidCrystalSystem(
             temperature=INITIAL_TEMPERATURE,
-            potential=LenardJonesPotential(sigma0=(10**(-16))),
+            potential=POTENTIAL,
             dimensions=DIMENSIONS)
     system.performMonteCarloCooling(
             final_tempareture=FINAL_TEMPERATURE,

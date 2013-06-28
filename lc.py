@@ -1,8 +1,3 @@
-import __future__
-import itertools
-import math
-import random
-
 from util import *
 
 ##################################################################

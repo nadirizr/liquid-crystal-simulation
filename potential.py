@@ -52,11 +52,11 @@ class NearestNeighboursPotential(Potential):
                     neighbour_spin = neighbour_spin[i]
                     neighbour_location = neighbour_location[i]
 
-                u += self.calculateTwoSpins(current_spin,
+                U += self.calculateTwoSpins(current_spin,
                                             current_location,
                                             neighbour_spin,
                                             neighbour_location)
 
                 indices[dindex] -= neighbour_index
 
-        return u
+        return U
