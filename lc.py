@@ -1,25 +1,7 @@
+import os
+
+from params import *
 from util import *
-
-##################################################################
-#                     System Properties                          #
-##################################################################
-
-# The spacing between spin locations.
-SPACING = 1.0
-# The standard deviation of the gaussian random spacing in the system.
-SPACING_STDEV = 0.1
-# The standard deviation of the gaussian random spin orientation.
-SPIN_STDEV = 1.0
-
-# Number of Metropolis steps to perform in each cooling steps.
-METROPOLIS_NUM_STEPS = 1000
-# Number of steps in the cooling process to wait if there is no improvement
-# before lowering the temperature further.
-MAX_NON_IMPROVING_STEPS = 3
-
-##################################################################
-#                     System Class                               #
-##################################################################
 
 class LiquidCrystalSystem:
     """
@@ -48,8 +30,7 @@ class LiquidCrystalSystem:
         if initial_locations is None:
             initial_locations = self._createPropertyList(
                     lambda indices: array(
-                            [i*SPACING +
-                             random.uniform(i*SPACING - SPACING_STDEV,
+                            [random.uniform(i*SPACING - SPACING_STDEV,
                                             i*SPACING + SPACING_STDEV)
                              for i in indices]))
         self.locations = initial_locations
@@ -93,10 +74,14 @@ class LiquidCrystalSystem:
         """
         print "Running Monte Carlo cooling on the system:"
         print
+        round_number = 0
         while self.temperature > final_tempareture:
+            round_number += 1
             print ("--------------------(T = %s[K])--------------------" %
                    str(self.temperature))
             self._print2DSystem()
+            self._outputToAvizFile(
+                    "%s/lqc%s.xyz" % (AVIZ_OUTPUT_PATH, hex(round_number)))
     
             # Continue running Metropolis steps until we reach a point where in
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
@@ -294,6 +279,35 @@ class LiquidCrystalSystem:
                 if p > alpha:
                     self._setProperty(self.spins, indices, current_spin)
                     self._setProperty(self.locations, indices, current_location)
+
+    def _outputToAvizFile(self, filepath):
+        """
+        Outputs the current state of the system (locations and spins) to the
+        given file path in Aviz XYZ format.
+        """
+        dirpath = os.path.dirname(filepath)
+        if not os.path.isdir(dirpath):
+            os.makedirs(dirpath)
+        f = file(filepath, "w")
+
+        # Write the number of points in this file.
+        num_points = reduce(lambda x,y: x*y, self.dimensions, 1)
+        f.write("%s\n" % num_points)
+
+        # Write the name for the set of data points.
+        f.write("Liquid Crystal Spins\n")
+
+        # Write the spins and locations.
+        # Format: X Y Z Sx Sy Sz
+        location_iterator = self._getSystemPropertyIterator(self.locations)
+        spin_iterator = self._getSystemPropertyIterator(self.spins)
+        for (location, spin) in itertools.izip(location_iterator,
+                                               spin_iterator):
+            f.write("Sp %s %s\n" % (" ".join([str(l) for l in location]),
+                                    " ".join([str(s) for s in spin])))
+
+        f.flush()
+        f.close()
 
     def _print2DSystem(self):
         """
