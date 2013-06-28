@@ -3,107 +3,24 @@ import itertools
 import math
 import random
 
-##################################################################
-#                     Natural Constants                          #
-##################################################################
-
-# Boltzmann constant in [erg]/[K].
-kB = 1.3806488*(10**(-16))
+from util import *
 
 ##################################################################
 #                     System Properties                          #
 ##################################################################
 
-# These are the system dimensions.
-DIMENSIONS = [2, 2]
-
-# Change of temperature in each cooling step in [K].
-TEMPERATURE_DELTA = 10
-# Initial temperature in [K].
-INITIAL_TEMPERATURE = 298
-# Final temperature to cool the system to.
-FINAL_TEMPERATURE = 100
+# The spacing between spin locations.
+SPACING = 1.0
+# The standard deviation of the gaussian random spacing in the system.
+SPACING_STDEV = 0.1
+# The standard deviation of the gaussian random spin orientation.
+SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
 METROPOLIS_NUM_STEPS = 1000
-# The standard deviation of the gaussian random selection in Metropolis.
-METROPOLIS_STDEV = 1.0
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MAX_NON_IMPROVING_STEPS = 3
-
-##################################################################
-#                     Potential Functions                        #
-##################################################################
-
-def P2(x):
-    """
-    Second order legendre polynomial.
-    """
-    return (3.0 * (x**2) - 1.0) / 2.0
-
-def dot(v1, v2):
-    """
-    Returns the dot product of the two given vectors.
-    """
-    return reduce(lambda s, (a,b): s + a*b, zip(v1, v2), 0)
-
-def UNearestNeighbours(angles, dimensions, indices):
-    """
-    Calculates the potential from the interactions of a single spin given by
-    the indices, using only the nearest neighbour spins at the given angles.
-    """
-    u = 0
-
-    # Calculate the current angle pointed to by the indices.
-    current_angle = angles
-    for i in indices:
-        current_angle = current_angle[i]
-
-    # Go over each of the dimensions, and check the nearest neighbours.
-    for (dindex, dsize) in enumerate(dimensions):
-        # Check the -1 neighbour for the current dimension.
-        if indices[dindex] > 0:
-            indices[dindex] -= 1
-
-            neighbour_angle = angles
-            for i in indices:
-                neighbour_angle = neighbour_angle[i]
-
-            u += P2(math.cos(current_angle - neighbour_angle))
-
-            indices[dindex] += 1
-
-        # Check the +1 neighbour for the current dimension.
-        if indices[dindex] < dsize - 1:
-            indices[dindex] += 1
-
-            neighbour_angle = angles
-            for i in indices:
-                neighbour_angle = neighbour_angle[i]
-
-            u += P2(math.cos(current_angle - neighbour_angle))
-
-            indices[dindex] -= 1
-
-    return u
-
-#def U1(part,angles):  #calculates the potential between part and all the othe particles the come after it in their order
-#    u=0
-#    new_angle=angles[part[0]][part[1]]
-#    
-#    if part[0]<N:
-#        for i in xrange(part[0]+1,N):
-#            u=u+P2(cos((new_angle-angles[i][part[1]])%360))
-#        for part2_x in xrange(part[0]+1,N):
-#            if part[1]<M:
-#                for part2_y in xrange(part[1]+1,M):
-#                    u=u+P2(cos((new_angle-angles[part2_x][part2_y])%360))
-#    if part[1]<M:
-#        for i in xrange(part[1]+1,M):
-#            u=u+P2(cos((new_angle-angles[part[0]][i])%360))
-#        
-#    return u
 
 ##################################################################
 #                     System Class                               #
@@ -115,11 +32,8 @@ class LiquidCrystalSystem:
     It holds the positions and angles of molecules in a liquid crystal, and can
     perform a Monte Carlo Metropolis cooling of the liquid crystal.
     """
-    def __init__(self,
-                 temperature=INITIAL_TEMPERATURE,
-                 potential=UNearestNeighbours,
-                 dimensions=DIMENSIONS,
-                 initial_angles=None):
+    def __init__(self, temperature, potential, dimensions,
+                 initial_spins=None, initial_locations=None):
         """
         Initializes the system from the given dimensions (or the default) and
         an initial nested list of initial angles, as well as the temperature.
@@ -129,10 +43,21 @@ class LiquidCrystalSystem:
         self.potential = potential
         self.dimensions = dimensions[:]
 
-        if initial_angles is None:
-            initial_angles = self._createPropertyList(
-                    lambda indices: random.uniform(0, 2*math.pi))
-        self.angles = initial_angles
+        if initial_spins is None:
+            initial_spins = self._createPropertyList(
+                    lambda indices: CreateNormalizedVector(
+                            [random.uniform(0, 1.0)
+                             for i in range(len(indices))]))
+        self.spins = initial_spins
+
+        if initial_locations is None:
+            initial_locations = self._createPropertyList(
+                    lambda indices: array(
+                            [i*SPACING +
+                             random.uniform(i*SPACING - SPACING_STDEV,
+                                            i*SPACING + SPACING_STDEV)
+                             for i in indices]))
+        self.locations = initial_locations
 
     def getThermalEnergy(self):
         """
@@ -151,9 +76,10 @@ class LiquidCrystalSystem:
 
         index_iterator = self._getSystemIndexIterator()
         for indices in index_iterator:
-            h += self.potential(self.angles, self.dimensions, indices)
+            h += self.potential.calculate(
+                    self.spins, self.locations, self.dimensions, indices)
 
-        return h * (10**(-16))
+        return h
 
     def getCanonicalEnsembleProbability(self):
         """
@@ -164,9 +90,7 @@ class LiquidCrystalSystem:
         T = self.temperature
         return math.exp(-(abs(E) / (kB * T)))
 
-    def performMonteCarloCooling(self,
-                                 final_tempareture=FINAL_TEMPERATURE,
-                                 temperature_delta=TEMPERATURE_DELTA):
+    def performMonteCarloCooling(self, final_tempareture, temperature_delta):
         """
         Run the Monte Carlo cooling algorithm for this system, from the current
         system temperature to the given final temperature, in the temperature
@@ -174,7 +98,7 @@ class LiquidCrystalSystem:
         """
         print "Running Monte Carlo cooling on the system:"
         print
-        while self.temperature > FINAL_TEMPERATURE:
+        while self.temperature > final_tempareture:
             print ("--------------------(T = %s[K])--------------------" %
                    str(self.temperature))
             self._print2DSystem()
@@ -185,7 +109,8 @@ class LiquidCrystalSystem:
             k = 0
             while k < MAX_NON_IMPROVING_STEPS:
                 print "Performing Metropolis step... ",
-                current_angles = self._copyPropertyList(self.angles)
+                current_spins = self._copyPropertyList(self.spins)
+                current_locations = self._copyPropertyList(self.locations)
                 self._performMetropolisStep()
                 new_energy = self.getPotentialEnergy()
 
@@ -194,7 +119,8 @@ class LiquidCrystalSystem:
                     k = 0
                     print "Got better energy."
                 else:
-                    self.angles = current_angles
+                    self.spins = current_spins
+                    self.locations = current_locations
                     k += 1
                     print "Didn't get better energy (k=%s)" % k
             
@@ -312,6 +238,28 @@ class LiquidCrystalSystem:
           else:
               current_values = current_values[index]
 
+    def _getNewRandomSpin(self, current_spin):
+        """
+        Returns a new random spin based on the current one, from a gaussian
+        distribution.
+        """
+        new_spin = current_spin.copy()
+        for d in range(len(new_spin)):
+            new_spin[d] = random.gauss(new_spin[d], SPIN_STDEV)
+        new_spin /= linalg.norm(new_spin)
+        return new_spin
+
+    def _getNewRandomLocation(self, current_location):
+        """
+        Returns a new random location based on the current one, from a gaussian
+        distribution.
+        """
+        new_location = current_location.copy()
+        for d in range(len(new_location)):
+            new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
+        new_location /= linalg.norm(new_location)
+        return new_location
+
     def _performMetropolisStep(self):
         """
         Go over each of the spins in the system, and find a new random angle for
@@ -327,28 +275,30 @@ class LiquidCrystalSystem:
         # Go over all of the particles, and change the angles for each one.
         index_iterator = self._getSystemIndexIterator()
         for indices in index_iterator:
-            # TODO: Select the initial angle.
+            # TODO: Select the initial spin and location.
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
-            # angle from a distribution that should become more and more as the
-            # boltzmann energy distribution.
+            # spin orientation from a distribution that should become more and
+            # more as the Boltzmann energy distribution.
             for step in xrange(METROPOLIS_NUM_STEPS):
-                # Select a new angle based on the current one using a Gaussian
-                # distribution.
-                current_angle = self._getProperty(self.angles, indices)
-                new_angle = random.gauss(current_angle, METROPOLIS_STDEV)
-                new_angle %= 2 * math.pi
+                # Select a new spin and location based on the current.
+                current_spin = self._getProperty(self.spins, indices)
+                current_location = self._getProperty(self.locations, indices)
+                new_spin = self._getNewRandomSpin(current_spin)
+                new_location = self._getNewRandomLocation(current_location)
 
                 # Calculate the coefficient that is proportional to the density
-                # of the boltzmann distibution.
+                # of the Boltzmann distibution.
                 old_probability = self.getCanonicalEnsembleProbability()
-                self._setProperty(self.angles, indices, new_angle)
+                self._setProperty(self.spins, indices, new_spin)
+                self._setProperty(self.locations, indices, new_location)
                 new_probability = self.getCanonicalEnsembleProbability()
                 alpha = new_probability / old_probability
 
                 alpha = min(1.0, alpha)
                 p = random.random()
                 if p > alpha:
-                    self._setProperty(self.angles, indices, current_angle)
+                    self._setProperty(self.spins, indices, current_spin)
+                    self._setProperty(self.locations, indices, current_location)
 
     def _print2DSystem(self):
         """
@@ -363,28 +313,16 @@ class LiquidCrystalSystem:
         
         print "Spin Angles:",
         index_iterator = self._getSystemIndexIterator()
-        angle_iterator = self._getSystemPropertyIterator(self.angles)
-        for (indices, angle) in itertools.izip(index_iterator, angle_iterator):
+        spin_iterator = self._getSystemPropertyIterator(self.spins)
+        location_iterator = self._getSystemPropertyIterator(self.locations)
+        for (indices, spin, location) in itertools.izip(index_iterator,
+                                                        spin_iterator,
+                                                        location_iterator):
             if indices[0] == 0:
                 print
                 print
-            print "%.3f Pi   " % (angle / math.pi),
+            angle = math.atan(spin[1] / spin[0])
+            print "%.3f,%.3f (%.3f Pi)   " % (location[0], location[1],
+                                              angle / math.pi),
         print
         print
-
-##################################################################
-#                         Main                                   #
-##################################################################
-
-def main():
-    print "*"*70
-    print "*"*70
-    print ("Starting the Simulation with T=%s[K] and N=%s, M=%s" %
-           (INITIAL_TEMPERATURE, DIMENSIONS[0], DIMENSIONS[1]))
-    print "*"*70
-    print "*"*70
-    system = LiquidCrystalSystem()
-    system.performMonteCarloCooling()
-
-if __name__ == "__main__":
-    main()
