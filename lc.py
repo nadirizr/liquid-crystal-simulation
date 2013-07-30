@@ -57,12 +57,12 @@ class LiquidCrystalSystem:
 
         return h
 
-    def getCanonicalEnsembleProbability(self):
+    def getCanonicalEnsembleProbability(self, energy=None):
         """
         Calculates the non-normalized canonical ensemble probability of the
         system, which is: e^(-E/(kB*T))
         """
-        E = self.getPotentialEnergy()
+        E = energy or self.getPotentialEnergy()
         T = self.temperature
         return math.exp(-(abs(E) / (kB * T)))
 
@@ -240,6 +240,13 @@ class LiquidCrystalSystem:
         new_location /= linalg.norm(new_location)
         return new_location
 
+    def _getPotentialEnergyForSpin(self, indices):
+        """
+        Calculate the potential energy for the spin at the given indices.
+        """
+        return self.potential.calculate(
+                self.spins, self.locations, self.dimensions, indices)
+
     def _performMetropolisStep(self):
         """
         Go over each of the spins in the system, and find a new random angle for
@@ -252,6 +259,9 @@ class LiquidCrystalSystem:
            canonical probability distribution function.
         5) Continue performing these improvements NUM_METROPOLIS_STEPS times.
         """
+        # Calculate the current system energy.
+        E = self.getPotentialEnergy()
+
         # Go over all of the particles, and change the angles for each one.
         index_iterator = self._getSystemIndexIterator()
         for indices in index_iterator:
@@ -268,17 +278,23 @@ class LiquidCrystalSystem:
 
                 # Calculate the coefficient that is proportional to the density
                 # of the Boltzmann distibution.
-                old_probability = self.getCanonicalEnsembleProbability()
+                current_spin_energy = self._getPotentialEnergyForSpin(indices)
+                oldE = E
+                old_probability = self.getCanonicalEnsembleProbability(energy=E)
+
                 self._setProperty(self.spins, indices, new_spin)
                 self._setProperty(self.locations, indices, new_location)
-                new_probability = self.getCanonicalEnsembleProbability()
-                alpha = new_probability / old_probability
+                new_spin_energy = self._getPotentialEnergyForSpin(indices)
+                E += new_spin_energy - current_spin_energy
+                new_probability = self.getCanonicalEnsembleProbability(energy=E)
 
+                alpha = new_probability / old_probability
                 alpha = min(1.0, alpha)
                 p = random.random()
-                if p > alpha:
+                if p >= alpha:
                     self._setProperty(self.spins, indices, current_spin)
                     self._setProperty(self.locations, indices, current_location)
+                    E = oldE
 
     def _outputToAvizFile(self, filepath):
         """
@@ -321,6 +337,7 @@ class LiquidCrystalSystem:
         This method only prints the system itself if there are 2 dimensions.
         """
         print "Potential Energy: %s[erg]" % self.getPotentialEnergy()
+        print "Thermal Energy: %s[erg]" % self.getThermalEnergy()
         print "Temperature: %s[K]" % self.temperature
 
         if len(self.dimensions) != 2:
