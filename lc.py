@@ -76,6 +76,11 @@ class LiquidCrystalSystem:
         print
         round_number = 0
         aviz_file_number = 0
+        
+        self._print2DSystem()
+        self._outputToAvizFile(
+                "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
+                                    aviz_file_number))
         while self.temperature > final_tempareture:
             round_number += 1
             print ("--------------------(T = %s[K])--------------------" %
