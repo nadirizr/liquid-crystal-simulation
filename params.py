@@ -33,7 +33,7 @@ POTENTIAL = GayBernesPotential(
 # The spacing between spin locations.
 SPACING = 1.0
 # The standard deviation of the gaussian random spacing in the system.
-SPACING_STDEV = 0.01
+SPACING_STDEV = 0.0
 # The standard deviation of the gaussian random spin orientation.
 SPIN_STDEV = 1.0
 
