@@ -20,10 +20,27 @@ class NearestNeighboursPotential(Potential):
         """
         raise NotImplemented
 
+    def calculate2D(self, spins, locations, dimensions, indices):
+        """
+        Calculates the nearest neighbours potential for the given spin in 2D.
+        """
+        pass
+
+    def calculate3D(self, spins, locations, dimensions, indices):
+        """
+        Calculates the nearest neighbours potential for the given spin in 3D.
+        """
+        pass
+
     def calculate(self, spins, locations, dimensions, indices):
         """
         Calculates the nearest neighbours potential for the given spin.
         """
+        if len(dimensions) == 2:
+            return self.calculate2D(spins, locations, dimensions, indices)
+        if len(dimensions) == 3:
+            return self.calculate3D(spins, locations, dimensions, indices)
+
         U = 0
 
         # Calculate the current spin and location pointed to by the indices.
