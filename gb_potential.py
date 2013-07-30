@@ -19,9 +19,27 @@ class GayBernesPotential(NearestNeighboursPotential):
         """
         r = location1 - location2
         nr = r / linalg.norm(r)
+        Ugb = self._calculateGBPotential(spin1, spin2, r, nr)
+        Udipole = self._calculateDipolePotential(spin1, spin2, r, nr)
+        return Ugb + Udipole
+
+    def _calculateGBPotential(self, spin1, spin2, r, nr):
+        """
+        Calculates the Gay Bernes potential energy of the given two spins.
+        """
         R = self._calculateR(spin1, spin2, r, nr)
         epsilon = self._calculateEpsilon(spin1, spin2, nr)
         return (4 * epsilon * (R**(-12) - R**(-6)))
+
+    def _calculateDipolePotential(self, spin1, spin2, r, nr):
+        """
+        Calculates the dipole-dipole potential between the two given spins.
+        """
+        d = linalg.norm(r)
+        A = -g * miuB / h_bar
+        return ((A**2) *
+                (dot(spin1, spin2)*(d**2) - 3*(dot(spin1,r)*dot(spin2,r))) /
+                (d**5))
 
     def _calculateR(self, spin1, spin2, r, nr):
         """
