@@ -10,7 +10,7 @@ class GayBernesPotential(NearestNeighboursPotential):
         self.epsilon0 = epsilon0
         self.kappa = kappa
         self.chi = (self.kappa**2 - 1.0) / (self.kappa**2 + 1.0)
-        self.kappa_tag = self.kappa_tag
+        self.kappa_tag = kappa_tag
         self.chi_tag = (self.kappa_tag**2 - 1.0) / (self.kappa_tag**2 + 1.0)
 
     def calculateTwoSpins(self, spin1, location1, spin2, location2):
@@ -20,7 +20,7 @@ class GayBernesPotential(NearestNeighboursPotential):
         r = location1 - location2
         nr = r / linalg.norm(r)
         R = self._calculateR(spin1, spin2, r, nr)
-        epslion = self._calculateEpsilon(spin1, spin2, nr)
+        epsilon = self._calculateEpsilon(spin1, spin2, nr)
         return (4 * epsilon * (R**(-12) - R**(-6)))
 
     def _calculateR(self, spin1, spin2, r, nr):
@@ -28,8 +28,8 @@ class GayBernesPotential(NearestNeighboursPotential):
         Calculates R from the two spins and the distance vector between the
         two locations.
         """
-        return ((r - self._calculateSigma(spin1, spin2, nr) + self.sigma0) /
-                self.sigma0)
+        return ((linalg.norm(r) - self._calculateSigma(spin1, spin2, nr) +
+                 self.sigma0) / self.sigma0)
 
     def _calculateSigma(self, spin1, spin2, nr):
         """

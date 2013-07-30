@@ -16,8 +16,14 @@ FINAL_TEMPERATURE = 100
 TEMPERATURE_DELTA = 10
 
 # The potential to use.
-POTENTIAL = LenardJonesPotential(
-    epsilon0=(10**(-16)))
+#POTENTIAL = LenardJonesPotential(
+#    epsilon0=(10**(-16)))
+POTENTIAL = GayBernesPotential(
+    sigma0=4.4,
+    epsilon0=20.0*(10**-24),
+    kappa=1.0,
+    kappa_tag=1.0,
+    )
 
 ##################################################################
 #                   Algorithm Properties                         #
