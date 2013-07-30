@@ -1,12 +1,13 @@
 from lj_potential import LenardJonesPotential
 from gb_potential import GayBernesPotential
+from util import kB
 
 ##################################################################
 #                    System Parameters                           #
 ##################################################################
 
 # These are the system dimensions.
-DIMENSIONS = [2, 2]
+DIMENSIONS = [3, 3]
 
 # Initial temperature in [K].
 INITIAL_TEMPERATURE = 298
@@ -19,10 +20,10 @@ TEMPERATURE_DELTA = 10
 #POTENTIAL = LenardJonesPotential(
 #    epsilon0=(10**(-16)))
 POTENTIAL = GayBernesPotential(
-    sigma0=4.4,
-    epsilon0=20.0*(10**-24),
-    kappa=1.0,
-    kappa_tag=1.0,
+    sigma0=0.1,
+    epsilon0=kB*(INITIAL_TEMPERATURE+FINAL_TEMPERATURE)/2.0/100.0,
+    kappa=4.4,
+    kappa_tag=20.0,
     )
 
 ##################################################################
@@ -32,7 +33,7 @@ POTENTIAL = GayBernesPotential(
 # The spacing between spin locations.
 SPACING = 1.0
 # The standard deviation of the gaussian random spacing in the system.
-SPACING_STDEV = 0.1
+SPACING_STDEV = 0.01
 # The standard deviation of the gaussian random spin orientation.
 SPIN_STDEV = 1.0
 
