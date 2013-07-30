@@ -24,13 +24,65 @@ class NearestNeighboursPotential(Potential):
         """
         Calculates the nearest neighbours potential for the given spin in 2D.
         """
-        pass
+        U = 0
+
+        x = indices[0]
+        y = indices[1]
+        current_spin = spins[x][y]
+        current_location = locations[x][y]
+
+        if x < dimensions[0] - 1:
+            neighbour_spin = spins[x+1][y]
+            neighbour_location = locations[x+1][y]
+            U += self.calculateTwoSpins(current_spin,
+                                        current_location,
+                                        neighbour_spin,
+                                        neighbour_location)
+        if y < dimensions[1] - 1:
+            neighbour_spin = spins[x][y+1]
+            neighbour_location = locations[x][y+1]
+            U += self.calculateTwoSpins(current_spin,
+                                        current_location,
+                                        neighbour_spin,
+                                        neighbour_location)
+
+        return U
 
     def calculate3D(self, spins, locations, dimensions, indices):
         """
         Calculates the nearest neighbours potential for the given spin in 3D.
         """
-        pass
+        U = 0
+
+        x = indices[0]
+        y = indices[1]
+        z = indices[2]
+        current_spin = spins[x][y][z]
+        current_location = locations[x][y][z]
+
+        if x < dimensions[0] - 1:
+            neighbour_spin = spins[x+1][y][z]
+            neighbour_location = locations[x+1][y][z]
+            U += self.calculateTwoSpins(current_spin,
+                                        current_location,
+                                        neighbour_spin,
+                                        neighbour_location)
+        if y < dimensions[1] - 1:
+            neighbour_spin = spins[x][y+1][z]
+            neighbour_location = locations[x][y+1][z]
+            U += self.calculateTwoSpins(current_spin,
+                                        current_location,
+                                        neighbour_spin,
+                                        neighbour_location)
+        if z < dimensions[2] - 1:
+            neighbour_spin = spins[x][y][z+1]
+            neighbour_location = locations[x][y][z+1]
+            U += self.calculateTwoSpins(current_spin,
+                                        current_location,
+                                        neighbour_spin,
+                                        neighbour_location)
+
+        return U
 
     def calculate(self, spins, locations, dimensions, indices):
         """
@@ -76,4 +128,4 @@ class NearestNeighboursPotential(Potential):
 
                 indices[dindex] -= neighbour_index
 
-        return U
+        return U / 2.0
