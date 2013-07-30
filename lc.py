@@ -75,13 +75,11 @@ class LiquidCrystalSystem:
         print "Running Monte Carlo cooling on the system:"
         print
         round_number = 0
+        aviz_file_number = 0
         while self.temperature > final_tempareture:
             round_number += 1
             print ("--------------------(T = %s[K])--------------------" %
                    str(self.temperature))
-            self._print2DSystem()
-            self._outputToAvizFile(
-                    "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH, round_number))
     
             # Continue running Metropolis steps until we reach a point where in
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
@@ -98,6 +96,12 @@ class LiquidCrystalSystem:
                     best_energy = new_energy
                     k = 0
                     print "Got better energy."
+                    self._print2DSystem()
+                    aviz_file_number += 1
+                    self._outputToAvizFile(
+                            "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
+                                                aviz_file_number))
+                    print
                 else:
                     self.spins = current_spins
                     self.locations = current_locations
