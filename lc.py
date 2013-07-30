@@ -81,7 +81,7 @@ class LiquidCrystalSystem:
                    str(self.temperature))
             self._print2DSystem()
             self._outputToAvizFile(
-                    "%s/lqc%s.xyz" % (AVIZ_OUTPUT_PATH, hex(round_number)))
+                    "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH, round_number))
     
             # Continue running Metropolis steps until we reach a point where in
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
