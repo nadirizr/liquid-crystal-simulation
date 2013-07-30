@@ -285,6 +285,9 @@ class LiquidCrystalSystem:
         Outputs the current state of the system (locations and spins) to the
         given file path in Aviz XYZ format.
         """
+        if len(self.dimensions) > 3:
+            return
+
         dirpath = os.path.dirname(filepath)
         if not os.path.isdir(dirpath):
             os.makedirs(dirpath)
@@ -299,12 +302,15 @@ class LiquidCrystalSystem:
 
         # Write the spins and locations.
         # Format: X Y Z Sx Sy Sz
+        DIMS = 3
         location_iterator = self._getSystemPropertyIterator(self.locations)
         spin_iterator = self._getSystemPropertyIterator(self.spins)
         for (location, spin) in itertools.izip(location_iterator,
                                                spin_iterator):
-            f.write("Sp %s %s\n" % (" ".join([str(l) for l in location]),
-                                    " ".join([str(s) for s in spin])))
+            aviz_location = ([0.0] * (DIMS - len(location))) + list(location)
+            aviz_spin = ([0.0] * (DIMS - len(spin))) + list(spin)
+            f.write("Sp %s %s\n" % (" ".join([str(l) for l in aviz_location]),
+                                    " ".join([str(s) for s in aviz_spin])))
 
         f.flush()
         f.close()
