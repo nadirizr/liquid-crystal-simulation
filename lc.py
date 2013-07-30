@@ -237,7 +237,6 @@ class LiquidCrystalSystem:
         new_location = current_location.copy()
         for d in range(len(new_location)):
             new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
-        new_location /= linalg.norm(new_location)
         return new_location
 
     def _getPotentialEnergyForSpin(self, indices):
