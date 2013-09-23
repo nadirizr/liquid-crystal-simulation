@@ -1,5 +1,5 @@
-from lj_potential import LenardJonesPotential
-from gb_potential import GayBernesPotential
+from potentials.lj_potential import LenardJonesPotential
+from potentials.gb_potential import GayBernesPotential
 from constants import kB
 
 ##################################################################
