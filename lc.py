@@ -50,7 +50,7 @@ class LiquidCrystalSystem:
         """
         h = 0
 
-        index_iterator = self._getSystemIndexIterator()
+        index_iterator = self.getSystemIndexIterator()
         for indices in index_iterator:
             h += self.potential.calculate(
                     self.spins, self.locations, self.dimensions, indices)
@@ -77,8 +77,8 @@ class LiquidCrystalSystem:
         round_number = 0
         aviz_file_number = 0
         
-        self._print2DSystem()
-        self._outputToAvizFile(
+        self.print2DSystem()
+        self.outputToAvizFile(
                 "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
                                     aviz_file_number))
         while self.temperature > final_tempareture:
@@ -101,9 +101,9 @@ class LiquidCrystalSystem:
                     best_energy = new_energy
                     k = 0
                     print "Got better energy."
-                    self._print2DSystem()
+                    self.print2DSystem()
                     aviz_file_number += 1
-                    self._outputToAvizFile(
+                    self.outputToAvizFile(
                             "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
                                                 aviz_file_number))
                     print
@@ -122,7 +122,7 @@ class LiquidCrystalSystem:
         print "End of Simulation."
         #TODO:do something
 
-    def _getSystemIndexIterator(self):
+    def getSystemIndexIterator(self):
         """
         Returns an iterator that returns a list of indices to the system.
         Each call to next() will return the next set of indices.
@@ -152,7 +152,7 @@ class LiquidCrystalSystem:
 
         return SystemIndexIterator(self.dimensions)
 
-    def _getSystemPropertyIterator(self, property_values):
+    def getSystemPropertyIterator(self, property_values):
         """
         Returns an iterator that returns on each call to next a value from the
         given system property list, such as angles.
@@ -173,7 +173,7 @@ class LiquidCrystalSystem:
                     value_list = value_list[i]
                 return value_list
 
-        index_iterator = self._getSystemIndexIterator()
+        index_iterator = self.getSystemIndexIterator()
         return SystemPropertyIterator(property_values, index_iterator)
     
     def _createPropertyList(self, value_generator):
@@ -182,7 +182,7 @@ class LiquidCrystalSystem:
         returned from the given value generator function that is given the
         list of indices of the current value to generate.
         """
-        index_iterator = self._getSystemIndexIterator()
+        index_iterator = self.getSystemIndexIterator()
         value_list = []
         for indices in index_iterator:
             current_values = value_list
@@ -269,9 +269,10 @@ class LiquidCrystalSystem:
         """
         # Calculate the current system energy.
         E = self.getPotentialEnergy()
+        print "// E = %s" % E
 
         # Go over all of the particles, and change the angles for each one.
-        index_iterator = self._getSystemIndexIterator()
+        index_iterator = self.getSystemIndexIterator()
         for indices in index_iterator:
             # TODO: Select the initial spin and location.
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
@@ -296,6 +297,7 @@ class LiquidCrystalSystem:
                 E += new_spin_energy - current_spin_energy
                 new_probability = self.getCanonicalEnsembleProbability(energy=E)
 
+                #print "// newp = %s, oldp = %s" % (new_probability, old_probability)
                 alpha = new_probability / old_probability
                 alpha = min(1.0, alpha)
                 p = random.random()
@@ -304,7 +306,7 @@ class LiquidCrystalSystem:
                     self._setProperty(self.locations, indices, current_location)
                     E = oldE
 
-    def _outputToAvizFile(self, filepath):
+    def outputToAvizFile(self, filepath):
         """
         Outputs the current state of the system (locations and spins) to the
         given file path in Aviz XYZ format.
@@ -327,8 +329,8 @@ class LiquidCrystalSystem:
         # Write the spins and locations.
         # Format: X Y Z Sx Sy Sz
         DIMS = 3
-        location_iterator = self._getSystemPropertyIterator(self.locations)
-        spin_iterator = self._getSystemPropertyIterator(self.spins)
+        location_iterator = self.getSystemPropertyIterator(self.locations)
+        spin_iterator = self.getSystemPropertyIterator(self.spins)
         for (location, spin) in itertools.izip(location_iterator,
                                                spin_iterator):
             aviz_location = ([0.0] * (DIMS - len(location))) + list(location)
@@ -339,7 +341,7 @@ class LiquidCrystalSystem:
         f.flush()
         f.close()
 
-    def _print2DSystem(self):
+    def print2DSystem(self):
         """
         Prints the system properties (energy, temperature, angles).
         This method only prints the system itself if there are 2 dimensions.
@@ -352,9 +354,9 @@ class LiquidCrystalSystem:
             return
         
         print "Spin Angles:",
-        index_iterator = self._getSystemIndexIterator()
-        spin_iterator = self._getSystemPropertyIterator(self.spins)
-        location_iterator = self._getSystemPropertyIterator(self.locations)
+        index_iterator = self.getSystemIndexIterator()
+        spin_iterator = self.getSystemPropertyIterator(self.spins)
+        location_iterator = self.getSystemPropertyIterator(self.locations)
         for (indices, spin, location) in itertools.izip(index_iterator,
                                                         spin_iterator,
                                                         location_iterator):
