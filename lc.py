@@ -26,19 +26,31 @@ class LiquidCrystalSystem:
         self.dimensions = DIMENSIONS[:]
 
         if initial_spins is None:
-            initial_spins = self._createPropertyList(
+            initial_spins = self.createPropertyList(
                     lambda indices: CreateNormalizedVector(
                             [random.uniform(0, 1.0)
                              for i in range(len(indices))]))
         self.spins = initial_spins
 
         if initial_locations is None:
-            initial_locations = self._createPropertyList(
+            initial_locations = self.createPropertyList(
                     lambda indices: array(
                             [random.uniform(i*SPACING - SPACING_STDEV,
                                             i*SPACING + SPACING_STDEV)
                              for i in indices]))
         self.locations = initial_locations
+
+    def getTemperature(self):
+        """
+        Returns the current system temperature.
+        """
+        return self.temperature
+
+    def setTemperature(self, temperature):
+        """
+        Set the system temperature to the given one.
+        """
+        self.temperature = temperature
 
     def getThermalEnergy(self):
         """
@@ -70,67 +82,6 @@ class LiquidCrystalSystem:
         E = energy or self.getPotentialEnergy()
         T = self.temperature
         return math.exp(-(abs(E) / (kB * T)))
-
-    def performMonteCarloCooling(self, parameters):
-        """
-        Run the Monte Carlo cooling algorithm for this system, from the current
-        system temperature to the given final temperature, in the temperature
-        delta decrements that were given.
-        """
-        AVIZ_OUTPUT_PATH = str(parameters["AVIZ_OUTPUT_PATH"])
-        MAX_NON_IMPROVING_STEPS = int(parameters["MAX_NON_IMPROVING_STEPS"])
-        FINAL_TEMPERATURE = float(parameters["FINAL_TEMPERATURE"])
-        TEMPERATURE_DELTA = float(parameters["TEMPERATURE_DELTA"])
-
-        print "Running Monte Carlo cooling on the system:"
-        print
-        round_number = 0
-        aviz_file_number = 0
-        
-        self.print2DSystem()
-        self.outputToAvizFile(
-                "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
-                                    aviz_file_number))
-        while self.temperature > FINAL_TEMPERATURE:
-            round_number += 1
-            print ("--------------------(T = %s[K])--------------------" %
-                   str(self.temperature))
-    
-            # Continue running Metropolis steps until we reach a point where in
-            # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
-            best_energy = self.getPotentialEnergy()
-            k = 0
-            while k < MAX_NON_IMPROVING_STEPS:
-                print "Performing Metropolis step... ",
-                current_spins = self._copyPropertyList(self.spins)
-                current_locations = self._copyPropertyList(self.locations)
-                self._performMetropolisStep()
-                new_energy = self.getPotentialEnergy()
-
-                if new_energy < best_energy:
-                    best_energy = new_energy
-                    k = 0
-                    print "Got better energy."
-                    self.print2DSystem()
-                    aviz_file_number += 1
-                    self.outputToAvizFile(
-                            "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
-                                                aviz_file_number))
-                    print
-                else:
-                    self.spins = current_spins
-                    self.locations = current_locations
-                    k += 1
-                    print "Didn't get better energy (k=%s)" % k
-            
-            # Next step with lower temperature.
-            print ("Cooling... (T=%s[K]->%s[K])" %
-                   (self.temperature, self.temperature - TEMPERATURE_DELTA))
-            print
-            self.temperature -= TEMPERATURE_DELTA
-
-        print "End of Simulation."
-        #TODO:do something
 
     def getSystemIndexIterator(self):
         """
@@ -186,7 +137,7 @@ class LiquidCrystalSystem:
         index_iterator = self.getSystemIndexIterator()
         return SystemPropertyIterator(property_values, index_iterator)
     
-    def _createPropertyList(self, value_generator):
+    def createPropertyList(self, value_generator):
         """
         Creates and returns a multi-dimensional list populated with values
         returned from the given value generator function that is given the
@@ -207,15 +158,15 @@ class LiquidCrystalSystem:
 
         return value_list
 
-    def _copyPropertyList(self, property_values):
+    def copyPropertyList(self, property_values):
         """
         Returns a complete deep copy of the given property values
         multi-dimensional list.
         """
-        return self._createPropertyList(
-            lambda indices: self._getProperty(property_values, indices))
+        return self.createPropertyList(
+            lambda indices: self.getProperty(property_values, indices))
 
-    def _getProperty(self, property_values, indices):
+    def getProperty(self, property_values, indices):
         """
         Returns the property value pointed to by the given indices into the
         given property values multi-dimensional list.
@@ -225,7 +176,7 @@ class LiquidCrystalSystem:
             current_values = current_values[index]
         return current_values
 
-    def _setProperty(self, property_values, indices, new_value):
+    def setProperty(self, property_values, indices, new_value):
         """
         Sets the property value pointed to by the given indices into the given
         property values multi-dimensional list to the given new value.
@@ -236,91 +187,6 @@ class LiquidCrystalSystem:
               current_values[index] = new_value
           else:
               current_values = current_values[index]
-
-    def _getNewRandomSpin(self, current_spin):
-        """
-        Returns a new random spin based on the current one, from a gaussian
-        distribution.
-        """
-        SPIN_STDEV = float(self.parameters["SPIN_STDEV"])
-
-        new_spin = current_spin.copy()
-        for d in range(len(new_spin)):
-            new_spin[d] = random.gauss(new_spin[d], SPIN_STDEV)
-        new_spin /= linalg.norm(new_spin)
-        return new_spin
-
-    def _getNewRandomLocation(self, current_location):
-        """
-        Returns a new random location based on the current one, from a gaussian
-        distribution.
-        """
-        SPACING_STDEV = float(self.parameters["SPACING_STDEV"])
-
-        new_location = current_location.copy()
-        for d in range(len(new_location)):
-            new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
-        return new_location
-
-    def _getPotentialEnergyForSpin(self, indices):
-        """
-        Calculate the potential energy for the spin at the given indices.
-        """
-        return self.potential.calculate(
-                self.spins, self.locations, self.dimensions, indices)
-
-    def _performMetropolisStep(self):
-        """
-        Go over each of the spins in the system, and find a new random angle for
-        them, according to the canonical ensemble probability density function.
-        This is done using the Metropolis algorithm, in the following way:
-        1) Use a gaussian random function to select a new angle for the spin.
-        2) Calculate the new energy of the entire system.
-        3) If it is lower than the original energy, accept it.
-        4) If not, pick it with a probability of P(NewE)/P(OldE), where P is the
-           canonical probability distribution function.
-        5) Continue performing these improvements NUM_METROPOLIS_STEPS times.
-        """
-        METROPOLIS_NUM_STEPS = int(self.parameters["METROPOLIS_NUM_STEPS"])
-
-        # Calculate the current system energy.
-        E = self.getPotentialEnergy()
-        print "// E = %s" % E
-
-        # Go over all of the particles, and change the angles for each one.
-        index_iterator = self.getSystemIndexIterator()
-        for indices in index_iterator:
-            # TODO: Select the initial spin and location.
-            # Perform METROPOLIS_NUM_STEPS steps and each time select a new
-            # spin orientation from a distribution that should become more and
-            # more as the Boltzmann energy distribution.
-            for step in xrange(METROPOLIS_NUM_STEPS):
-                # Select a new spin and location based on the current.
-                current_spin = self._getProperty(self.spins, indices)
-                current_location = self._getProperty(self.locations, indices)
-                new_spin = self._getNewRandomSpin(current_spin)
-                new_location = self._getNewRandomLocation(current_location)
-
-                # Calculate the coefficient that is proportional to the density
-                # of the Boltzmann distibution.
-                current_spin_energy = self._getPotentialEnergyForSpin(indices)
-                oldE = E
-                old_probability = self.getCanonicalEnsembleProbability(energy=E)
-
-                self._setProperty(self.spins, indices, new_spin)
-                self._setProperty(self.locations, indices, new_location)
-                new_spin_energy = self._getPotentialEnergyForSpin(indices)
-                E += new_spin_energy - current_spin_energy
-                new_probability = self.getCanonicalEnsembleProbability(energy=E)
-
-                #print "// newp = %s, oldp = %s" % (new_probability, old_probability)
-                alpha = new_probability / old_probability
-                alpha = min(1.0, alpha)
-                p = random.random()
-                if p >= alpha:
-                    self._setProperty(self.spins, indices, current_spin)
-                    self._setProperty(self.locations, indices, current_location)
-                    E = oldE
 
     def outputToAvizFile(self, filepath):
         """

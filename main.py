@@ -1,6 +1,7 @@
 import sys
 
 from lc import LiquidCrystalSystem
+from algorithms.monte_carlo_cooler import MonteCarloCoolerAlgorithm
 
 def readParametersFromFile(args):
     model = "default"
@@ -24,8 +25,9 @@ def main():
            (INITIAL_TEMPERATURE, DIMENSIONS))
     print "*"*70
     print "*"*70
-    system = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
-    system.performMonteCarloCooling(parameters)
+    lcs = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
+    mc = MonteCarloCoolerAlgorithm(lcs, parameters)
+    mc.run()
 
 if __name__ == "__main__":
     main()
