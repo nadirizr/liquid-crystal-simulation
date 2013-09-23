@@ -1,6 +1,5 @@
 import os
 
-from params import *
 from util import *
 
 class LiquidCrystalSystem:
@@ -9,16 +8,22 @@ class LiquidCrystalSystem:
     It holds the positions and angles of molecules in a liquid crystal, and can
     perform a Monte Carlo Metropolis cooling of the liquid crystal.
     """
-    def __init__(self, temperature, potential, dimensions,
-                 initial_spins=None, initial_locations=None):
+    def __init__(self, parameters, initial_spins=None, initial_locations=None):
         """
         Initializes the system from the given dimensions (or the default) and
         an initial nested list of initial angles, as well as the temperature.
         If no initial system properties are given it is randomly set up.
         """
-        self.temperature = temperature
-        self.potential = potential
-        self.dimensions = dimensions[:]
+        DIMENSIONS = parameters["DIMENSIONS"]
+        SPACING = float(parameters["SPACING"])
+        SPACING_STDEV = float(parameters["SPACING_STDEV"])
+        INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
+        POTENTIAL = parameters["POTENTIAL"]
+
+        self.parameters = parameters
+        self.temperature = INITIAL_TEMPERATURE
+        self.potential = POTENTIAL(self.parameters)
+        self.dimensions = DIMENSIONS[:]
 
         if initial_spins is None:
             initial_spins = self._createPropertyList(
@@ -66,12 +71,17 @@ class LiquidCrystalSystem:
         T = self.temperature
         return math.exp(-(abs(E) / (kB * T)))
 
-    def performMonteCarloCooling(self, final_tempareture, temperature_delta):
+    def performMonteCarloCooling(self, parameters):
         """
         Run the Monte Carlo cooling algorithm for this system, from the current
         system temperature to the given final temperature, in the temperature
         delta decrements that were given.
         """
+        AVIZ_OUTPUT_PATH = str(parameters["AVIZ_OUTPUT_PATH"])
+        MAX_NON_IMPROVING_STEPS = int(parameters["MAX_NON_IMPROVING_STEPS"])
+        FINAL_TEMPERATURE = float(parameters["FINAL_TEMPERATURE"])
+        TEMPERATURE_DELTA = float(parameters["TEMPERATURE_DELTA"])
+
         print "Running Monte Carlo cooling on the system:"
         print
         round_number = 0
@@ -79,9 +89,9 @@ class LiquidCrystalSystem:
         
         self.print2DSystem()
         self.outputToAvizFile(
-                "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
+                "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
                                     aviz_file_number))
-        while self.temperature > final_tempareture:
+        while self.temperature > FINAL_TEMPERATURE:
             round_number += 1
             print ("--------------------(T = %s[K])--------------------" %
                    str(self.temperature))
@@ -115,9 +125,9 @@ class LiquidCrystalSystem:
             
             # Next step with lower temperature.
             print ("Cooling... (T=%s[K]->%s[K])" %
-                   (self.temperature, self.temperature - temperature_delta))
+                   (self.temperature, self.temperature - TEMPERATURE_DELTA))
             print
-            self.temperature -= temperature_delta
+            self.temperature -= TEMPERATURE_DELTA
 
         print "End of Simulation."
         #TODO:do something
@@ -232,6 +242,8 @@ class LiquidCrystalSystem:
         Returns a new random spin based on the current one, from a gaussian
         distribution.
         """
+        SPIN_STDEV = float(self.parameters["SPIN_STDEV"])
+
         new_spin = current_spin.copy()
         for d in range(len(new_spin)):
             new_spin[d] = random.gauss(new_spin[d], SPIN_STDEV)
@@ -243,6 +255,8 @@ class LiquidCrystalSystem:
         Returns a new random location based on the current one, from a gaussian
         distribution.
         """
+        SPACING_STDEV = float(self.parameters["SPACING_STDEV"])
+
         new_location = current_location.copy()
         for d in range(len(new_location)):
             new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
@@ -267,6 +281,8 @@ class LiquidCrystalSystem:
            canonical probability distribution function.
         5) Continue performing these improvements NUM_METROPOLIS_STEPS times.
         """
+        METROPOLIS_NUM_STEPS = int(self.parameters["METROPOLIS_NUM_STEPS"])
+
         # Calculate the current system energy.
         E = self.getPotentialEnergy()
         print "// E = %s" % E

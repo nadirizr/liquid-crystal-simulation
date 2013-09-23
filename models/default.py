@@ -1,6 +1,6 @@
 from lj_potential import LenardJonesPotential
 from gb_potential import GayBernesPotential
-from util import kB
+from constants import kB
 
 ##################################################################
 #                    System Parameters                           #
@@ -10,21 +10,27 @@ from util import kB
 DIMENSIONS = [3, 3]
 
 # Initial temperature in [K].
-INITIAL_TEMPERATURE = 298
+INITIAL_TEMPERATURE = 5.0
 # Final temperature to cool the system to.
-FINAL_TEMPERATURE = 100
+FINAL_TEMPERATURE = 2.0
 # Change of temperature in each cooling step in [K].
-TEMPERATURE_DELTA = 10
+TEMPERATURE_DELTA = 0.1
 
 # The potential to use.
-#POTENTIAL = LenardJonesPotential(
-#    epsilon0=(10**(-16)))
-POTENTIAL = GayBernesPotential(
-    sigma0=0.1,
-    epsilon0=kB*(INITIAL_TEMPERATURE+FINAL_TEMPERATURE)/2.0/100.0,
-    kappa=4.4,
-    kappa_tag=20.0,
-    )
+POTENTIAL = GayBernesPotential
+
+# The potential parameters.
+EPSILON_0 = kB
+MIU = 1.0
+NI = 3.0
+
+KAPPA = 3.0
+SIGMA_S = 0.5
+SIGMA_E = KAPPA * SIGMA_S
+
+KAPPA_TAG = 5.0
+EPSILON_S = 1.0
+EPSILON_E = EPSILON_S / KAPPA_TAG
 
 ##################################################################
 #                   Algorithm Properties                         #
@@ -43,4 +49,5 @@ METROPOLIS_NUM_STEPS = 1000
 # before lowering the temperature further.
 MAX_NON_IMPROVING_STEPS = 3
 
+# The path to which to output the AVIZ files.
 AVIZ_OUTPUT_PATH = "output"
