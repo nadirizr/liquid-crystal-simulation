@@ -188,6 +188,13 @@ class LiquidCrystalSystem:
           else:
               current_values = current_values[index]
 
+    def getPotentialEnergyForSpin(self, indices):
+        """
+        Calculate the potential energy for the spin at the given indices.
+        """
+        return self.potential.calculate(
+                self.spins, self.locations, self.dimensions, indices)
+
     def outputToAvizFile(self, filepath):
         """
         Outputs the current state of the system (locations and spins) to the

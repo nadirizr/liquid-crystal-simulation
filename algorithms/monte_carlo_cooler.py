@@ -93,13 +93,6 @@ class MonteCarloCoolerAlgorithm:
             new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
         return new_location
 
-    def _getPotentialEnergyForSpin(self, indices):
-        """
-        Calculate the potential energy for the spin at the given indices.
-        """
-        return self.lcs.potential.calculate(
-                self.lcs.spins, self.lcs.locations, self.lcs.dimensions, indices)
-
     def _performMetropolisStep(self):
         """
         Go over each of the spins in the system, and find a new random angle for
@@ -134,13 +127,13 @@ class MonteCarloCoolerAlgorithm:
 
                 # Calculate the coefficient that is proportional to the density
                 # of the Boltzmann distibution.
-                current_spin_energy = self._getPotentialEnergyForSpin(indices)
+                current_spin_energy = self.lcs.getPotentialEnergyForSpin(indices)
                 oldE = E
                 old_probability = self.lcs.getCanonicalEnsembleProbability(energy=E)
 
                 self.lcs.setProperty(self.lcs.spins, indices, new_spin)
                 self.lcs.setProperty(self.lcs.locations, indices, new_location)
-                new_spin_energy = self._getPotentialEnergyForSpin(indices)
+                new_spin_energy = self.lcs.getPotentialEnergyForSpin(indices)
                 E += new_spin_energy - current_spin_energy
                 new_probability = self.lcs.getCanonicalEnsembleProbability(energy=E)
 
@@ -152,4 +145,3 @@ class MonteCarloCoolerAlgorithm:
                     self.lcs.setProperty(self.lcs.spins, indices, current_spin)
                     self.lcs.setProperty(self.lcs.locations, indices, current_location)
                     E = oldE
-
