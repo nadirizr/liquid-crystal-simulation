@@ -8,7 +8,8 @@ class LiquidCrystalSystem:
     It holds the positions and angles of molecules in a liquid crystal, and can
     perform a Monte Carlo Metropolis cooling of the liquid crystal.
     """
-    def __init__(self, parameters, initial_spins=None, initial_locations=None):
+    def __init__(self, parameters, initial_temperature, 
+                 initial_spins=None, initial_locations=None):
         """
         Initializes the system from the given dimensions (or the default) and
         an initial nested list of initial angles, as well as the temperature.
@@ -17,11 +18,10 @@ class LiquidCrystalSystem:
         DIMENSIONS = parameters["DIMENSIONS"]
         SPACING = float(parameters["SPACING"])
         SPACING_STDEV = float(parameters["SPACING_STDEV"])
-        INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
         POTENTIAL = parameters["POTENTIAL"]
 
         self.parameters = parameters
-        self.temperature = INITIAL_TEMPERATURE
+        self.temperature = initial_temperature
         self.potential = POTENTIAL(self.parameters)
         self.dimensions = DIMENSIONS[:]
 
