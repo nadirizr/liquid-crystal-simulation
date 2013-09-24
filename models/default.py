@@ -51,3 +51,10 @@ MAX_NON_IMPROVING_STEPS = 3
 
 # The path to which to output the AVIZ files.
 AVIZ_OUTPUT_PATH = "output"
+
+##################################################################
+#                  Repository Properties                         #
+##################################################################
+
+LCS_REPOSITORY_LOCATION = "states"
+LCS_REPOSITORY_SUFFIX = "dat"
