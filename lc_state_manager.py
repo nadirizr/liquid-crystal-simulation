@@ -18,6 +18,8 @@ class LiquidCrystalSystemStateManager:
         LCS_REPOSITORY_SUFFIX = str(self.parameters["LCS_REPOSITORY_SUFFIX"])
 
         self.repository_path = LCS_REPOSITORY_LOCATION
+        if not os.path.isdir(self.repository_path):
+            os.makedirs(self.repository_path)
         state_paths = glob.glob(os.path.join(self.repository_path,
                                              "*.%s" % LCS_REPOSITORY_SUFFIX))
         self.state_repository = {}
