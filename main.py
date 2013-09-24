@@ -21,7 +21,7 @@ def main():
 
     print "*"*70
     print "*"*70
-    print ("Starting the Simulation with T=%s[K] and dimensions=%s" %
+    print ("Starting the Simulation with T*=%s and dimensions=%s" %
            (INITIAL_TEMPERATURE, DIMENSIONS))
     print "*"*70
     print "*"*70

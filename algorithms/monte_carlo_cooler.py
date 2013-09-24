@@ -28,7 +28,7 @@ class MonteCarloCoolerAlgorithm:
                                     aviz_file_number))
         while self.lcs.getTemperature() > FINAL_TEMPERATURE:
             round_number += 1
-            print ("--------------------(T = %s[K])--------------------" %
+            print ("--------------------(T* = %s)--------------------" %
                    str(self.lcs.getTemperature()))
     
             # Continue running Metropolis steps until we reach a point where in
@@ -60,7 +60,7 @@ class MonteCarloCoolerAlgorithm:
             
             # Next step with lower temperature.
             new_temperature = self.lcs.getTemperature() - TEMPERATURE_DELTA
-            print ("Cooling... (T=%s[K]->%s[K])" %
+            print ("Cooling... (T*=%s -> %s)" %
                    (self.lcs.getTemperature(), new_temperature))
             print
             self.lcs.setTemperature(new_temperature)

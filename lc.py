@@ -237,7 +237,7 @@ class LiquidCrystalSystem:
         """
         print "Potential Energy: %s[erg]" % self.getPotentialEnergy()
         print "Thermal Energy: %s[erg]" % self.getThermalEnergy()
-        print "Temperature: %s[K]" % self.temperature
+        print "Temperature*: %s" % self.temperature
 
         if len(self.dimensions) != 2:
             return
