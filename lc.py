@@ -28,7 +28,7 @@ class LiquidCrystalSystem:
         if initial_spins is None:
             initial_spins = self.createPropertyList(
                     lambda indices: CreateNormalizedVector(
-                            [random.uniform(0, 1.0)
+                            [0.5
                              for i in range(len(indices))]))
         self.spins = initial_spins
 
@@ -36,8 +36,7 @@ class LiquidCrystalSystem:
             initial_locations = self.createPropertyList(
                     lambda indices: array(
                             [random.uniform(i*SPACING - SPACING_STDEV,
-                                            i*SPACING + SPACING_STDEV)
-                             for i in indices]))
+                                            i*SPACING + SPACING_STDEV)                             for i in indices]))
         self.locations = initial_locations
 
     def getTemperature(self):
@@ -81,7 +80,10 @@ class LiquidCrystalSystem:
         """
         E = energy or self.getPotentialEnergy()
         T = self.temperature
-        return math.exp(-(abs(E) / (kB * T)))
+        res =  math.exp(-(abs(E) / (kB * T)))
+        #if res ==0.0:
+            #print "res", res , E , kB
+        return res
 
     def getSystemIndexIterator(self):
         """

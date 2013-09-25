@@ -2,6 +2,7 @@ import sys
 
 from lc import LiquidCrystalSystem
 from algorithms.monte_carlo_cooler import MonteCarloCoolerAlgorithm
+from algorithms.monte_carlo_hitter import MonteCarloHitterAlgorithm
 
 def readParametersFromFile(args):
     model = "default"
@@ -26,6 +27,8 @@ def main():
     print "*"*70
     print "*"*70
     lcs = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
+    mc = MonteCarloHitterAlgorithm(lcs, parameters)
+    mc.run()
     mc = MonteCarloCoolerAlgorithm(lcs, parameters)
     mc.run()
 

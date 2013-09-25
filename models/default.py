@@ -25,7 +25,7 @@ MIU = 1.0
 NI = 3.0
 
 KAPPA = 3.0
-SIGMA_S = 0.5
+SIGMA_S = 0.005
 SIGMA_E = KAPPA * SIGMA_S
 
 KAPPA_TAG = 5.0
@@ -37,7 +37,7 @@ EPSILON_E = EPSILON_S / KAPPA_TAG
 ##################################################################
 
 # The spacing between spin locations.
-SPACING = 1.0
+SPACING = 0.8
 # The standard deviation of the gaussian random spacing in the system.
 SPACING_STDEV = 0.0
 # The standard deviation of the gaussian random spin orientation.
@@ -47,7 +47,8 @@ SPIN_STDEV = 1.0
 METROPOLIS_NUM_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MAX_NON_IMPROVING_STEPS = 3
+MAX_NON_IMPROVING_STEPS = 50
+
 
 # The path to which to output the AVIZ files.
 AVIZ_OUTPUT_PATH = "output"

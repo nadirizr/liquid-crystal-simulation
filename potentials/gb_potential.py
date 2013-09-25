@@ -32,8 +32,10 @@ class GayBernesPotential(NearestNeighboursPotential):
         Calculates the Gay Bernes potential energy of the given two spins.
         """
         R = self._calculateR(spin1, spin2, r, nr)
+        
         epsilon = self._calculateEpsilon(spin1, spin2, nr)
-        return (4 * epsilon * (R**12 - R**6))
+        res = (4 * epsilon * (R**12 - R**6))
+        return res
 
     def _calculateR(self, spin1, spin2, r, nr):
         """
