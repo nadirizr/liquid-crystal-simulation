@@ -93,6 +93,35 @@ class LiquidCrystalSystem:
             #print "getCanonicalEnsembleProbability: res=%s, E=%s, kB=%s" % (res , E , kB)
         return res
 
+    def getAverageSpinOrientation(self):
+        """
+        Calculates the average spin orientation of the system, indicating how
+        ordered the system is.
+        """
+        sum_spin = array([0.0 for i in range(len(self.dimensions))])
+        spin_iterator = self.getSystemPropertyIterator(self.spins)
+        num_spins = 0
+        for spin in spin_iterator:
+            sum_spin += spin
+            num_spins += 1
+        return sum_spin / num_spins
+
+    def getSpinOrientationVariance(self):
+        """
+        Calculates the variance of the spin orientation compared to the average
+        (a value close to 0 is ordered).
+        """
+        spin_variance = 0.0
+        average_spin = self.getAverageSpinOrientation()
+        spin_iterator = self.getSystemPropertyIterator(self.spins)
+        num_spins = 0
+        for spin in spin_iterator:
+            average_diff_spin = spin - average_spin
+            spin_variance += dot(average_diff_spin, average_diff_spin)
+            num_spins += 1
+        spin_variance /= len(self.spins)
+        return spin_variance
+
     def getSystemIndexIterator(self):
         """
         Returns an iterator that returns a list of indices to the system.
