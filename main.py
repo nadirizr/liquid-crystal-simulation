@@ -2,7 +2,7 @@ import sys
 
 from lc import LiquidCrystalSystem
 from algorithms.monte_carlo_cooler import MonteCarloCoolerAlgorithm
-from algorithms.monte_carlo_hitter import MonteCarloHitterAlgorithm
+from algorithms.monte_carlo_heater import MonteCarloHitterAlgorithm
 
 def readParametersFromFile(args):
     model = "default"
