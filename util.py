@@ -21,4 +21,4 @@ def CreateNormalizedVector(v):
     return a / linalg.norm(a)
 
 def frange(start, end, step):
-    return list(arange(start, end, step))
+    return list(arange(start, end + step, step))
