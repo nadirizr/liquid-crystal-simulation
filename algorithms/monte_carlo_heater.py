@@ -1,6 +1,6 @@
 from util import *
 
-class MonteCarloHitterAlgorithm:
+class MonteCarloHeaterAlgorithm:
     
     def __init__(self, lcs, parameters):
         self.lcs = lcs
@@ -8,7 +8,7 @@ class MonteCarloHitterAlgorithm:
     
     def run(self):
         """
-        Run the Monte Carlo cooling algorithm for the given system, from the
+        Run the Monte Carlo heating algorithm for the given system, from the
         current system temperature to the given final temperature, in the
         temperature delta decrements that were given.
         """
