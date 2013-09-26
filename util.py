@@ -19,3 +19,6 @@ def P2(x):
 def CreateNormalizedVector(v):
     a = array(v)
     return a / linalg.norm(a)
+
+def frange(start, end, step):
+    return list(arange(start, end, step))
