@@ -125,7 +125,7 @@ class NearestNeighboursPotential(Potential):
                                             current_location,
                                             neighbour_spin,
                                             neighbour_location)
-                
+
                 indices[dindex] -= neighbour_index
 
         return U / 2.0
