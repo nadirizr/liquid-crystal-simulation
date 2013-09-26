@@ -27,8 +27,8 @@ def main():
     print "*"*70
     print "*"*70
     lcs = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
-    mc = MonteCarloHitterAlgorithm(lcs, parameters)
-    mc.run()
+#    mc = MonteCarloHitterAlgorithm(lcs, parameters)
+#    mc.run()
     mc = MonteCarloCoolerAlgorithm(lcs, parameters)
     mc.run()
 

@@ -16,8 +16,10 @@ class LiquidCrystalSystem:
         If no initial system properties are given it is randomly set up.
         """
         DIMENSIONS = parameters["DIMENSIONS"]
-        SPACING = float(parameters["SPACING"])
-        SPACING_STDEV = float(parameters["SPACING_STDEV"])
+        INITIAL_SPACING = parameters["INITIAL_SPACING"]
+        INITIAL_SPACING_STDEV = parameters["INITIAL_SPACING_STDEV"]
+        INITIAL_SPIN_ORIENTATION = parameters["INITIAL_SPIN_ORIENTATION"]
+        INITIAL_SPIN_ORIENTATION_STDEV = parameters["INITIAL_SPIN_ORIENTATION_STDEV"]
         POTENTIAL = parameters["POTENTIAL"]
 
         self.parameters = parameters
@@ -28,15 +30,21 @@ class LiquidCrystalSystem:
         if initial_spins is None:
             initial_spins = self.createPropertyList(
                     lambda indices: CreateNormalizedVector(
-                            [0.5
+                            [random.uniform(INITIAL_SPIN_ORIENTATION[i] -
+                                            INITIAL_SPIN_ORIENTATION_STDEV[i],
+                                            INITIAL_SPIN_ORIENTATION[i] +
+                                            INITIAL_SPIN_ORIENTATION_STDEV[i])
                              for i in range(len(indices))]))
         self.spins = initial_spins
 
         if initial_locations is None:
             initial_locations = self.createPropertyList(
                     lambda indices: array(
-                            [random.uniform(i*SPACING - SPACING_STDEV,
-                                            i*SPACING + SPACING_STDEV)                             for i in indices]))
+                            [random.uniform(index * INITIAL_SPACING[i] -
+                                            INITIAL_SPACING_STDEV[i],
+                                            index * INITIAL_SPACING[i] +
+                                            INITIAL_SPACING_STDEV[i])
+                             for i, index in enumerate(indices)]))
         self.locations = initial_locations
 
     def getTemperature(self):
@@ -81,8 +89,8 @@ class LiquidCrystalSystem:
         E = energy or self.getPotentialEnergy()
         T = self.temperature
         res =  math.exp(-(abs(E) / (kB * T)))
-        #if res ==0.0:
-            #print "res", res , E , kB
+        #if res == 0.0:
+            #print "getCanonicalEnsembleProbability: res=%s, E=%s, kB=%s" % (res , E , kB)
         return res
 
     def getSystemIndexIterator(self):

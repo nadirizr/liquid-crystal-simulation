@@ -13,11 +13,11 @@ class MonteCarloCoolerAlgorithm:
         temperature delta decrements that were given.
         """
         AVIZ_OUTPUT_PATH = str(self.parameters["AVIZ_OUTPUT_PATH"])
-        MAX_NON_IMPROVING_STEPS = int(self.parameters["MAX_NON_IMPROVING_STEPS"])
-        FINAL_TEMPERATURE = float(self.parameters["FINAL_TEMPERATURE"])
-        TEMPERATURE_DELTA = float(self.parameters["TEMPERATURE_DELTA"])
+        MC_TEMPERATURES = self.parameters["MC_TEMPERATURES"]
+        MC_MAX_NON_IMPROVING_STEPS = int(self.parameters["MC_MAX_NON_IMPROVING_STEPS"])
 
-        print "Running Monte Carlo cooling on the system:"
+        print ("Running the Monte Carlo algorithm on the system (T*=%s):" %
+               self.lcs.getTemperature())
         print
         round_number = 0
         aviz_file_number = 0
@@ -26,16 +26,16 @@ class MonteCarloCoolerAlgorithm:
         self.lcs.outputToAvizFile(
                 "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
                                     aviz_file_number))
-        while self.lcs.getTemperature() > FINAL_TEMPERATURE:
+        for temperature in MC_TEMPERATURES + [MC_TEMPERATURES[-1]]:
             round_number += 1
             print ("--------------------(T* = %s)--------------------" %
-                   str(self.lcs.getTemperature()))
+                   self.lcs.getTemperature())
     
             # Continue running Metropolis steps until we reach a point where in
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
             best_energy = self.lcs.getPotentialEnergy()
             k = 0
-            while k < MAX_NON_IMPROVING_STEPS:
+            while k < MC_MAX_NON_IMPROVING_STEPS:
                 print "Performing Metropolis step... ",
                 current_spins = self.lcs.copyPropertyList(self.lcs.spins)
                 current_locations = self.lcs.copyPropertyList(self.lcs.locations)
@@ -49,7 +49,7 @@ class MonteCarloCoolerAlgorithm:
                     self.lcs.print2DSystem()
                     aviz_file_number += 1
                     self.lcs.outputToAvizFile(
-                            "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
+                            "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
                                                 aviz_file_number))
                     print
                 else:
@@ -58,12 +58,11 @@ class MonteCarloCoolerAlgorithm:
                     k += 1
                     print "Didn't get better energy (k=%s)" % k
             
-            # Next step with lower temperature.
-            new_temperature = self.lcs.getTemperature() - TEMPERATURE_DELTA
-            print ("Cooling... (T*=%s -> %s)" %
-                   (self.lcs.getTemperature(), new_temperature))
+            # Next step with the next temperature.
+            print ("Changing Temperature ... (T*=%s -> %s)" %
+                   (self.lcs.getTemperature(), temperature))
             print
-            self.lcs.setTemperature(new_temperature)
+            self.lcs.setTemperature(temperature)
 
         print "End of Simulation."
         #TODO:do something
@@ -73,11 +72,11 @@ class MonteCarloCoolerAlgorithm:
         Returns a new random spin based on the current one, from a gaussian
         distribution.
         """
-        SPIN_STDEV = float(self.parameters["SPIN_STDEV"])
+        MC_SPIN_STDEV = float(self.parameters["MC_SPIN_STDEV"])
 
         new_spin = current_spin.copy()
         for d in range(len(new_spin)):
-            new_spin[d] = random.gauss(new_spin[d], SPIN_STDEV)
+            new_spin[d] = random.gauss(new_spin[d], MC_SPIN_STDEV)
         new_spin /= linalg.norm(new_spin)
         return new_spin
 
@@ -86,11 +85,11 @@ class MonteCarloCoolerAlgorithm:
         Returns a new random location based on the current one, from a gaussian
         distribution.
         """
-        SPACING_STDEV = float(self.parameters["SPACING_STDEV"])
+        MC_SPACING_STDEV = float(self.parameters["MC_SPACING_STDEV"])
 
         new_location = current_location.copy()
         for d in range(len(new_location)):
-            new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
+            new_location[d] = random.gauss(new_location[d], MC_SPACING_STDEV)
         return new_location
 
     def _performMetropolisStep(self):
@@ -103,9 +102,9 @@ class MonteCarloCoolerAlgorithm:
         3) If it is lower than the original energy, accept it.
         4) If not, pick it with a probability of P(NewE)/P(OldE), where P is the
            canonical probability distribution function.
-        5) Continue performing these improvements NUM_METROPOLIS_STEPS times.
+        5) Continue performing these improvements MC_NUM_METROPOLIS_STEPS times.
         """
-        METROPOLIS_NUM_STEPS = int(self.parameters["METROPOLIS_NUM_STEPS"])
+        MC_METROPOLIS_NUM_STEPS = int(self.parameters["MC_METROPOLIS_NUM_STEPS"])
 
         # Calculate the current system energy.
         E = self.lcs.getPotentialEnergy()
@@ -118,7 +117,7 @@ class MonteCarloCoolerAlgorithm:
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
             # spin orientation from a distribution that should become more and
             # more as the Boltzmann energy distribution.
-            for step in xrange(METROPOLIS_NUM_STEPS):
+            for step in xrange(MC_METROPOLIS_NUM_STEPS):
                 # Select a new spin and location based on the current.
                 current_spin = self.lcs.getProperty(self.lcs.spins, indices)
                 current_location = self.lcs.getProperty(self.lcs.locations, indices)

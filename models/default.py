@@ -1,6 +1,7 @@
 from potentials.lj_potential import LenardJonesPotential
 from potentials.gb_potential import GayBernesPotential
 from constants import kB
+from util import frange
 
 ##################################################################
 #                    System Parameters                           #
@@ -9,12 +10,19 @@ from constants import kB
 # These are the system dimensions.
 DIMENSIONS = [3, 3]
 
+# The spacing between spin locations (with the same dimensions as DIMENSIONS).
+INITIAL_SPACING = [0.8, 0.8]
+# The standard deviation of the random spacing around the initial position
+# (with the same dimensions as DIMENSIONS).
+INITIAL_SPACING_STDEV = [0.0, 0.0]
+# The initial spin orientation vector (with the same dimensions as DIMENSIONS).
+INITIAL_SPIN_ORIENTATION = [0.0, 1.0]
+# The standard diviation of the initial spin orientation vector (with the same
+# dimensions as DIMENSIONS).
+INITIAL_SPIN_ORIENTATION_STDEV = [0.0, 0.0]
+
 # Initial temperature in [K].
 INITIAL_TEMPERATURE = 5.0
-# Final temperature to cool the system to.
-FINAL_TEMPERATURE = 2.0
-# Change of temperature in each cooling step in [K].
-TEMPERATURE_DELTA = 0.1
 
 # The potential to use.
 POTENTIAL = GayBernesPotential
@@ -36,26 +44,28 @@ EPSILON_E = EPSILON_S / KAPPA_TAG
 #                   Algorithm Properties                         #
 ##################################################################
 
-# The spacing between spin locations.
-SPACING = 0.8
 # The standard deviation of the gaussian random spacing in the system.
-SPACING_STDEV = 0.0
+MC_SPACING_STDEV = 0.0
 # The standard deviation of the gaussian random spin orientation.
-SPIN_STDEV = 1.0
+MC_SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
-METROPOLIS_NUM_STEPS = 1000
+MC_METROPOLIS_NUM_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MAX_NON_IMPROVING_STEPS = 50
+MC_MAX_NON_IMPROVING_STEPS = 50
 
-
-# The path to which to output the AVIZ files.
-AVIZ_OUTPUT_PATH = "output"
+# The temperatures to use in the Monte Carlo algorithm.
+MC_TEMPERATURES = frange(5.0, 2.0, -0.1)
 
 ##################################################################
 #                  Repository Properties                         #
 ##################################################################
 
+# Repository location for state files.
 LCS_REPOSITORY_LOCATION = "states"
+# The suffix to use for state files.
 LCS_REPOSITORY_SUFFIX = "dat"
+
+# The path to which to output the AVIZ files.
+AVIZ_OUTPUT_PATH = "output"

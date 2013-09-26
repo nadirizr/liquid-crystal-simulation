@@ -13,27 +13,27 @@ class MonteCarloHitterAlgorithm:
         temperature delta decrements that were given.
         """
         AVIZ_OUTPUT_PATH = str(self.parameters["AVIZ_OUTPUT_PATH"])
-        MAX_NON_IMPROVING_STEPS = int(self.parameters["MAX_NON_IMPROVING_STEPS"])
-        FINAL_TEMPERATURE = float(self.parameters["FINAL_TEMPERATURE"])
-        TEMPERATURE_DELTA = float(self.parameters["TEMPERATURE_DELTA"])
-        INITIAL_TEMPERATURE = float(self.parameters["INITIAL_TEMPERATURE"])
-
+        MC_MAX_NON_IMPROVING_STEPS = int(self.parameters["MC_MAX_NON_IMPROVING_STEPS"])
+        MC_TEMPERATURES = self.parameters["MC_TEMPERATURES"]
         
-        print "Running Metropolis hitting on the system:"
+        print "Running Metropolis heating on the system:"
         print
         self.lcs.print2DSystem()
-        print
-        self.lcs.setTemperature(INITIAL_TEMPERATURE)
         round_number = 0
         aviz_file_number = 0        
+        self.lcs.outputToAvizFile(
+                "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
+                                    aviz_file_number))
         print ("--------------------(T* = %s)--------------------" %
-        str(self.lcs.getTemperature()))
+               str(self.lcs.getTemperature()))
+        print "Setting heating temperature: T* = %s" % MC_TEMPERATURES[0]
+        self.lcs.setTemperature(MC_TEMPERATURES[0])
     
         # Continue running Metropolis steps until we reach a point where in
-        # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
+        # MC_MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
         best_energy = self.lcs.getPotentialEnergy()
         k = 0
-        while k < MAX_NON_IMPROVING_STEPS:
+        while k < MC_MAX_NON_IMPROVING_STEPS:
             print "Performing Metropolis step... ",
             current_spins = self.lcs.copyPropertyList(self.lcs.spins)
             current_locations = self.lcs.copyPropertyList(self.lcs.locations)
@@ -47,7 +47,7 @@ class MonteCarloHitterAlgorithm:
                 self.lcs.print2DSystem()
                 aviz_file_number += 1
                 self.lcs.outputToAvizFile(
-                        "%s/lqc%03d.xyz" % (AVIZ_OUTPUT_PATH,
+                        "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
                                             aviz_file_number))
                 print
             else:
@@ -56,7 +56,8 @@ class MonteCarloHitterAlgorithm:
                 self.lcs.locations = current_locations
                 k += 1
                 print "Didn't get better energy (k=%s)" % k
-        print "End of hitting"
+
+        print "End of heating"
         self.lcs.print2DSystem()
         print
         print "-------------------------------------------------"
@@ -68,11 +69,11 @@ class MonteCarloHitterAlgorithm:
         Returns a new random spin based on the current one, from a gaussian
         distribution.
         """
-        SPIN_STDEV = float(self.parameters["SPIN_STDEV"])
+        MC_SPIN_STDEV = float(self.parameters["MC_SPIN_STDEV"])
 
         new_spin = current_spin.copy()
         for d in range(len(new_spin)):
-            new_spin[d] = random.gauss(new_spin[d], SPIN_STDEV)
+            new_spin[d] = random.gauss(new_spin[d], MC_SPIN_STDEV)
         new_spin /= linalg.norm(new_spin)
         return new_spin
 
@@ -81,11 +82,11 @@ class MonteCarloHitterAlgorithm:
         Returns a new random location based on the current one, from a gaussian
         distribution.
         """
-        SPACING_STDEV = float(self.parameters["SPACING_STDEV"])
+        MC_SPACING_STDEV = float(self.parameters["MC_SPACING_STDEV"])
 
         new_location = current_location.copy()
         for d in range(len(new_location)):
-            new_location[d] = random.gauss(new_location[d], SPACING_STDEV)
+            new_location[d] = random.gauss(new_location[d], MC_SPACING_STDEV)
         return new_location
 
     def _performMetropolisStep(self):
@@ -100,14 +101,11 @@ class MonteCarloHitterAlgorithm:
            canonical probability distribution function.
         5) Continue performing these improvements NUM_METROPOLIS_STEPS times.
         """
-        METROPOLIS_NUM_STEPS = int(self.parameters["METROPOLIS_NUM_STEPS"])
+        MC_METROPOLIS_NUM_STEPS = int(self.parameters["MC_METROPOLIS_NUM_STEPS"])
 
         # Calculate the current system energy.
         E = self.lcs.getPotentialEnergy()
         print "// E = %s" % E
-	
-	
-
 
         # Go over all of the particles, and change the angles for each one.
         index_iterator = self.lcs.getSystemIndexIterator()
@@ -116,7 +114,7 @@ class MonteCarloHitterAlgorithm:
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
             # spin orientation from a distribution that should become more and
             # more as the Boltzmann energy distribution.
-            for step in xrange(METROPOLIS_NUM_STEPS):
+            for step in xrange(MC_METROPOLIS_NUM_STEPS):
                 # Select a new spin and location based on the current.
                 current_spin = self.lcs.getProperty(self.lcs.spins, indices)
                 current_location = self.lcs.getProperty(self.lcs.locations, indices)
@@ -144,5 +142,3 @@ class MonteCarloHitterAlgorithm:
                     self.lcs.setProperty(self.lcs.spins, indices, current_spin)
                     self.lcs.setProperty(self.lcs.locations, indices, current_location)
                     E = oldE
-        
-	
