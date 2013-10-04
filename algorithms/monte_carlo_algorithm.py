@@ -3,9 +3,10 @@ from util import *
 
 class MonteCarloAlgorithm:
     
-    def __init__(self, lcs, parameters):
+    def __init__(self, lcs, parameters, parameter_prefix="MC_"):
         self.lcs = lcs
         self.parameters = parameters
+        self.parameter_prefix = parameter_prefix
     
     def run(self):
         """
@@ -14,8 +15,10 @@ class MonteCarloAlgorithm:
         temperature delta decrements that were given.
         """
         AVIZ_OUTPUT_PATH = str(self.parameters["AVIZ_OUTPUT_PATH"])
-        MC_TEMPERATURES = self.parameters["MC_TEMPERATURES"]
-        MC_MAX_NON_IMPROVING_STEPS = int(self.parameters["MC_MAX_NON_IMPROVING_STEPS"])
+        MC_TEMPERATURES = list(
+            self.parameters[self.parameter_prefix + "TEMPERATURES"])
+        MC_MAX_NON_IMPROVING_STEPS = int(
+            self.parameters[self.parameter_prefix + "MAX_NON_IMPROVING_STEPS"])
 
         print ("Running the Monte Carlo algorithm on the system (T*=%s):" %
                self.lcs.getTemperature())
@@ -81,7 +84,8 @@ class MonteCarloAlgorithm:
         Returns a new random spin based on the current one, from a gaussian
         distribution.
         """
-        MC_SPIN_STDEV = float(self.parameters["MC_SPIN_STDEV"])
+        MC_SPIN_STDEV = float(
+            self.parameters[self.parameter_prefix + "SPIN_STDEV"])
 
         new_spin = current_spin.copy()
         for d in range(len(new_spin)):
@@ -94,7 +98,8 @@ class MonteCarloAlgorithm:
         Returns a new random location based on the current one, from a gaussian
         distribution.
         """
-        MC_SPACING_STDEV = float(self.parameters["MC_SPACING_STDEV"])
+        MC_SPACING_STDEV = float(
+            self.parameters[self.parameter_prefix + "SPACING_STDEV"])
 
         new_location = current_location.copy()
         for d in range(len(new_location)):
@@ -113,7 +118,8 @@ class MonteCarloAlgorithm:
            canonical probability distribution function.
         5) Continue performing these improvements MC_NUM_METROPOLIS_STEPS times.
         """
-        MC_METROPOLIS_NUM_STEPS = int(self.parameters["MC_METROPOLIS_NUM_STEPS"])
+        MC_METROPOLIS_NUM_STEPS = int(
+            self.parameters[self.parameter_prefix + "METROPOLIS_NUM_STEPS"])
 
         # Calculate the current system energy.
         E = self.lcs.getPotentialEnergy()
