@@ -2,6 +2,9 @@ from monte_carlo_algorithm import MonteCarloAlgorithm
 
 class MonteCarloCoolingAlgorithm(MonteCarloAlgorithm):
     
+    def __init__(self, lcs, parameters, parameter_prefix="MC_COOLER_"):
+        MonteCarloAlgorithm.__init__(self, lcs, parameters, parameter_prefix)
+
     def isNewStateBetter(self, current_state, new_state):
         """
         For a cooling algorithm, a lower energy is better.

@@ -2,6 +2,9 @@ from monte_carlo_algorithm import MonteCarloAlgorithm
 from util import *
 
 class MonteCarloHeatingAlgorithm(MonteCarloAlgorithm):
+    
+    def __init__(self, lcs, parameters, parameter_prefix="MC_HEATER_"):
+        MonteCarloAlgorithm.__init__(self, lcs, parameters, parameter_prefix)
 
     def isNewStateBetter(self, current_state, new_state):
         """
