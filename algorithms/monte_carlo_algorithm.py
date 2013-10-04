@@ -7,6 +7,21 @@ class MonteCarloAlgorithm:
         self.lcs = lcs
         self.parameters = parameters
         self.parameter_prefix = parameter_prefix
+
+    def isNewStateBetter(self, current_state, new_state):
+        """
+        Returns true if the new state is better than the current one.
+        This must be implemented by any Monte Carlo Algorithm class.
+        """
+        raise NotImplementedError
+
+    def getLCS(self):
+        """
+        Returns the liquid crystal system used by the algorithm.
+        NOTE: The system may be changed during the course of the algorithm
+              running since it duplicates states to determine which is better.
+        """
+        return self.lcs
     
     def run(self):
         """
@@ -72,13 +87,6 @@ class MonteCarloAlgorithm:
             self.lcs.setTemperature(temperature)
 
         print "End of Simulation."
-
-    def isNewStateBetter(self, current_state, new_state):
-        """
-        Returns true if the new state is better than the current one.
-        This must be implemented by any Monte Carlo Algorithm class.
-        """
-        raise NotImplementedError
 
     def _getNewRandomSpin(self, current_spin):
         """
