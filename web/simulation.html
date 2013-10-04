@@ -1,0 +1,79 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Simulation</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1><CENTER>Liquid Crystal Simulation</CENTER></H1>
+
+<P>
+<H2><Center>Modeling Liquid Crystals</center></H2>
+First let us introduce Lennard-Jones potential, which is a non-bounded site to site potential:
+<br>
+<br><center><img Src="LJPotential.jpg" height="60"/></center><br>
+<br>
+Where <img src="sigma.jpg" height="2%"/> is separation of the particles when <img src="Uij=0.jpg" height="3%"/> , also known as the collision diameter. 
+<img src="epsilon.jpg" height="2%"/> is the depth of the potential well at the minimum in <img src="Uij.jpg" height="3%"/> .
+</P>
+<P>
+Gay - Berne potential is a generalization of  Lennard  - Jones potential for anisotropic particles.
+The Gay - Berne potential is a phenomenological model that includes both attractive and repulsive forces. The molecules in the GB system have translational and orientational degrees of freedom.
+<br>
+The GB potential is given by 
+<br><center><img src="GBPotential.jpg" height="37"/></center><br>
+Where <img src="sigma.jpg" height="2%"/> is the intermolecular separation at which the attractive and repulsive terms cancel and is given as
+<br><br>
+<center>
+<img src="sigma().jpg" height="9%"/>
+</center>
+<br>
+The shape anisotropy parameter <img src="chi.jpg" height="3%"/> is <br>
+<center><img src="chi().jpg" height="7%"/></center>
+<br>
+Where  <center><img src="kappa().jpg" height="4%"/></center> <br>and <img src="sigma_ee.jpg" height="3%"/> is the separation when the molecules are end to end and 
+<img src="sigma_ss.jpg" height="3%"/> that when they are side by side.
+<br><br>
+The depth of the well is expressed as 
+<br><br>
+<center><img src="epsilon().jpg" height="4%"/></center>
+<br><br>
+Where 
+<br><br>
+<center><img src="epsilonij().jpg" height="5%"/></center>
+<br><br>
+and 
+<br><br>
+<center><img src="epsilon'().jpg" height="9%"/></center>
+<br><br>
+Where the parameter <img src="chi'.jpg" height="3%"/>  is related to the anisotropy in the well depth via 
+<br><br>
+<center><img src="chi'().jpg" height="9%"/></center>
+<br><br>
+Where <img src="kappa'().jpg" height="4%"/> is the ratio of well-depth for end to end and side by side.
+<br>
+<img src="ui.jpg" height="3%"/> and <img src="uj.jpg" height="4%"/> are the orientationvectors of the two molecules,
+<img src="rij.jpg" height="3%"/> is the vector joining the two centres and <img src="rij_hat.jpg" height="3%"/> is the unit vector.
+<img src="epsilon0.jpg" height="3%"/> and <img src="sigma0.jpg" height="3%"/> are scaling parameters.
+</P>
+<br><br>
+<P>
+<H2><center>Monte Carlo and Metropolis simulation</center></H2>
+<H3><center>Metropolis step</center></H3>
+<ol>
+<li>Select a particle at random. </li>
+<li>Attempt a displacement of the selected particle.</li>
+<li>Compute the change in potential. </li>
+<li>Accept the move with probability <img src="prob().jpg" height="6%"/> 
+</ol>
+
+
+
+</P>
+<P>
+<H2><center>Gay Berne Potential</center><H2>
+</P>
+
+</BODY>
+</HTML>
