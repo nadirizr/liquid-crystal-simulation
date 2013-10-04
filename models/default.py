@@ -53,10 +53,13 @@ MC_HEATER_SPIN_STDEV = 1.0
 MC_HEATER_METROPOLIS_NUM_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MC_HEATER_MAX_NON_IMPROVING_STEPS = 50
+MC_HEATER_MAX_NON_IMPROVING_STEPS = 10
 
 # The temperatures to use in the Monte Carlo algorithm.
 MC_HEATER_TEMPERATURES = [5.0]
+
+# The path to which to output the AVIZ files.
+MC_HEATER_AVIZ_OUTPUT_PATH = "output/lqs_1_heat"
 
 ##################################################################
 #                Cooling Algorithm Properties                    #
@@ -71,10 +74,13 @@ MC_COOLER_SPIN_STDEV = 1.0
 MC_COOLER_METROPOLIS_NUM_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MC_COOLER_MAX_NON_IMPROVING_STEPS = 3
+MC_COOLER_MAX_NON_IMPROVING_STEPS = 10
 
 # The temperatures to use in the Monte Carlo algorithm.
 MC_COOLER_TEMPERATURES = frange(5.0, 2.0, -0.1)
+
+# The path to which to output the AVIZ files.
+MC_COOLER_AVIZ_OUTPUT_PATH = "output/lqs_2_cool"
 
 ##################################################################
 #                     General Properties                         #
@@ -84,6 +90,3 @@ MC_COOLER_TEMPERATURES = frange(5.0, 2.0, -0.1)
 LCS_REPOSITORY_LOCATION = "states"
 # The suffix to use for state files.
 LCS_REPOSITORY_SUFFIX = "dat"
-
-# The path to which to output the AVIZ files.
-AVIZ_OUTPUT_PATH = "output"

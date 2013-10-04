@@ -14,7 +14,8 @@ class MonteCarloAlgorithm:
         current system temperature to the given final temperature, in the
         temperature delta decrements that were given.
         """
-        AVIZ_OUTPUT_PATH = str(self.parameters["AVIZ_OUTPUT_PATH"])
+        AVIZ_OUTPUT_PATH = str(
+            self.parameters[self.parameter_prefix + "AVIZ_OUTPUT_PATH"])
         MC_TEMPERATURES = list(
             self.parameters[self.parameter_prefix + "TEMPERATURES"])
         MC_MAX_NON_IMPROVING_STEPS = int(
@@ -28,8 +29,8 @@ class MonteCarloAlgorithm:
         
         self.lcs.print2DSystem()
         self.lcs.outputToAvizFile(
-                "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
-                                    aviz_file_number))
+                "%s%08d.xyz" % (AVIZ_OUTPUT_PATH,
+                                aviz_file_number))
         for temperature in MC_TEMPERATURES + [MC_TEMPERATURES[-1]]:
             round_number += 1
             print ("--------------------(T* = %s)--------------------" %
@@ -57,8 +58,8 @@ class MonteCarloAlgorithm:
                     k = 0
                     aviz_file_number += 1
                     self.lcs.outputToAvizFile(
-                            "%s/lqc%08d.xyz" % (AVIZ_OUTPUT_PATH,
-                                                aviz_file_number))
+                            "%s%08d.xyz" % (AVIZ_OUTPUT_PATH,
+                                            aviz_file_number))
                 else:
                     print "Didn't get better state (k=%s)" % (k+1)
                     k += 1
