@@ -31,8 +31,8 @@ def main():
     print "// lcs.getSpinOrientationVariance() = %s" % lcs.getSpinOrientationVariance()
     mc = MonteCarloHeatingAlgorithm(lcs, parameters)
     mc.run()
-#    mc = MonteCarloCoolingAlgorithm(lcs, parameters)
-#    mc.run()
+    mc = MonteCarloCoolingAlgorithm(lcs, parameters)
+    mc.run()
 
 if __name__ == "__main__":
     main()
