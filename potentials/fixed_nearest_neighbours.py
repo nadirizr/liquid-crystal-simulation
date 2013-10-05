@@ -1,24 +1,16 @@
-class Potential:
-    """
-    This is the interface for all potentials.
-    """
+from potential import Potential, TwoSpinPotential
 
-    def calculate(self, spins, locations, dimensions, indices):
-        """
-        Calculates the potential for the given spin.
-        """
-        raise NotImplemented
-
-class NearestNeighboursPotential(Potential):
+class FixedNearestNeighboursPotential(Potential):
     """
-    This is an abstract class for nearest neighbours potentials.
+    This is an implementation of the potential interface for fixed nearest
+    neighbours potentials which can be passed on in the constructor.
     """
     
-    def calculateTwoSpins(self, spin1, location1, spin2, location2):
+    def __init__(self, potential):
         """
-        Calculates the potential between the given spins.
+        Uses the given two spin potential for the calculations.
         """
-        raise NotImplemented
+        self.potential = potential
 
     def calculate2D(self, spins, locations, dimensions, indices):
         """
@@ -34,17 +26,17 @@ class NearestNeighboursPotential(Potential):
         if x < dimensions[0] - 1:
             neighbour_spin = spins[x+1][y]
             neighbour_location = locations[x+1][y]
-            U += self.calculateTwoSpins(current_spin,
-                                        current_location,
-                                        neighbour_spin,
-                                        neighbour_location)
+            U += self.potential.calculateTwoSpins(current_spin,
+                                                  current_location,
+                                                  neighbour_spin,
+                                                  neighbour_location)
         if y < dimensions[1] - 1:
             neighbour_spin = spins[x][y+1]
             neighbour_location = locations[x][y+1]
-            U += self.calculateTwoSpins(current_spin,
-                                        current_location,
-                                        neighbour_spin,
-                                        neighbour_location)
+            U += self.potential.calculateTwoSpins(current_spin,
+                                                  current_location,
+                                                  neighbour_spin,
+                                                  neighbour_location)
 
         return U
 
@@ -63,24 +55,24 @@ class NearestNeighboursPotential(Potential):
         if x < dimensions[0] - 1:
             neighbour_spin = spins[x+1][y][z]
             neighbour_location = locations[x+1][y][z]
-            U += self.calculateTwoSpins(current_spin,
-                                        current_location,
-                                        neighbour_spin,
-                                        neighbour_location)
+            U += self.potential.calculateTwoSpins(current_spin,
+                                                  current_location,
+                                                  neighbour_spin,
+                                                  neighbour_location)
         if y < dimensions[1] - 1:
             neighbour_spin = spins[x][y+1][z]
             neighbour_location = locations[x][y+1][z]
-            U += self.calculateTwoSpins(current_spin,
-                                        current_location,
-                                        neighbour_spin,
-                                        neighbour_location)
+            U += self.potential.calculateTwoSpins(current_spin,
+                                                  current_location,
+                                                  neighbour_spin,
+                                                  neighbour_location)
         if z < dimensions[2] - 1:
             neighbour_spin = spins[x][y][z+1]
             neighbour_location = locations[x][y][z+1]
-            U += self.calculateTwoSpins(current_spin,
-                                        current_location,
-                                        neighbour_spin,
-                                        neighbour_location)
+            U += self.potential.calculateTwoSpins(current_spin,
+                                                  current_location,
+                                                  neighbour_spin,
+                                                  neighbour_location)
 
         return U
 
@@ -121,10 +113,10 @@ class NearestNeighboursPotential(Potential):
                     neighbour_spin = neighbour_spin[i]
                     neighbour_location = neighbour_location[i]
 
-                U += self.calculateTwoSpins(current_spin,
-                                            current_location,
-                                            neighbour_spin,
-                                            neighbour_location)
+                U += self.potential.calculateTwoSpins(current_spin,
+                                                      current_location,
+                                                      neighbour_spin,
+                                                      neighbour_location)
 
                 indices[dindex] -= neighbour_index
 

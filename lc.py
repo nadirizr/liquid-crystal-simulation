@@ -21,10 +21,11 @@ class LiquidCrystalSystem:
         INITIAL_SPIN_ORIENTATION = parameters["INITIAL_SPIN_ORIENTATION"]
         INITIAL_SPIN_ORIENTATION_STDEV = parameters["INITIAL_SPIN_ORIENTATION_STDEV"]
         POTENTIAL = parameters["POTENTIAL"]
+        TWO_SPIN_POTENTIAL = parameters["TWO_SPIN_POTENTIAL"]
 
         self.parameters = parameters
         self.temperature = initial_temperature
-        self.potential = POTENTIAL(self.parameters)
+        self.potential = POTENTIAL(TWO_SPIN_POTENTIAL(self.parameters))
         self.dimensions = DIMENSIONS[:]
 
         if initial_spins is None:

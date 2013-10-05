@@ -1,5 +1,6 @@
 from potentials.lj_potential import LenardJonesPotential
 from potentials.gb_potential import GayBernesPotential
+from potentials.fixed_nearest_neighbours import FixedNearestNeighboursPotential
 from constants import kB
 from util import frange
 
@@ -25,7 +26,8 @@ INITIAL_SPIN_ORIENTATION_STDEV = [0.0, 0.0]
 INITIAL_TEMPERATURE = 2.0
 
 # The potential to use.
-POTENTIAL = GayBernesPotential
+POTENTIAL = FixedNearestNeighboursPotential
+TWO_SPIN_POTENTIAL = GayBernesPotential
 
 # The potential parameters.
 EPSILON_0 = kB
@@ -50,7 +52,7 @@ MC_HEATER_SPACING_STDEV = 0.0
 MC_HEATER_SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_HEATER_METROPOLIS_NUM_STEPS = 1000
+MC_HEATER_METROPOLIS_NUM_STEPS = 10000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_HEATER_MAX_NON_IMPROVING_STEPS = 10
@@ -71,7 +73,7 @@ MC_COOLER_SPACING_STDEV = 0.0
 MC_COOLER_SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_COOLER_METROPOLIS_NUM_STEPS = 1000
+MC_COOLER_METROPOLIS_NUM_STEPS = 10000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_COOLER_MAX_NON_IMPROVING_STEPS = 10

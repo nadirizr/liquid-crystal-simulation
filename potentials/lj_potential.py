@@ -1,12 +1,12 @@
 from util import *
 from potential import *
 
-class LenardJonesPotential(NearestNeighboursPotential):
+class LenardJonesPotential(TwoSpinPotential):
     """
     Lenard-Jones potential implementation.
     """
-    def __init__(self, epsilon0):
-        self.epsilon0 = epsilon0
+    def __init__(self, parameters):
+        self.epsilon0 = float(parameters["EPSILON_0"])
 
     def calculateTwoSpins(self, spin1, location1, spin2, location2):
         """

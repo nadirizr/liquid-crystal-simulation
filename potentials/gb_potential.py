@@ -1,7 +1,7 @@
 from util import *
 from potential import *
 
-class GayBernesPotential(NearestNeighboursPotential):
+class GayBernesPotential(TwoSpinPotential):
     """
     Gay-Bernes potential implementation.
     """
