@@ -86,7 +86,7 @@ class SphereNearestNeighboursPotential(Potential):
         """
         R2 = float(self.parameters["NEAREST_NEIGHBOURS_MAX_RADIUS"]) ** 2
         MAX_INDEX_RANGE = int(
-            self.parameters("NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"))
+            self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
 
         for x1 in range(dimensions[0]):
             current_x_neighbour_list = []
@@ -101,6 +101,9 @@ class SphereNearestNeighboursPotential(Potential):
                     min_y_index = max(0, y1 - MAX_INDEX_RANGE)
                     max_y_index = min(dimensions[1], y1 + MAX_INDEX_RANGE + 1)
                     for y2 in range(min_y_index, max_y_index):
+                        if x1 == x2 and y1 == y2:
+                            continue
+
                         r2 = self._calculateDistanceSquared(
                                 locations[x1][y1], locations[x2][y2])
                         if r2 <= R2:
@@ -136,6 +139,9 @@ class SphereNearestNeighboursPotential(Potential):
                             max_z_index = min(dimensions[2],
                                               z1 + MAX_INDEX_RANGE + 1)
                             for z2 in range(min_z_index, max_z_index):
+                                if x1 == x2 and y1 == y2 and z1 == z2:
+                                    continue
+
                                 r2 = self._calculateDistanceSquared(
                                         locations[x1][y1][z1],
                                         locations[x2][y2][z2])
