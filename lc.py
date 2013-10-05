@@ -25,7 +25,7 @@ class LiquidCrystalSystem:
 
         self.parameters = parameters
         self.temperature = initial_temperature
-        self.potential = POTENTIAL(TWO_SPIN_POTENTIAL(self.parameters))
+        self.potential = POTENTIAL(TWO_SPIN_POTENTIAL(parameters), parameters)
         self.dimensions = DIMENSIONS[:]
 
         if initial_spins is None:

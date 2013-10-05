@@ -6,7 +6,7 @@ class FixedNearestNeighboursPotential(Potential):
     neighbours potentials which can be passed on in the constructor.
     """
     
-    def __init__(self, potential):
+    def __init__(self, potential, parameters):
         """
         Uses the given two spin potential for the calculations.
         """
