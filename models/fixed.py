@@ -31,13 +31,8 @@ INITIAL_TEMPERATURE = 2.0
 ##################################################################
 
 # The potential to use.
-POTENTIAL = SphereNearestNeighboursPotential
+POTENTIAL = FixedNearestNeighboursPotential
 TWO_SPIN_POTENTIAL = GayBernesPotential
-
-# Nearest neighbours parameters.
-NEAREST_NEIGHBOURS_MAX_RADIUS = average(INITIAL_SPACING) * 4.0
-NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 5
-NEAREST_NEIGHBOURS_UPDATE_CYCLES = 10
 
 # The potential parameters.
 EPSILON_0 = kB
