@@ -46,7 +46,8 @@ class MonteCarloAlgorithm:
         self.lcs.outputToAvizFile(
                 "%s%08d.xyz" % (AVIZ_OUTPUT_PATH,
                                 aviz_file_number))
-        for temperature in MC_TEMPERATURES + [MC_TEMPERATURES[-1]]:
+        self.lcs.outputInformationToFile("%s00.txt" %(AVIZ_OUTPUT_PATH)) 
+	for temperature in MC_TEMPERATURES + [MC_TEMPERATURES[-1]]:
             round_number += 1
             print ("--------------------(T* = %s)--------------------" %
                    self.lcs.getTemperature())
@@ -75,6 +76,7 @@ class MonteCarloAlgorithm:
                     self.lcs.outputToAvizFile(
                             "%s%08d.xyz" % (AVIZ_OUTPUT_PATH,
                                             aviz_file_number))
+		    self.lcs.outputInformationToFile("%s00.txt" %(AVIZ_OUTPUT_PATH)) 
                 else:
                     print "Didn't get better state (k=%s)" % (k+1)
                     k += 1
