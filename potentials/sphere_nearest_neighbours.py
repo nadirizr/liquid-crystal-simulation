@@ -1,4 +1,4 @@
-from math import sqrt
+from util import *
 
 from potential import Potential, TwoSpinPotential
 

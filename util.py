@@ -22,3 +22,9 @@ def CreateNormalizedVector(v):
 
 def frange(start, end, step):
     return list(arange(start, end + step, step))
+
+def any(iterable):
+    for i in iterable:
+        if i:
+            return True
+    return False
