@@ -23,7 +23,7 @@ INITIAL_SPIN_ORIENTATION = [0.0, 1.0]
 # dimensions as DIMENSIONS).
 INITIAL_SPIN_ORIENTATION_STDEV = [0.0, 0.0]
 
-# Initial temperature in [K].
+# Initial effective temperature.
 INITIAL_TEMPERATURE = 2.0
 
 ##################################################################
