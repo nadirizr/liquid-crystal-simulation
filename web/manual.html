@@ -1,0 +1,105 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Download and Manual Instructions</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<H1><CENTER>Manual Instructions</CENTER></H1>
+<H2><center>How to run the system:</center></H2>
+<P>
+To run the system you only need to go to the main project library, then write in the shell- "<b>./run.sh MODEL_NAME</b>", <br>
+where MODEL_NAME should be the name of the model you use (if you don't write anything it will use the default model).
+<br> you can choose- "fixed" , "sphere" , "default" or add another model as explained below in "How to write a configuration file" section.
+<br>
+you should not write "MODEL_NAME.py"! The system know to take it from models library automatically.
+<br>
+<br>
+After running the system you can see the visual result by running "<b>./aviz.sh OUTPUT_PATH</b>".<br>
+where OUTPUT_PATH should be the name of the aviz output as in the configuration file.
+<br>
+</P>
+<br>
+<H2><center>General structure and main components:</center></H2>
+<P>
+<center><img src="prtsc.jpg" height="200"/></center>
+<br>
+<font size="+2"><b> lc.py - </b></font>This class represents the system that we are working with
+It holds the positions and angles of molecules in a liquid crystal, and can
+perform a Monte Carlo Metropolis cooling of the liquid crystal.
+<br>
+
+<H2><center>Algorithms:</center></H2>
+We have
+<ul><li> cooling algorithm</li><li>heating algorithm</li></ul> 
+both use Monte Carlo method.
+<br>
+<H2><center>Models:</center></H2>
+We have
+<ul><li> fixed model </li><li> sphere model</li></ul> 
+you can also add another one as written below in "How to add a configuration file". 
+<br>
+
+<H2><center>Potentials:</center></H2>
+We have 
+<ul><li>FixedNearestNeighboursPotential approximation </li><li> "SphereNearestNeighboursPotential" approximation</li></ul> 
+the potentials - <ul><li>"GayBernesPotential" </li><li> "LenardJonesPotential"</li></ul> 
+you can also add another one as written below in "How to add new potential". 
+</P>
+<br>
+<H2><center>Output:</center></H2>
+Contains the output files to Aviz and graphs.
+
+<br><br><br>
+
+<H2><center>How to write a configuration file:</center></H2>
+<P>
+First of all you should go to the library "models", then you can copy the content of the configuration file "default.py" and name your file as you wish (with the end of .py of course)
+<br><br>
+Now you only need to change the parameters in your file, so it would be like the system you are willing to get. 
+<br><br>
+more explanations for some <b>system parameters</b>: <br>
+DIMENSIONS = [number of spins in x direction, number of spins in y direction, number of spins in z direction]
+<br>
+INITIAL_SPACING = [The spacing between spin locations in x direction, The spacing between spin locations in y direction , The spacing between spin locations in z direction]
+<br>
+INITIAL_SPIN_ORIENTATION = [The initial spin orientation vector in x direction , The initial spin orientation vector in y direction , The initial spin orientation vector in z direction]
+<br>
+There are more parameters you can change but everything is explained in the file itself as well.
+<br><br>
+You can change all the <b>potential parameter</b>- <img src="meu.jpg" height="2%"/>,<img src="neu.jpg" height="2%"/> ,<img src="kappa.jpg" height="2%"/> ,<img src="kappa'.jpg" height="2%"/> ,<img src="epsilon0.jpg" height="2%"/>
+<br>
+POTENTIAL = name of the potential approximation you want to use, your can choose-"FixedNearestNeighboursPotential" , "SphereNearestNeighboursPotential" , or add a new potential as explained below in "How to add new potential section".
+<br> 
+TWO_SPINS_POTENTIAL= "GayBernesPotential" , "LenardJonesPotential" , or add a new potential as explained below in "How to add new potential section".
+<br><br>
+you should only write the name of the potential as in the potential file, with out an ending.
+
+<br><br>
+You can also change the <b>Cooling and Heating Algorithms properties</b> such as The standard deviation of the gaussian random spacing in the system.
+the standard deviation of the Gaussian random spin orientation, 
+the number of Metropolis steps to perform in each step.
+the number of steps in the cooling process to wait if there is no improvement before lowering the temperature further, the temperatures to use in the Monte Carlo algorithm,
+the path to which to output the AVIZ files.
+<br>
+<font size="+1"><b> you should only change the values and nothing else! </b></font>
+<br>
+</P>
+<br>
+
+<H2><center>How to add new potential:</center></H2>
+<P>
+First of all you should go to the library "potentials", then you should copy the content of the file "potential.py" and name your file as you wish (with the end of .py of course)
+<br><br>
+The next step is to change the class name:
+<ul>
+<li>if you want to add a new type of approximation you can delete everything under "TwoSpinsPotential" and change the name of Potential to the new approximation. </li>
+<li>if you want to add a new potential you can delete everything between "Potential" and "TwoSpinsPotential" and change the name of TwoSpinsPotential to the new potential. </li>
+</ul>
+<br>
+now you need to write how the calculation code.
+<br> the last thing is to write the name of the new potential in the configuration file. (you can read more about how to create a new configuration file above.)
+</P>
+<br>
+</BODY>
+</HTML>
