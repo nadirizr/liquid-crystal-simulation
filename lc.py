@@ -28,7 +28,8 @@ class LiquidCrystalSystem:
         self.temperature = initial_temperature
         self.potential = POTENTIAL(TWO_SPIN_POTENTIAL(parameters), parameters)
         self.dimensions = DIMENSIONS[:]
-        self.boundary_conditions = BOUNDARY_CONDITIONS
+        self.boundary_conditions = BOUNDARY_CONDITIONS[:]
+        self.spacing = INITIAL_SPACING[:]
 
         if initial_spins is None:
             initial_spins = self.createPropertyList(
@@ -154,9 +155,6 @@ class LiquidCrystalSystem:
             index_ranges = [NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
                             for i in range(len(indices))]
 
-        # Get the grid spacing between cells.
-        R = list(self.parameters["INITIAL_SPACING"])
-
         # Use specialized methods for efficiency in 2D and 3D.
         if len(self.dimensions) == 2:
             return self.getCellNeighboursList2D(indices, index_ranges)
@@ -164,22 +162,8 @@ class LiquidCrystalSystem:
             return self.getCellNeighboursList3D(indices, index_ranges)
 
         # Calculate the actual ranges of cells to include.
-        def calculate_index_range(dim):
-            min_range_index = indices[dim] - index_ranges[dim]
-            max_range_index = indices[dim] + index_ranges[dim]
-            if self.boundary_conditions[dim] == "P":
-                min_range_index = min_range_index
-                max_range_index = max_range_index
-            elif self.boundary_conditions[dim] == "F":
-                min_range_index = max(0, min_range_index)
-                max_range_index = min(self.dimensions[i] - 1, max_range_index)
-            else:
-                raise Exception("Unsupported boundary condition: %s" %
-                                self.boundary_conditions[dim])
-            indices_range = range(min_range_index, max_range_index)
-            return [index % self.dimensions[dim] for index in indices_range]
-        neighbour_index_range = [calculate_index_range(i)
-                                 for i in range(len(indices))]
+        neighbour_index_range = self._calculateNeighbourIndexRanges(
+                indices, index_ranges)
 
         # Go over all the cells and check if any of them are within the given
         # bounds, and if so add them to the neighbour list.
@@ -189,7 +173,7 @@ class LiquidCrystalSystem:
             # Check if all of the indices are within range.
             indices_in_range = [neighbour_indices[i] in neighbour_index_range[i]
                                 for i in range(len(indices))]
-            if not any(indices_in_range):
+            if not all(indices_in_range):
                 continue
             if neighbour_indices == indices:
                 continue
@@ -210,18 +194,175 @@ class LiquidCrystalSystem:
                 upper_neighbour_index = (neighbour_indices[dim] +
                                          self.dimensions[dim])
                 if min_range_index <= lower_neighbour_index <= max_range_index:
-                    neighbour_location[dim] -= R[dim] * self.dimensions[dim]
+                    neighbour_location[dim] -= \
+                            self.spacing[dim] * self.dimensions[dim]
                 if min_range_index <= upper_neighbour_index <= max_range_index:
-                    neighbour_location[dim] += R[dim] * self.dimensions[dim]
+                    neighbour_location[dim] += \
+                            self.spacing[dim] * self.dimensions[dim]
 
             # Add the indices, location and spin to the neighbour list.
             neighbour_spin = self.getProperty(
-                    self.spins, neighbour_indices)
-            neighbour_list.append((neighbour_indices,
+                    self.spins, neighbour_indices).copy()
+            neighbour_list.append((neighbour_indices[:],
                                    neighbour_location,
                                    neighbour_spin))
 
         return neighbour_list
+
+    def getCellNeighboursList2D(self, indices, index_ranges):
+        """
+        Specialized version for getCellNeighboursList in 2D.
+        """
+        # Calculate minimum and maximum indices in range in each dimension.
+        x = indices[0]
+        y = indices[1]
+        min_x_range_index, max_x_range_index = \
+                self._calculateNeighbourIndexRangeBoundaries(
+                        indices, index_ranges, 0)
+        min_y_range_index, max_y_range_index = \
+                self._calculateNeighbourIndexRangeBoundaries(
+                        indices, index_ranges, 1)
+
+        # Go over the 2 dimensions back and forth according to the index_ranges.
+        neighbour_list = []
+        for nx in xrange(min_x_range_index, max_x_range_index + 1):
+            real_nx = nx % self.dimensions[0]
+            for ny in xrange(min_y_range_index, max_y_range_index + 1):
+                real_ny = ny % self.dimensions[1]
+                neighbour_indices = [real_nx, real_ny]
+
+                # If this is the original cell, ignore it.
+                if neighbour_indices == indices:
+                    continue
+
+                # Calculate the translated neighbour location.
+                neighbour_location = self.getProperty(
+                        self.locations, neighbour_indices).copy()
+                if nx < 0:
+                    neighbour_location[0] -= \
+                            self.spacing[0] * self.dimensions[0]
+                elif nx >= self.dimensions[0]:
+                    neighbour_location[0] += \
+                            self.spacing[0] * self.dimensions[0]
+                if ny < 0:
+                    neighbour_location[1] -= \
+                            self.spacing[1] * self.dimensions[1]
+                elif ny >= self.dimensions[1]:
+                    neighbour_location[1] += \
+                            self.spacing[1] * self.dimensions[1]
+
+                # Add the indices, location and spin to the neighbour list.
+                neighbour_spin = self.getProperty(
+                        self.spins, neighbour_indices).copy()
+                neighbour_list.append((neighbour_indices,
+                                       neighbour_location,
+                                       neighbour_spin))
+
+        return neighbour_list
+
+    def getCellNeighboursList3D(self, indices, index_ranges):
+        """
+        Specialized version for getCellNeighboursList in 3D.
+        """
+        # Calculate minimum and maximum indices in range in each dimension.
+        x = indices[0]
+        y = indices[1]
+        z = indices[2]
+        min_x_range_index, max_x_range_index = \
+                self._calculateNeighbourIndexRangeBoundaries(
+                        indices, index_ranges, 0)
+        min_y_range_index, max_y_range_index = \
+                self._calculateNeighbourIndexRangeBoundaries(
+                        indices, index_ranges, 1)
+        min_z_range_index, max_z_range_index = \
+                self._calculateNeighbourIndexRangeBoundaries(
+                        indices, index_ranges, 2)
+
+        # Go over the 3 dimensions back and forth according to the index_ranges.
+        neighbour_list = []
+        for nx in xrange(min_x_range_index, max_x_range_index + 1):
+            real_nx = nx % self.dimensions[0]
+            for ny in xrange(min_y_range_index, max_y_range_index + 1):
+                real_ny = ny % self.dimensions[1]
+                for nz in xrange(min_z_range_index, max_z_range_index + 1):
+                    real_nz = nz % self.dimensions[2]
+                    neighbour_indices = [real_nx, real_ny, real_nz]
+
+                    # If this is the original cell, ignore it.
+                    if neighbour_indices == indices:
+                        continue
+
+                    # Calculate the translated neighbour location.
+                    neighbour_location = self.getProperty(
+                            self.locations, neighbour_indices).copy()
+                    if nx < 0:
+                        neighbour_location[0] -= \
+                                self.spacing[0] * self.dimensions[0]
+                    elif nx >= self.dimensions[0]:
+                        neighbour_location[0] += \
+                                self.spacing[0] * self.dimensions[0]
+                    if ny < 0:
+                        neighbour_location[1] -= \
+                                self.spacing[1] * self.dimensions[1]
+                    elif ny >= self.dimensions[1]:
+                        neighbour_location[1] += \
+                                self.spacing[1] * self.dimensions[1]
+                    if nz < 0:
+                        neighbour_location[2] -= \
+                                self.spacing[2] * self.dimensions[2]
+                    elif nz >= self.dimensions[2]:
+                        neighbour_location[2] += \
+                                self.spacing[2] * self.dimensions[2]
+
+                    # Add the indices, location and spin to the neighbour list.
+                    neighbour_spin = self.getProperty(
+                            self.spins, neighbour_indices).copy()
+                    neighbour_list.append((neighbour_indices,
+                                           neighbour_location,
+                                           neighbour_spin))
+
+        return neighbour_list
+
+    def _calculateNeighbourIndexRangeBoundaries(self,
+                                                cell_indices,
+                                                index_ranges,
+                                                dim):
+        """
+        Calculates and returns the lower and upper boundaries of indices for
+        the given dimension according to the set boundary conditions and the
+        given index range in that dimension.
+        """
+        min_range_index = cell_indices[dim] - index_ranges[dim]
+        max_range_index = cell_indices[dim] + index_ranges[dim]
+        if self.boundary_conditions[dim] == "P":
+            min_range_index = min_range_index
+            max_range_index = max_range_index
+        elif self.boundary_conditions[dim] == "F":
+            min_range_index = max(0, min_range_index)
+            max_range_index = min(self.dimensions[dim] - 1, max_range_index)
+        else:
+            raise Exception("Unsupported boundary condition: %s" %
+                            self.boundary_conditions[dim])
+        return min_range_index, max_range_index
+
+    def _calculateNeighbourIndexRanges(self, cell_indices, index_ranges):
+        """
+        Calculates and returns the list of indices for each dimension of
+        neighbours of the given cell indices with a range to each direction
+        given by index ranges according to the boundary conditions.
+        For example, if in 2 dimensions there are periodic boundary conditions
+        on X and fixed boundary conditions on Y, and the cell is [0,0] with
+        index ranges of [1,1] then the returned indices would be:
+        [[1,0], [2,0], [0,1], [1,1], [2,1]]
+        """
+        def calculate_index_range(dim):
+            min_range_index, max_range_index = \
+                    self._calculateNeighbourIndexRangeBoundaries(
+                            cell_indices, index_ranges, dim)
+            indices_range = range(min_range_index, max_range_index + 1)
+            return [index % self.dimensions[dim] for index in indices_range]
+
+        return [calculate_index_range(i) for i in range(len(cell_indices))]
 
     def getSystemIndexIterator(self):
         """
