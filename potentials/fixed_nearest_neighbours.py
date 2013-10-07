@@ -19,7 +19,11 @@ class FixedNearestNeighboursPotential(Potential):
         U = 0
 
         # Get the neighbour list for the given cell.
-        neighbours = lcs.getCellNeighboursList(indices)
+        NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = list(
+                self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
+        index_ranges = [NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
+                        for i in range(len(indices))]
+        neighbours = lcs.getCellNeighboursList(indices, index_ranges)
 
         # Get the location and spin for the given cell.
         location = lcs.getProperty(lcs.locations, indices)
