@@ -28,3 +28,9 @@ def any(iterable):
         if i:
             return True
     return False
+
+def all(iterable):
+    for i in iterable:
+        if not i:
+            return False
+    return True
