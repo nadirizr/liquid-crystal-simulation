@@ -43,7 +43,9 @@ class SphereNearestNeighboursPotential(Potential):
         neighbour_list = self.neighbour_lists[tuple(indices)]
 
         # Go over the list of neighbours and calculate the potential for each.
-        for (n_indices, n_location, n_spin) in neighbour_list:
+        for n_indices in neighbour_list:
+            n_spin = lcs.getProperty(lcs.spins, n_indices)
+            n_location = lcs.getProperty(lcs.locations, n_indices)
             U += self.potential.calculateTwoSpins(spin,
                                                   location,
                                                   n_spin,
@@ -85,8 +87,7 @@ class SphereNearestNeighboursPotential(Potential):
             for (n_indices, n_location, n_spin) in neighbour_list:
                 r2 = self._calculateDistanceSquared(location, n_location)
                 if r2 <= R2:
-                    cached_neighbour_list.append(
-                            (n_indices, n_location, n_spin))
+                    cached_neighbour_list.append(n_indices)
 
     def _calculateDistanceSquared(self, location1, location2):
         """
