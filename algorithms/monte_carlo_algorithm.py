@@ -1,19 +1,22 @@
 from lc import LiquidCrystalSystem
+from new_state_selector import MonteCarloNewStateSelector
 from util import *
 
 class MonteCarloAlgorithm:
     
-    def __init__(self, lcs, parameters, parameter_prefix="MC_"):
+    def __init__(self, lcs, new_state_selector,
+                 parameters, parameter_prefix="MC_"):
         self.lcs = lcs
+        self.new_state_selector = new_state_selector
         self.parameters = parameters
         self.parameter_prefix = parameter_prefix
 
-    def isNewStateBetter(self, current_state, new_state):
+    def isNewStateBetter(self, current_lcs, new_lcs):
         """
         Returns true if the new state is better than the current one.
         This must be implemented by any Monte Carlo Algorithm class.
         """
-        raise NotImplementedError
+        return self.new_state_selector.isNewStateBetter(current_lcs, new_lcs)
 
     def getLCS(self):
         """

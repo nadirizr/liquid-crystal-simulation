@@ -1,8 +1,8 @@
 import sys
 
 from lc import LiquidCrystalSystem
-from algorithms.monte_carlo_cooler import MonteCarloCoolingAlgorithm
-from algorithms.monte_carlo_heater import MonteCarloHeatingAlgorithm
+from algorithms.monte_carlo_algorithm import MonteCarloAlgorithm
+from algorithms.new_state_selector import *
 
 def readParametersFromFile(args):
     model = "default"
@@ -29,12 +29,14 @@ def main():
     lcs = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
     print "// lcs.getAverageSpinOrientation() = %s" % lcs.getAverageSpinOrientation()
     print "// lcs.getSpinOrientationVariance() = %s" % lcs.getSpinOrientationVariance()
-    mch = MonteCarloHeatingAlgorithm(lcs, parameters)
+    mch = MonteCarloAlgorithm(lcs, SelectByHigherVariance(),
+                              parameters, parameter_prefix="MC_HEATER_")
     print "// @@@@@@@ BEFORE HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
     mch.run()
     lcs = mch.getLCS()
     print "// @@@@@@@ AFTER HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
-    mcc = MonteCarloCoolingAlgorithm(lcs, parameters)
+    mcc = MonteCarloAlgorithm(lcs, SelectByLowerEnergy(),
+                              parameters, parameter_prefix="MC_COOLER_")
     print "// @@@@@@@ BEFORE COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
     mcc.run()
     lcs = mcc.getLCS()
