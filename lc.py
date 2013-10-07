@@ -16,6 +16,7 @@ class LiquidCrystalSystem:
         If no initial system properties are given it is randomly set up.
         """
         DIMENSIONS = parameters["DIMENSIONS"]
+        BOUNDARY_CONDITIONS = parameters["BOUNDARY_CONDITIONS"]
         INITIAL_SPACING = parameters["INITIAL_SPACING"]
         INITIAL_SPACING_STDEV = parameters["INITIAL_SPACING_STDEV"]
         INITIAL_SPIN_ORIENTATION = parameters["INITIAL_SPIN_ORIENTATION"]
@@ -27,6 +28,7 @@ class LiquidCrystalSystem:
         self.temperature = initial_temperature
         self.potential = POTENTIAL(TWO_SPIN_POTENTIAL(parameters), parameters)
         self.dimensions = DIMENSIONS[:]
+        self.boundary_conditions = BOUNDARY_CONDITIONS
 
         if initial_spins is None:
             initial_spins = self.createPropertyList(
@@ -47,6 +49,7 @@ class LiquidCrystalSystem:
                                             INITIAL_SPACING_STDEV[i])
                              for i, index in enumerate(indices)]))
         self.locations = initial_locations
+        self.original_locations = self.copyPropertyList(self.locations)
 
     def getTemperature(self):
         """
@@ -122,6 +125,103 @@ class LiquidCrystalSystem:
             num_spins += 1
         spin_variance /= len(self.spins)
         return spin_variance
+
+    def getPotentialEnergyForSpin(self, indices):
+        """
+        Calculate the potential energy for the spin at the given indices.
+        """
+        return self.potential.calculate(
+                self.spins, self.locations, self.dimensions, indices)
+
+    def getCellNeighboursList(self, indices, index_ranges=None):
+        """
+        Returns a list of tuples of neighbours to the given cell, where each
+        tuple is: (indices, location, spin).
+        This method obeys the boundary conditions of the system, and if they are
+        periodic in a certain direction then cells are wrapped around the edges
+        and their location is translated accordingly.
+        The index ranges should be of the same length of indices (the dimensions
+        of the system), and should indicate how many cells to each direction
+        should be added to the neighbour list.
+        If index ranges are not given, they are read from the configuration
+        parameter NEAREST_NEIGHBOURS_MAX_INDEX_RANGE.
+        """
+        # If no index ranges were given, go NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
+        # to every direction.
+        if not index_ranges:
+            NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = list(
+                self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
+            index_ranges = [NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
+                            for i in range(len(indices))]
+
+        # Get the grid spacing between cells.
+        R = list(self.parameters["INITIAL_SPACING"])
+
+        # Use specialized methods for efficiency in 2D and 3D.
+        if len(self.dimensions) == 2:
+            return self.getCellNeighboursList2D(indices, index_ranges)
+        if len(self.dimensions) == 3:
+            return self.getCellNeighboursList3D(indices, index_ranges)
+
+        # Calculate the actual ranges of cells to include.
+        def calculate_index_range(dim):
+            min_range_index = indices[dim] - index_ranges[dim]
+            max_range_index = indices[dim] + index_ranges[dim]
+            if self.boundary_conditions[dim] == "P":
+                min_range_index = min_range_index
+                max_range_index = max_range_index
+            elif self.boundary_conditions[dim] == "F":
+                min_range_index = max(0, min_range_index)
+                max_range_index = min(self.dimensions[i] - 1, max_range_index)
+            else:
+                raise Exception("Unsupported boundary condition: %s" %
+                                self.boundary_conditions[dim])
+            indices_range = range(min_range_index, max_range_index)
+            return [index % self.dimensions[dim] for index in indices_range]
+        neighbour_index_range = [calculate_index_range(i)
+                                 for i in range(len(indices))]
+
+        # Go over all the cells and check if any of them are within the given
+        # bounds, and if so add them to the neighbour list.
+        index_iterator = self.getSystemIndexIterator()
+        neighbour_list = []
+        for neighbour_indices in index_iterator:
+            # Check if all of the indices are within range.
+            indices_in_range = [neighbour_indices[i] in neighbour_index_range[i]
+                                for i in range(len(indices))]
+            if not any(indices_in_range):
+                continue
+            if neighbour_indices == indices:
+                continue
+
+            # Calculate the translated neighbour location.
+            neighbour_location = self.getProperty(
+                    self.locations, neighbour_indices).copy()
+            for dim in range(len(neighbour_indices)):
+                # We only need to translate anything if there are periodic
+                # boundary conditions.
+                if self.boundary_conditions[dim] != "P":
+                    continue
+
+                min_range_index = indices[dim] - index_ranges[dim]
+                max_range_index = indices[dim] + index_ranges[dim]
+                lower_neighbour_index = (neighbour_indices[dim] -
+                                         self.dimensions[dim])
+                upper_neighbour_index = (neighbour_indices[dim] +
+                                         self.dimensions[dim])
+                if min_range_index <= lower_neighbour_index <= max_range_index:
+                    neighbour_location[dim] -= R[dim] * self.dimensions[dim]
+                if min_range_index <= upper_neighbour_index <= max_range_index:
+                    neighbour_location[dim] += R[dim] * self.dimensions[dim]
+
+            # Add the indices, location and spin to the neighbour list.
+            neighbour_spin = self.getProperty(
+                    self.spins, neighbour_indices)
+            neighbour_list.append((neighbour_indices,
+                                   neighbour_location,
+                                   neighbour_spin))
+
+        return neighbour_list
 
     def getSystemIndexIterator(self):
         """
@@ -227,13 +327,6 @@ class LiquidCrystalSystem:
               current_values[index] = new_value
           else:
               current_values = current_values[index]
-
-    def getPotentialEnergyForSpin(self, indices):
-        """
-        Calculate the potential energy for the spin at the given indices.
-        """
-        return self.potential.calculate(
-                self.spins, self.locations, self.dimensions, indices)
 
     def outputToAvizFile(self, filepath):
         """

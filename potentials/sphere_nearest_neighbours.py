@@ -1,5 +1,4 @@
 from util import *
-
 from potential import Potential, TwoSpinPotential
 
 class SphereNearestNeighboursPotential(Potential):

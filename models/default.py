@@ -12,6 +12,9 @@ from util import *
 # These are the system dimensions.
 DIMENSIONS = [3, 3]
 
+# Preiodicity and boundary conditions ("P" = Periodic, "F" = Fixed).
+BOUNDARY_CONDITIONS = ["P", "F"]
+
 # The spacing between spin locations (with the same dimensions as DIMENSIONS).
 INITIAL_SPACING = [0.8, 0.8]
 # The standard deviation of the random spacing around the initial position
