@@ -541,7 +541,6 @@ class LiquidCrystalSystem:
         This method only prints the system itself if there are 2 dimensions.
         """
         print "Potential Energy: %s[erg]" % self.getPotentialEnergy()
-        print "Thermal Energy: %s[erg]" % self.getThermalEnergy()
         print "Temperature*: %s" % self.temperature
 
         if len(self.dimensions) != 2:
