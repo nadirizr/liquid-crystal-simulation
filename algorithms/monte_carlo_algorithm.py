@@ -57,18 +57,13 @@ class MonteCarloAlgorithm:
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
             k = 0
             while k < MC_MAX_NON_IMPROVING_STEPS:
-                current_spins = self.lcs.copyPropertyList(self.lcs.spins)
-                current_locations = self.lcs.copyPropertyList(self.lcs.locations)
-                current_lcs = LiquidCrystalSystem(self.parameters,
-                                                  self.lcs.getTemperature(),
-                                                  current_spins,
-                                                  current_locations)
+                current_lcs = self.lcs.copy()
 
-                print "Performing Metropolis step... ",
+                print "Performing Metropolis step... "
                 self._performMetropolisStep()
 
                 if self.isNewStateBetter(current_lcs, self.lcs):
-                    print "Got better state."
+                    print "--> Got better state."
                     print
                     self.lcs.print2DSystem()
 
@@ -80,7 +75,7 @@ class MonteCarloAlgorithm:
                     self.lcs.outputInformationToFile(
                             "%sinfo.txt" % (AVIZ_OUTPUT_PATH))
                 else:
-                    print "Didn't get better state (k=%s)" % (k+1)
+                    print "--> Didn't get better state (k=%s)" % (k+1)
                     k += 1
                     self.lcs = current_lcs
             
@@ -136,12 +131,11 @@ class MonteCarloAlgorithm:
 
         # Calculate the current system energy.
         E = self.lcs.getPotentialEnergy()
-        print "// E = %s" % E
+        print "E = %s" % E
 
         # Go over all of the particles, and change the angles for each one.
         index_iterator = self.lcs.getSystemIndexIterator()
         for indices in index_iterator:
-            # TODO: Select the initial spin and location.
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
             # spin orientation from a distribution that should become more and
             # more as the Boltzmann energy distribution.
@@ -172,3 +166,5 @@ class MonteCarloAlgorithm:
                     self.lcs.setProperty(self.lcs.spins, indices, current_spin)
                     self.lcs.setProperty(self.lcs.locations, indices, current_location)
                     E = oldE
+
+        print "Done."

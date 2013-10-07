@@ -9,7 +9,8 @@ class LiquidCrystalSystem:
     perform a Monte Carlo Metropolis cooling of the liquid crystal.
     """
     def __init__(self, parameters, initial_temperature, 
-                 initial_spins=None, initial_locations=None):
+                 initial_spins=None, initial_locations=None,
+                 original_locations=None):
         """
         Initializes the system from the given dimensions (or the default) and
         an initial nested list of initial angles, as well as the temperature.
@@ -50,7 +51,21 @@ class LiquidCrystalSystem:
                                             INITIAL_SPACING_STDEV[i])
                              for i, index in enumerate(indices)]))
         self.locations = initial_locations
-        self.original_locations = self.copyPropertyList(self.locations)
+
+        if original_locations is None:
+            original_locations = self.copyPropertyList(self.locations)
+        self.original_locations = original_locations
+
+    def copy(self):
+        """
+        Returns a copy of this LiquidCrystalSystem object.
+        """
+        spins = self.copyPropertyList(self.spins)
+        locations = self.copyPropertyList(self.locations)
+        original_locations = self.copyPropertyList(self.original_locations)
+        lcs = LiquidCrystalSystem(self.parameters, self.temperature,
+                                  spins, locations, original_locations)
+        return lcs
 
     def getTemperature(self):
         """
@@ -443,7 +458,7 @@ class LiquidCrystalSystem:
         multi-dimensional list.
         """
         return self.createPropertyList(
-            lambda indices: self.getProperty(property_values, indices))
+            lambda indices: self.getProperty(property_values, indices).copy())
 
     def getProperty(self, property_values, indices):
         """
