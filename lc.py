@@ -81,8 +81,7 @@ class LiquidCrystalSystem:
 
         index_iterator = self.getSystemIndexIterator()
         for indices in index_iterator:
-            h += self.potential.calculate(
-                    self.spins, self.locations, self.dimensions, indices)
+            h += self.potential.calculate(self, indices)
 
         return h
 
@@ -131,8 +130,7 @@ class LiquidCrystalSystem:
         """
         Calculate the potential energy for the spin at the given indices.
         """
-        return self.potential.calculate(
-                self.spins, self.locations, self.dimensions, indices)
+        return self.potential.calculate(self, indices)
 
     def getCellNeighboursList(self, indices, index_ranges=None):
         """

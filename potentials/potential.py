@@ -3,7 +3,7 @@ class Potential:
     This is the interface for all potentials.
     """
 
-    def calculate(self, spins, locations, dimensions, indices):
+    def calculate(self, lcs, indices):
         """
         Calculates the potential for the given spin.
         """

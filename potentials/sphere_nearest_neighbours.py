@@ -17,10 +17,10 @@ class SphereNearestNeighboursPotential(Potential):
         self.potential = potential
         self.parameters = parameters
 
-        self.neighbour_lists = []
+        self.neighbour_lists = {}
         self.cycles_before_update = 0
 
-    def calculate(self, spins, locations, dimensions, indices):
+    def calculate(self, lcs, indices):
         """
         Calculates the nearest neighbours potential for the given spin.
         """
@@ -30,122 +30,63 @@ class SphereNearestNeighboursPotential(Potential):
         if not any(indices) or not self.neighbour_lists:
             self.cycles_before_update -= 1
             if self.cycles_before_update <= 0:
-                self._updateNeighbourLists(locations, dimensions)
+                self._updateNeighbourLists(lcs)
 
         # U is the total potential energy.
         U = 0
 
-        # Calculate the current spin and location pointed to by the indices.
-        # Also, get the neighbour list for the current spin.
-        current_spin = spins
-        current_location = locations
-        current_neighbour_list = self.neighbour_lists
-        for i in indices:
-            current_spin = current_spin[i]
-            current_location = current_location[i]
-            current_neighbour_list = current_neighbour_list[i]
+        # Get the current spin and location pointed to by the indices.
+        spin = lcs.getProperty(lcs.spins, indices)
+        location = lcs.getProperty(lcs.locations, indices)
+
+        # Get the cached neighbour list for the current spin.
+        neighbour_list = self.neighbour_lists[tuple(indices)]
 
         # Go over the list of neighbours and calculate the potential for each.
-        for neighbour_indices in current_neighbour_list:
-            # Get the details of the current neighbour.
-            neighbour_spin = spins
-            neighbour_location = locations
-            for i in neighbour_indices:
-                neighbour_spin = neighbour_spin[i]
-                neighbour_location = neighbour_location[i]
-
-            # Add the potential contribution.
-            U += self.potential.calculateTwoSpins(current_spin,
-                                                  current_location,
-                                                  neighbour_spin,
-                                                  neighbour_location)
+        for (n_indices, n_location, n_spin) in neighbour_list:
+            U += self.potential.calculateTwoSpins(spin,
+                                                  location,
+                                                  n_spin,
+                                                  n_location)
 
         return U / 2.0
 
-    def _updateNeighbourLists(self, locations, dimensions):
+    def _updateNeighbourLists(self, lcs):
         """
         Updates the list of neighbours for each of the spins based on the
         locations of the spins and the system dimensions.
-        Only supported in 2D and 3D.
         """
-        self.neighbour_lists = []
+        # Reset the cached neighbour lists.
+        self.neighbour_lists = {}
         self.cycles_before_update = int(
             self.parameters["NEAREST_NEIGHBOURS_UPDATE_CYCLES"])
 
-        if len(dimensions) == 2:
-            self._updateNeighbourLists2D(locations, dimensions)
-        elif len(dimensions) == 3:
-            self._updateNeighbourLists3D(locations, dimensions)
-        else:
-            raise NotImplementedError
-
-    def _updateNeighbourLists2D(self, locations, dimensions):
-        """
-        2D version of _updateNeighbourLists.
-        """
+        # Get the maximum sphere radius and the maximum index range of cells to
+        # include in the calculation.
         R2 = float(self.parameters["NEAREST_NEIGHBOURS_MAX_RADIUS"]) ** 2
         MAX_INDEX_RANGE = int(
             self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
+        index_ranges = [MAX_INDEX_RANGE for dim in lcs.dimensions]
 
-        for x1 in range(dimensions[0]):
-            current_x_neighbour_list = []
-            self.neighbour_lists.append(current_x_neighbour_list)
-            for y1 in range(dimensions[1]):
-                current_neighbour_list = []
-                current_x_neighbour_list.append(current_neighbour_list)
+        # Go over each of the cells in turn, and for each one cache the
+        # neighbours that are contained within the close sphere of
+        # NEAREST_NEIGHBOURS_MAX_RADIUS size.
+        index_iterator = lcs.getSystemIndexIterator()
+        for indices in index_iterator:
+            # Get the location and neighbours list for the current cell.
+            location = lcs.getProperty(lcs.locations, indices)
+            neighbour_list = lcs.getCellNeighboursList(indices, index_ranges)
 
-                min_x_index = max(0, x1 - MAX_INDEX_RANGE)
-                max_x_index = min(dimensions[0], x1 + MAX_INDEX_RANGE + 1)
-                for x2 in range(min_x_index, max_x_index):
-                    min_y_index = max(0, y1 - MAX_INDEX_RANGE)
-                    max_y_index = min(dimensions[1], y1 + MAX_INDEX_RANGE + 1)
-                    for y2 in range(min_y_index, max_y_index):
-                        if x1 == x2 and y1 == y2:
-                            continue
+            # Create a new entry for the current cell in the cache.
+            cached_neighbour_list = []
+            self.neighbour_lists[tuple(indices)] = cached_neighbour_list
 
-                        r2 = self._calculateDistanceSquared(
-                                locations[x1][y1], locations[x2][y2])
-                        if r2 <= R2:
-                            current_neighbour_list.append([x2, y2])
-
-    def _updateNeighbourLists3D(self, locations, dimensions):
-        """
-        3D version of _updateNeighbourLists.
-        """
-        R2 = float(self.parameters["NEAREST_NEIGHBOURS_MAX_RADIUS"]) ** 2
-        MAX_INDEX_RANGE = int(
-            self.parameters("NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"))
-
-        for x1 in range(dimensions[0]):
-            current_x_neighbour_list = []
-            self.neighbour_lists.append(current_x_neighbour_list)
-            for y1 in range(dimensions[1]):
-                current_y_neighbour_list = []
-                current_x_neighbour_list.append(current_y_neighbour_list)
-                for z1 in range(dimensions[2]):
-                    current_neighbour_list = []
-                    current_y_neighbour_list.append(current_neighbour_list)
-
-                    min_x_index = max(0, x1 - MAX_INDEX_RANGE)
-                    max_x_index = min(dimensions[0],
-                                      x1 + MAX_INDEX_RANGE + 1)
-                    for x2 in range(min_x_index, max_x_index):
-                        min_y_index = max(0, y1 - MAX_INDEX_RANGE)
-                        max_y_index = min(dimensions[1],
-                                          y1 + MAX_INDEX_RANGE + 1)
-                        for y2 in range(min_y_index, max_y_index):
-                            min_z_index = max(0, z1 - MAX_INDEX_RANGE)
-                            max_z_index = min(dimensions[2],
-                                              z1 + MAX_INDEX_RANGE + 1)
-                            for z2 in range(min_z_index, max_z_index):
-                                if x1 == x2 and y1 == y2 and z1 == z2:
-                                    continue
-
-                                r2 = self._calculateDistanceSquared(
-                                        locations[x1][y1][z1],
-                                        locations[x2][y2][z2])
-                                if r2 <= R2:
-                                    current_neighbour_list.append([x2, y2, z2])
+            # Go over each of the neighbours and check if it is within range.
+            for (n_indices, n_location, n_spin) in neighbour_list:
+                r2 = self._calculateDistanceSquared(location, n_location)
+                if r2 <= R2:
+                    cached_neighbour_list.append(
+                            (n_indices, n_location, n_spin))
 
     def _calculateDistanceSquared(self, location1, location2):
         """
