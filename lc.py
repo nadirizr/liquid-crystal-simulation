@@ -157,15 +157,13 @@ class LiquidCrystalSystem:
         The index ranges should be of the same length of indices (the dimensions
         of the system), and should indicate how many cells to each direction
         should be added to the neighbour list.
-        If index ranges are not given, they are read from the configuration
-        parameter NEAREST_NEIGHBOURS_MAX_INDEX_RANGE.
+        If index ranges are not given, then all cells are considered as
+        neighbours, which is the same as giving the DIMENSIONS / 2.
         """
         # If no index ranges were given, go NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
         # to every direction.
         if not index_ranges:
-            NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = list(
-                self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
-            index_ranges = [NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
+            index_ranges = [self.dimensions[i] / 2
                             for i in range(len(indices))]
 
         # Use specialized methods for efficiency in 2D and 3D.
