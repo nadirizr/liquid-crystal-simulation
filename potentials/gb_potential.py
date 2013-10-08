@@ -80,4 +80,4 @@ class GayBernesPotential(TwoSpinPotential):
                  (1.0 + self.chi_tag * dot(spin1, spin2)))
         second = (((dot(spin1, nr) - dot(spin2, nr)) ** 2) /
                   (1.0 - self.chi_tag * dot(spin1, spin2)))
-        return 1.0 - self.chi / 2.0 * (first + second)
+        return 1.0 - self.chi_tag / 2.0 * (first + second)
