@@ -144,8 +144,8 @@ class MonteCarloAlgorithm:
             # more as the Boltzmann energy distribution.
             for step in xrange(MC_METROPOLIS_NUM_STEPS):
                 # Select a new spin and location based on the current.
-                current_spin = self.lcs.getProperty(self.lcs.spins, indices)
-                current_location = self.lcs.getProperty(self.lcs.locations, indices)
+                current_spin = self.lcs.getSpin(indices)
+                current_location = self.lcs.getLocation(indices)
                 new_spin = self._getNewRandomSpin(current_spin)
                 new_location = self._getNewRandomLocation(current_location)
 
@@ -166,8 +166,8 @@ class MonteCarloAlgorithm:
                 alpha = min(1.0, alpha)
                 p = random.random()
                 if p >= alpha:
-                    self.lcs.setProperty(self.lcs.spins, indices, current_spin)
-                    self.lcs.setProperty(self.lcs.locations, indices, current_location)
+                    self.lcs.setSpin(indices, current_spin)
+                    self.lcs.setLocation(indices, current_location)
                     E = oldE
 
         print "Done."

@@ -23,13 +23,15 @@ class FixedNearestNeighboursPotential(Potential):
                 self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
         index_ranges = [NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
                         for i in range(len(indices))]
-        neighbours = lcs.getCellNeighboursList(indices, index_ranges)
+        neighbours_list = lcs.getCellNeighboursList(indices, index_ranges)
 
         # Get the location and spin for the given cell.
-        location = lcs.getProperty(lcs.locations, indices)
-        spin = lcs.getProperty(lcs.spins, indices)
+        location = lcs.getLocation(indices)
+        spin = lcs.getSpin(indices)
 
-        for (n_indices, n_location, n_spin) in neighbours:
+        for n_indices in neighbours_list:
+            n_location = lcs.getLocation(n_indices)
+            n_spin = lcs.getSpin(n_indices)
             U += self.potential.calculateTwoSpins(spin,
                                                   location,
                                                   n_spin,

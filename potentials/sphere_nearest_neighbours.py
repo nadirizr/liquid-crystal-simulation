@@ -36,16 +36,16 @@ class SphereNearestNeighboursPotential(Potential):
         U = 0
 
         # Get the current spin and location pointed to by the indices.
-        spin = lcs.getProperty(lcs.spins, indices)
-        location = lcs.getProperty(lcs.locations, indices)
+        spin = lcs.getSpin(indices)
+        location = lcs.getLocation(indices)
 
         # Get the cached neighbour list for the current spin.
         neighbour_list = self.neighbour_lists[tuple(indices)]
 
         # Go over the list of neighbours and calculate the potential for each.
         for n_indices in neighbour_list:
-            n_spin = lcs.getProperty(lcs.spins, n_indices)
-            n_location = lcs.getProperty(lcs.locations, n_indices)
+            n_spin = lcs.getSpin(n_indices)
+            n_location = lcs.getLocation(n_indices)
             U += self.potential.calculateTwoSpins(spin,
                                                   location,
                                                   n_spin,
@@ -76,7 +76,7 @@ class SphereNearestNeighboursPotential(Potential):
         index_iterator = lcs.getSystemIndexIterator()
         for indices in index_iterator:
             # Get the location and neighbours list for the current cell.
-            location = lcs.getProperty(lcs.locations, indices)
+            location = lcs.getLocation(indices)
             neighbour_list = lcs.getCellNeighboursList(indices, index_ranges)
 
             # Create a new entry for the current cell in the cache.
@@ -84,7 +84,8 @@ class SphereNearestNeighboursPotential(Potential):
             self.neighbour_lists[tuple(indices)] = cached_neighbour_list
 
             # Go over each of the neighbours and check if it is within range.
-            for (n_indices, n_location, n_spin) in neighbour_list:
+            for n_indices in neighbour_list:
+                n_location = lcs.getLocation(n_indices)
                 r2 = self._calculateDistanceSquared(location, n_location)
                 if r2 <= R2:
                     cached_neighbour_list.append(n_indices)

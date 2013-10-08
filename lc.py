@@ -141,6 +141,67 @@ class LiquidCrystalSystem:
         spin_variance /= len(self.spins)
         return spin_variance
 
+    def getSpin(self, indices):
+        """
+        Returns the spin of the given set of indices.
+        """
+        return self.getProperty(self.spins, indices)
+
+    def setSpin(self, indices, spin):
+        """
+        Sets the spin of the given set of indices.
+        """
+        self.setProperty(self.spins, indices, spin)
+
+    def getLocation(self, indices, locations=None):
+        """
+        Returns the location of the cell with the given indices.
+        If any of the indices are negative or more than the number of cells in a
+        certain dimension, and boundary conditions are preiodic, the location is
+        translated accordingly.
+        """
+        # If no locations list was given, default to self.locations.
+        if not locations:
+            locations = self.locations
+
+        # Get the location property.
+        location = self.getProperty(self.locations, indices).copy()
+        
+        # Translate it if necessary.
+        for (dim, index) in enumerate(indices):
+            if self.boundary_conditions[dim] == "P" and \
+               (index < 0 or index >= self.dimensions[dim]):
+                location[dim] += ((index / self.dimensions[dim]) *
+                                  self.spacing[dim])
+
+        return location
+
+    def setLocation(self, indices, location):
+        """
+        Sets the location of the cell with the given indices.
+        If any of the indices are negative or more than the number of cells in a
+        certain dimension, and boundary conditions are preiodic, the location is
+        translated accordingly.
+        """
+        # Translate the location if necessary.
+        for (dim, index) in enumerate(indices):
+            if self.boundary_conditions[dim] == "P" and \
+               (index < 0 or index >= self.dimensions[dim]):
+                location[dim] -= ((index / self.dimensions[dim]) *
+                                  self.spacing[dim])
+
+        # Set the location property.
+        self.setProperty(self.locations, indices, location)
+
+    def getOriginalLocation(self, indices):
+        """
+        Returns the original location of the cell with the given indices.
+        If any of the indices are negative or more than the number of cells in a
+        certain dimension, and boundary conditions are preiodic, the location is
+        translated accordingly.
+        """
+        return self.getLocation(indices, self.original_locations)
+
     def getPotentialEnergyForSpin(self, indices):
         """
         Calculate the potential energy for the spin at the given indices.
@@ -152,11 +213,11 @@ class LiquidCrystalSystem:
         Returns a list of tuples of neighbours to the given cell, where each
         tuple is: (indices, location, spin).
         This method obeys the boundary conditions of the system, and if they are
-        periodic in a certain direction then cells are wrapped around the edges
-        and their location is translated accordingly.
-        The index ranges should be of the same length of indices (the dimensions
-        of the system), and should indicate how many cells to each direction
-        should be added to the neighbour list.
+        periodic in a certain direction then indices are given as negative or
+        over the dimension of the system.
+        The index ranges list should be of the same length of indices (the
+        dimensions of the system), and should indicate how many cells to each
+        direction should be added to the neighbour list.
         If index ranges are not given, then all cells are considered as
         neighbours, which is the same as giving the DIMENSIONS / 2.
         """
@@ -186,12 +247,12 @@ class LiquidCrystalSystem:
                                 for i in range(len(indices))]
             if not all(indices_in_range):
                 continue
+
+            # If this is the origianl cell, skip it.
             if neighbour_indices == indices:
                 continue
 
-            # Calculate the translated neighbour location.
-            neighbour_location = self.getProperty(
-                    self.locations, neighbour_indices).copy()
+            # Calculate the translated neighbour indices.
             for dim in range(len(neighbour_indices)):
                 # We only need to translate anything if there are periodic
                 # boundary conditions.
@@ -205,18 +266,12 @@ class LiquidCrystalSystem:
                 upper_neighbour_index = (neighbour_indices[dim] +
                                          self.dimensions[dim])
                 if min_range_index <= lower_neighbour_index <= max_range_index:
-                    neighbour_location[dim] -= \
-                            self.spacing[dim] * self.dimensions[dim]
+                    neighbour_indices[dim] = lower_neighbour_index
                 if min_range_index <= upper_neighbour_index <= max_range_index:
-                    neighbour_location[dim] += \
-                            self.spacing[dim] * self.dimensions[dim]
+                    neighbour_indices[dim] = upper_neighbour_index
 
-            # Add the indices, location and spin to the neighbour list.
-            neighbour_spin = self.getProperty(
-                    self.spins, neighbour_indices).copy()
-            neighbour_list.append((neighbour_indices[:],
-                                   neighbour_location,
-                                   neighbour_spin))
+            # Add the indices to the neighbour list.
+            neighbour_list.append(neighbour_indices[:])
 
         return neighbour_list
 
@@ -237,37 +292,15 @@ class LiquidCrystalSystem:
         # Go over the 2 dimensions back and forth according to the index_ranges.
         neighbour_list = []
         for nx in xrange(min_x_range_index, max_x_range_index + 1):
-            real_nx = nx % self.dimensions[0]
             for ny in xrange(min_y_range_index, max_y_range_index + 1):
-                real_ny = ny % self.dimensions[1]
-                neighbour_indices = [real_nx, real_ny]
+                neighbour_indices = [nx, ny]
 
                 # If this is the original cell, ignore it.
                 if neighbour_indices == indices:
                     continue
 
-                # Calculate the translated neighbour location.
-                neighbour_location = self.getProperty(
-                        self.locations, neighbour_indices).copy()
-                if nx < 0:
-                    neighbour_location[0] -= \
-                            self.spacing[0] * self.dimensions[0]
-                elif nx >= self.dimensions[0]:
-                    neighbour_location[0] += \
-                            self.spacing[0] * self.dimensions[0]
-                if ny < 0:
-                    neighbour_location[1] -= \
-                            self.spacing[1] * self.dimensions[1]
-                elif ny >= self.dimensions[1]:
-                    neighbour_location[1] += \
-                            self.spacing[1] * self.dimensions[1]
-
-                # Add the indices, location and spin to the neighbour list.
-                neighbour_spin = self.getProperty(
-                        self.spins, neighbour_indices).copy()
-                neighbour_list.append((neighbour_indices,
-                                       neighbour_location,
-                                       neighbour_spin))
+                # Add the indices to the neighbour list.
+                neighbour_list.append(neighbour_indices)
 
         return neighbour_list
 
@@ -292,45 +325,16 @@ class LiquidCrystalSystem:
         # Go over the 3 dimensions back and forth according to the index_ranges.
         neighbour_list = []
         for nx in xrange(min_x_range_index, max_x_range_index + 1):
-            real_nx = nx % self.dimensions[0]
             for ny in xrange(min_y_range_index, max_y_range_index + 1):
-                real_ny = ny % self.dimensions[1]
                 for nz in xrange(min_z_range_index, max_z_range_index + 1):
-                    real_nz = nz % self.dimensions[2]
-                    neighbour_indices = [real_nx, real_ny, real_nz]
+                    neighbour_indices = [nx, ny, nz]
 
                     # If this is the original cell, ignore it.
                     if neighbour_indices == indices:
                         continue
 
-                    # Calculate the translated neighbour location.
-                    neighbour_location = self.getProperty(
-                            self.locations, neighbour_indices).copy()
-                    if nx < 0:
-                        neighbour_location[0] -= \
-                                self.spacing[0] * self.dimensions[0]
-                    elif nx >= self.dimensions[0]:
-                        neighbour_location[0] += \
-                                self.spacing[0] * self.dimensions[0]
-                    if ny < 0:
-                        neighbour_location[1] -= \
-                                self.spacing[1] * self.dimensions[1]
-                    elif ny >= self.dimensions[1]:
-                        neighbour_location[1] += \
-                                self.spacing[1] * self.dimensions[1]
-                    if nz < 0:
-                        neighbour_location[2] -= \
-                                self.spacing[2] * self.dimensions[2]
-                    elif nz >= self.dimensions[2]:
-                        neighbour_location[2] += \
-                                self.spacing[2] * self.dimensions[2]
-
-                    # Add the indices, location and spin to the neighbour list.
-                    neighbour_spin = self.getProperty(
-                            self.spins, neighbour_indices).copy()
-                    neighbour_list.append((neighbour_indices,
-                                           neighbour_location,
-                                           neighbour_spin))
+                    # Add the indices to the neighbour list.
+                    neighbour_list.append(neighbour_indices)
 
         return neighbour_list
 
@@ -464,8 +468,9 @@ class LiquidCrystalSystem:
         given property values multi-dimensional list.
         """
         current_values = property_values
-        for index in indices:
-            current_values = current_values[index]
+        for (dim, index) in enumerate(indices):
+            real_index = index % self.dimensions[dim]
+            current_values = current_values[real_index]
         return current_values
 
     def setProperty(self, property_values, indices, new_value):
@@ -474,11 +479,12 @@ class LiquidCrystalSystem:
         property values multi-dimensional list to the given new value.
         """
         current_values = property_values
-        for (d, index) in enumerate(indices):
-          if d == len(self.dimensions) - 1:
-              current_values[index] = new_value
+        for (dim, index) in enumerate(indices):
+          real_index = index % self.dimensions[dim]
+          if dim == len(self.dimensions) - 1:
+              current_values[real_index] = new_value
           else:
-              current_values = current_values[index]
+              current_values = current_values[real_index]
 
     def outputToAvizFile(self, filepath):
         """
