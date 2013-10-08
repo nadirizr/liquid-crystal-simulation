@@ -104,17 +104,30 @@ class MonteCarloAlgorithm:
         new_spin /= linalg.norm(new_spin)
         return new_spin
 
-    def _getNewRandomLocation(self, current_location):
+    def _getNewRandomLocation(self, current_location, original_location):
         """
         Returns a new random location based on the current one, from a gaussian
         distribution.
         """
         MC_SPACING_STDEV = float(
             self.parameters[self.parameter_prefix + "SPACING_STDEV"])
+        MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = float(
+            self.parameters[self.parameter_prefix +
+                            "SPACING_FROM_ORIGINAL_LOCATION_CUTOFF"])
 
+        # Generate a random new location.
         new_location = current_location.copy()
+        distance2 = 0.0
         for d in range(len(new_location)):
             new_location[d] = random.gauss(new_location[d], MC_SPACING_STDEV)
+            distance2 += (new_location[d] - original_location[d]) ** 2
+
+        # If it is out of the cutoff sphere of the original location, keep the
+        # old location.
+        if distance2 > (MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2):
+            print "// $$$ distance too big: distance^2 = %s, spacing^2 = %s" % (distance2, MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2)
+            return current_location
+
         return new_location
 
     def _performMetropolisStep(self):
@@ -146,8 +159,10 @@ class MonteCarloAlgorithm:
                 # Select a new spin and location based on the current.
                 current_spin = self.lcs.getSpin(indices)
                 current_location = self.lcs.getLocation(indices)
+                original_location = self.lcs.getOriginalLocation(indices)
                 new_spin = self._getNewRandomSpin(current_spin)
-                new_location = self._getNewRandomLocation(current_location)
+                new_location = self._getNewRandomLocation(current_location,
+                                                          original_location)
 
                 # Calculate the coefficient that is proportional to the density
                 # of the Boltzmann distibution.

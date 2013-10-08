@@ -61,11 +61,13 @@ EPSILON_E = EPSILON_S / KAPPA_TAG
 
 # The standard deviation of the gaussian random spacing in the system.
 MC_HEATER_SPACING_STDEV = 0.0
+# The maximum radius from the original location where the molecule can be.
+MC_HEATER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_HEATER_SPACING_STDEV
 # The standard deviation of the gaussian random spin orientation.
 MC_HEATER_SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_HEATER_METROPOLIS_NUM_STEPS = 10000
+MC_HEATER_METROPOLIS_NUM_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_HEATER_MAX_NON_IMPROVING_STEPS = 10
@@ -82,6 +84,8 @@ MC_HEATER_AVIZ_OUTPUT_PATH = "output/lqs_1_heat"
 
 # The standard deviation of the gaussian random spacing in the system.
 MC_COOLER_SPACING_STDEV = 0.0
+# The maximum radius from the original location where the molecule can be.
+MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV
 # The standard deviation of the gaussian random spin orientation.
 MC_COOLER_SPIN_STDEV = 1.0
 
