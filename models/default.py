@@ -1,5 +1,6 @@
 from potentials.lj_potential import LenardJonesPotential
 from potentials.gb_potential import GayBernesPotential
+from potentials.gb_potential_fast import GayBernesPotentialFast
 from potentials.fixed_nearest_neighbours import FixedNearestNeighboursPotential
 from potentials.sphere_nearest_neighbours import SphereNearestNeighboursPotential
 from constants import kB
@@ -35,11 +36,11 @@ INITIAL_TEMPERATURE = 2.0
 
 # The potential to use.
 POTENTIAL = SphereNearestNeighboursPotential
-TWO_SPIN_POTENTIAL = GayBernesPotential
+TWO_SPIN_POTENTIAL = GayBernesPotentialFast
 
 # Nearest neighbours parameters.
-NEAREST_NEIGHBOURS_MAX_RADIUS = average(INITIAL_SPACING) * 1.1
-NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 1
+NEAREST_NEIGHBOURS_MAX_RADIUS = average(INITIAL_SPACING) * 2.0
+NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 3
 NEAREST_NEIGHBOURS_UPDATE_CYCLES = 100000
 
 # The potential parameters.

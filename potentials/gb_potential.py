@@ -17,6 +17,7 @@ class GayBernesPotential(TwoSpinPotential):
         self.kappa_tag = float(parameters["KAPPA_TAG"])
         self.chi_tag = ((self.kappa_tag ** (1.0 / self.miu) - 1.0) /
                         (self.kappa_tag ** (1.0 / self.miu) + 1.0))
+        #print "// &&& GayBernesPotential: epsilon0 = %s, sigma_s = %s, miu = %s, ni = %s, kappa = %s, chi = %s, kappa_tag = %s, chi_tag = %s" % (self.epsilon0, self.sigma_s, self.miu, self.ni, self.kappa, self.chi, self.kappa_tag, self.chi_tag)
 
     def calculateTwoSpins(self, spin1, location1, spin2, location2):
         """
@@ -25,6 +26,11 @@ class GayBernesPotential(TwoSpinPotential):
         r = location1 - location2
         nr = r / linalg.norm(r)
         Ugb = self._calculateGBPotential(spin1, spin2, r, nr)
+        #print "// GayBernesPotential::calculateTwoSpins:"
+        #print "// spin1 = %s, location1 = %s" % (spin1, location1)
+        #print "// spin2 = %s, location2 = %s" % (spin2, location2)
+        #print "// r = %s, nr = %s" % (r, nr)
+        #print "// U = %s" % Ugb
         return Ugb
 
     def _calculateGBPotential(self, spin1, spin2, r, nr):
