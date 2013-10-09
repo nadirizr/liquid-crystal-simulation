@@ -11,7 +11,7 @@ from util import *
 ##################################################################
 
 # These are the system dimensions.
-DIMENSIONS = [3, 3]
+DIMENSIONS = [10, 10]
 
 # Preiodicity and boundary conditions ("P" = Periodic, "F" = Fixed).
 BOUNDARY_CONDITIONS = ["P", "F"]
