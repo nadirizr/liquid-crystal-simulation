@@ -96,9 +96,15 @@ class LiquidCrystalSystem:
 
         index_iterator = self.getSystemIndexIterator()
         for indices in index_iterator:
-            h += self.potential.calculate(self, indices)
+            h += self.getPotentialEnergyForSpin(indices)
 
         return h
+
+    def getPotentialEnergyForSpin(self, indices):
+        """
+        Calculate the potential energy for the spin at the given indices.
+        """
+        return self.potential.calculate(self, indices)
 
     def getCanonicalEnsembleProbability(self, energy=None):
         """
@@ -201,12 +207,6 @@ class LiquidCrystalSystem:
         translated accordingly.
         """
         return self.getLocation(indices, self.original_locations)
-
-    def getPotentialEnergyForSpin(self, indices):
-        """
-        Calculate the potential energy for the spin at the given indices.
-        """
-        return self.potential.calculate(self, indices)
 
     def getCellNeighboursList(self, indices, index_ranges=None):
         """
