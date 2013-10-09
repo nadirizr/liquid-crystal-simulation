@@ -26,22 +26,22 @@ string toString(const vector<double>& v) {
     return ss.str();
 }
 
-vector<double> add(const vector<double>& v1, const vector<double>& v2) {
-    vector<double> res(v1.size());
+void add(const vector<double>& v1, const vector<double>& v2,
+         vector<double>* res) {
+    res->resize(v1.size());
     for (int i = 0; i < v1.size(); ++i) {
-        res[i] = v1[i] + v2[i];
+        (*res)[i] = v1[i] + v2[i];
     }
-    //cout << "// " << toString(v1) << " + " << toString(v2) << " = " << toString(res) << endl;
-    return res;
+    //cout << "// " << toString(v1) << " + " << toString(v2) << " = " << toString(*res) << endl;
 }
 
-vector<double> sub(const vector<double>& v1, const vector<double>& v2) {
-    vector<double> res(v1.size());
+void sub(const vector<double>& v1, const vector<double>& v2,
+         vector<double>* res) {
+    res->resize(v1.size());
     for (int i = 0; i < v1.size(); ++i) {
-        res[i] = v1[i] - v2[i];
+        (*res)[i] = v1[i] - v2[i];
     }
-    //cout << "// " << toString(v1) << " - " << toString(v2) << " = " << toString(res) << endl;
-    return res;
+    //cout << "// " << toString(v1) << " - " << toString(v2) << " = " << toString(*res) << endl;
 }
 
 double dot(const vector<double>& v1, const vector<double>& v2) {
@@ -57,13 +57,12 @@ double norm(const vector<double>& v) {
     return sqrt(dot(v, v));
 }
 
-vector<double> normalize(const vector<double>& v) {
-    vector<double> res(v);
+void normalize(const vector<double>& v, vector<double>* res) {
+    res->resize(v.size());
     double n = norm(v);
     for (int i = 0; i < v.size(); ++i) {
-        res[i] /= n;
+        (*res)[i] = v[i] / n;
     }
-    return res;
 }
 
 }
@@ -86,9 +85,23 @@ double GayBernesPotentialImpl::calculateTwoSpins(
         const vector<double>& location1,
         const vector<double>& spin2,
         const vector<double>& location2) const {
-    vector<double> r = sub(location1, location2);
-    vector<double> nr = normalize(r);
-    double U = calculateGBPotential(spin1, spin2, r, nr);
+    // Calculate the distance r.
+    vector<double> r(location1.size());
+    sub(location1, location2, &r);
+
+    // Calculate its magnitude and normalize it.
+    double n = norm(r);
+    vector<double> nr(r.size());
+    normalize(r, &nr);
+
+    // Calculate all of the scalar values we need for the calculation before.
+    double dot_spin1_nr = dot(spin1, nr);
+    double dot_spin2_nr = dot(spin2, nr);
+    double dot_spin1_spin2 = dot(spin1, spin2);
+
+    // Calculate the potential itself.
+    double U = calculateGBPotential(
+            dot_spin1_nr, dot_spin2_nr, dot_spin1_spin2, n);
     //cout << "// GayBernesPotentialImpl::calculateTwoSpins:" << endl;
     //cout << "// spin1 = " << toString(spin1) << ", location1 = " << toString(location1) << endl;
     //cout << "// spin2 = " << toString(spin2) << ", location2 = " << toString(location2) << endl;
@@ -98,57 +111,53 @@ double GayBernesPotentialImpl::calculateTwoSpins(
 }
 
 double GayBernesPotentialImpl::calculateGBPotential(
-        const vector<double>& spin1,
-        const vector<double>& spin2,
-        const vector<double>& r,
-        const vector<double>& nr) const {
-    double R = calculateR(spin1, spin2, r, nr);
-    double epsilon = calculateEpsilon(spin1, spin2, nr);
+        double dot_spin1_nr, double dot_spin2_nr,
+        double dot_spin1_spin2, double n) const {
+    double R = calculateR(dot_spin1_nr, dot_spin2_nr, dot_spin1_spin2, n);
+    double epsilon = calculateEpsilon(dot_spin1_nr, dot_spin2_nr,
+                                      dot_spin1_spin2);
     return (4 * epsilon * (pow(R, 12) - pow(R, 6)));
 }
 
 double GayBernesPotentialImpl::calculateR(
-        const vector<double>& spin1,
-        const vector<double>& spin2,
-        const vector<double>& r,
-        const vector<double>& nr) const {
-    double sigma = calculateSigma(spin1, spin2, nr);
-    return (sigma_s_ / (norm(r) - sigma + sigma_s_));
+        double dot_spin1_nr, double dot_spin2_nr,
+        double dot_spin1_spin2, double n) const {
+    double sigma = calculateSigma(
+            dot_spin1_nr, dot_spin2_nr, dot_spin1_spin2);
+    return (sigma_s_ / (n - sigma + sigma_s_));
 }
 
 double GayBernesPotentialImpl::calculateSigma(
-        const vector<double>& spin1,
-        const vector<double>& spin2,
-        const vector<double>& nr) const {
-    double first  = pow(dot(spin1, nr) + dot(spin2, nr), 2) /
-                   (1.0 + chi_ * dot(spin1, spin2));
-    double second = pow(dot(spin1, nr) - dot(spin2, nr), 2) /
-                   (1.0 - chi_ * dot(spin1, spin2));
+        double dot_spin1_nr, double dot_spin2_nr,
+        double dot_spin1_spin2) const {
+    double first  = pow(dot_spin1_nr + dot_spin2_nr, 2) /
+                    (1.0 + chi_ * dot_spin1_spin2);
+    double second = pow(dot_spin1_nr - dot_spin2_nr, 2) /
+                    (1.0 - chi_ * dot_spin1_spin2);
     return sigma_s_ / sqrt(1.0 - chi_ / 2.0 * (first + second));
 }
 
 double GayBernesPotentialImpl::calculateEpsilon(
-        const vector<double>& spin1,
-        const vector<double>& spin2,
-        const vector<double>& nr) const {
+        double dot_spin1_nr, double dot_spin2_nr,
+        double dot_spin1_spin2) const {
     return (epsilon0_ *
-            pow(calculateEpsilonNi(spin1, spin2), ni_) *
-            pow(calculateEpsilonTagMiu(spin1, spin2, nr), miu_));
+            pow(calculateEpsilonNi(dot_spin1_spin2), ni_) *
+            pow(calculateEpsilonTagMiu(dot_spin1_nr,
+                                       dot_spin2_nr,
+                                       dot_spin1_spin2), miu_));
 }
 
 double GayBernesPotentialImpl::calculateEpsilonNi(
-        const vector<double>& spin1,
-        const vector<double>& spin2) const {
-    return 1.0 / sqrt(1.0 - (chi_ * chi_) * pow(dot(spin1, spin2), 2));
+        double dot_spin1_spin2) const {
+    return 1.0 / sqrt(1.0 - (chi_ * chi_) * pow(dot_spin1_spin2, 2));
 }
 
 double GayBernesPotentialImpl::calculateEpsilonTagMiu(
-        const vector<double>& spin1,
-        const vector<double>& spin2,
-        const vector<double>& nr) const {
-    double first  = pow(dot(spin1, nr) + dot(spin2, nr), 2) /
-                   (1.0 + chi_tag_ * dot(spin1, spin2));
-    double second = pow(dot(spin1, nr) - dot(spin2, nr), 2) /
-                   (1.0 - chi_tag_ * dot(spin1, spin2));
+        double dot_spin1_nr, double dot_spin2_nr,
+        double dot_spin1_spin2) const {
+    double first  = pow(dot_spin1_nr + dot_spin2_nr, 2) /
+                    (1.0 + chi_tag_ * dot_spin1_spin2);
+    double second = pow(dot_spin1_nr - dot_spin2_nr, 2) /
+                    (1.0 - chi_tag_ * dot_spin1_spin2);
     return 1.0 - chi_tag_ / 2.0 * (first + second);
 }

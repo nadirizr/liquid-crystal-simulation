@@ -14,30 +14,29 @@ class GayBernesPotentialImpl {
                             const std::vector<double>& location2) const;
 
   private:
-    double calculateGBPotential(const std::vector<double>& spin1,
-                               const std::vector<double>& spin2,
-                               const std::vector<double>& r,
-                               const std::vector<double>& nr) const;
+    double calculateGBPotential(double dot_spin1_nr,
+                                double dot_spin2_nr,
+                                double dot_spin1_spin2,
+                                double n) const;
 
-    double calculateR(const std::vector<double>& spin1,
-                     const std::vector<double>& spin2,
-                     const std::vector<double>& r,
-                     const std::vector<double>& nr) const;
+    double calculateR(double dot_spin1_nr,
+                      double dot_spin2_nr,
+                      double dot_spin1_spin2,
+                      double n) const;
 
-    double calculateSigma(const std::vector<double>& spin1,
-                         const std::vector<double>& spin2,
-                         const std::vector<double>& nr) const;
+    double calculateSigma(double dot_spin1_nr,
+                          double dot_spin2_nr,
+                          double dot_spin1_spin2) const;
 
-    double calculateEpsilon(const std::vector<double>& spin1,
-                           const std::vector<double>& spin2,
-                           const std::vector<double>& nr) const;
+    double calculateEpsilon(double dot_spin1_nr,
+                            double dot_spin2_nr,
+                            double dot_spin1_spin2) const;
 
-    double calculateEpsilonNi(const std::vector<double>& spin1,
-                             const std::vector<double>& spin2) const;
+    double calculateEpsilonNi(double dot_spin1_spin2) const;
 
-    double calculateEpsilonTagMiu(const std::vector<double>& spin1,
-                                 const std::vector<double>& spin2,
-                                 const std::vector<double>& nr) const;
+    double calculateEpsilonTagMiu(double dot_spin1_nr,
+                                  double dot_spin2_nr,
+                                  double dot_spin1_spin2) const;
 
     double epsilon0_;
     double sigma_s_;
