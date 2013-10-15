@@ -66,7 +66,7 @@ class MonteCarloAlgorithm:
                 self._performMetropolisStep()
 
                 if self.isNewStateBetter(current_lcs, self.lcs):
-                    print "--> Got better state."
+                    print "--> GOT BETTER STATE!"
                     print
                     self.lcs.print2DSystem()
 
@@ -79,6 +79,7 @@ class MonteCarloAlgorithm:
                             "%sinfo.txt" % (AVIZ_OUTPUT_PATH))
                 else:
                     print "--> Didn't get better state (k=%s)" % (k+1)
+                    print
                     k += 1
                     self.lcs = current_lcs
             
@@ -125,7 +126,7 @@ class MonteCarloAlgorithm:
         # If it is out of the cutoff sphere of the original location, keep the
         # old location.
         if distance2 > (MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2):
-            print "// $$$ distance too big: distance^2 = %s, spacing^2 = %s" % (distance2, MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2)
+            #print "// $$$ distance too big: distance^2 = %s, spacing^2 = %s" % (distance2, MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2)
             return current_location
 
         return new_location
