@@ -1,6 +1,7 @@
 import sys
 
 from lc import LiquidCrystalSystem
+from lc_state_manager import LiquidCrystalSystemStateManager
 from algorithms.monte_carlo_algorithm import MonteCarloAlgorithm
 from algorithms.new_state_selector import *
 
@@ -19,6 +20,21 @@ def main():
     parameters = readParametersFromFile(sys.argv)
     DIMENSIONS = parameters["DIMENSIONS"]
     INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
+    USE_MC_HEATER = bool(parameters["USE_MC_HEATER"])
+    USE_MC_COOLER = bool(parameters["USE_MC_COOLER"])
+    INITIAL_STATE = parameters.get("INITIAL_STATE", None)
+
+    # Set up the state manager.
+    lcs_manager = LiquidCrystalSystemStateManager(parameters)
+
+    # Set up the initial state.
+    if INITIAL_STATE:
+        lcs = lcs_manager.loadState(INITIAL_STATE)
+        INITIAL_TEMPERATURE = lcs.getTemperature()
+        DIMENSIONS = lcs.dimensions[:]
+        print "Loaded initial state: %s" % INITIAL_STATE
+    else:
+        lcs = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
 
     print "*"*70
     print "*"*70
@@ -26,21 +42,33 @@ def main():
            (INITIAL_TEMPERATURE, DIMENSIONS))
     print "*"*70
     print "*"*70
-    lcs = LiquidCrystalSystem(parameters, INITIAL_TEMPERATURE)
-    print "// lcs.getAverageSpinOrientation() = %s" % lcs.getAverageSpinOrientation()
-    print "// lcs.getSpinOrientationVariance() = %s" % lcs.getSpinOrientationVariance()
-    mch = MonteCarloAlgorithm(lcs, SelectByHigherVariance(),
-                              parameters, parameter_prefix="MC_HEATER_")
-    print "// @@@@@@@ BEFORE HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
-    mch.run()
-    lcs = mch.getLCS()
-    print "// @@@@@@@ AFTER HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
-    mcc = MonteCarloAlgorithm(lcs, SelectByLowerEnergy(),
-                              parameters, parameter_prefix="MC_COOLER_")
-    print "// @@@@@@@ BEFORE COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
-    mcc.run()
-    lcs = mcc.getLCS()
-    print "// @@@@@@@ AFTER COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
+    lcs_manager.saveState("final", lcs)
+
+    # Heat up the LCS.
+    if USE_MC_HEATER:
+        mch = MonteCarloAlgorithm(lcs, SelectByHigherVariance(),
+                                  parameters, parameter_prefix="MC_HEATER_")
+        print "// @@@@@@@ BEFORE HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
+        mch.run()
+        lcs = mch.getLCS()
+        print "// @@@@@@@ AFTER HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
+
+        # Save the heated up state.
+        lcs_manager.saveState("heated", lcs)
+        lcs_manager.saveState("final", lcs)
+
+    # Cool down the LCS.
+    if USE_MC_COOLER:
+        mcc = MonteCarloAlgorithm(lcs, SelectByLowerEnergy(),
+                                  parameters, parameter_prefix="MC_COOLER_")
+        print "// @@@@@@@ BEFORE COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
+        mcc.run()
+        lcs = mcc.getLCS()
+        print "// @@@@@@@ AFTER COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
+
+        # Save the cooled down state.
+        lcs_manager.saveState("cooled", lcs)
+        lcs_manager.saveState("final", lcs)
 
 if __name__ == "__main__":
     main()
