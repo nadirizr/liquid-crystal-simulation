@@ -14,8 +14,10 @@ class LiquidCrystalSystemStateManager:
     in different runs.
     """
     def __init__(self, parameters):
-        LCS_REPOSITORY_LOCATION = str(self.parameters["LCS_REPOSITORY_LOCATION"])
-        LCS_REPOSITORY_SUFFIX = str(self.parameters["LCS_REPOSITORY_SUFFIX"])
+        LCS_REPOSITORY_LOCATION = str(parameters["LCS_REPOSITORY_LOCATION"])
+        LCS_REPOSITORY_SUFFIX = str(parameters["LCS_REPOSITORY_SUFFIX"])
+
+        self.parameters = parameters
 
         self.repository_path = LCS_REPOSITORY_LOCATION
         if not os.path.isdir(self.repository_path):
@@ -47,12 +49,11 @@ class LiquidCrystalSystemStateManager:
         state_path = self.state_repository[state_name]
         state_data = pickle.load(file(state_path, "r"))
 
-        parameters = state_data["parameters"]
         temperature = state_data["temperature"]
         spins = state_data["spins"]
         locations = state_data["locations"]
 
-        return LiquidCrystalSystem(parameters=parameters,
+        return LiquidCrystalSystem(parameters=self.parameters,
                                    initial_temperature=temperature,
                                    initial_spins=spins,
                                    initial_locations=locations)
@@ -63,11 +64,16 @@ class LiquidCrystalSystemStateManager:
         This state can be loaded later with loadState under the saved name.
         If the given state name already exists, it will be overriden.
         """
+        LCS_REPOSITORY_SUFFIX = str(self.parameters["LCS_REPOSITORY_SUFFIX"])
+
         state_data = {
-            "parameters": lcs.parameters,
             "temperature": lcs.temperature,
             "spins": lcs.spins,
             "locations": lcs.locations,
         }
 
-        pickle.dump(state_data, file(filepath, "w"))
+        state_path = os.path.join(self.repository_path,
+                                  "%s.%s" % (state_name, LCS_REPOSITORY_SUFFIX))
+        self.state_repository[state_name] = state_path
+
+        pickle.dump(state_data, file(state_path, "w"))
