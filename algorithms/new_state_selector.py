@@ -18,9 +18,13 @@ class SelectByLowerEnergy(MonteCarloNewStateSelector):
         For a cooling algorithm, a lower energy is better.
         """
         current_energy = current_lcs.getPotentialEnergy()
-        print "Current Energy: %s" % current_energy
+        current_temperature = current_lcs.getTemperature()
+        print "Current Energy: %s [T*=%s]" % (current_energy,
+                                              current_temperature)
         new_energy = new_lcs.getPotentialEnergy()
-        print "New Energy: %s" % new_energy
+        new_temperature = new_lcs.getTemperature()
+        print "New Energy: %s [T*=%s]" % (new_energy,
+                                          new_temperature)
         return new_energy < current_energy
 
 class SelectByHigherVariance(MonteCarloNewStateSelector):
