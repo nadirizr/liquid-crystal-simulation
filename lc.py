@@ -60,11 +60,18 @@ class LiquidCrystalSystem:
         """
         Returns a copy of this LiquidCrystalSystem object.
         """
+        #print "// LiquidCrystalSystem.copy:"
+        parameters = self.parameters.copy()
         spins = self.copyPropertyList(self.spins)
         locations = self.copyPropertyList(self.locations)
         original_locations = self.copyPropertyList(self.original_locations)
-        lcs = LiquidCrystalSystem(self.parameters, self.temperature,
+        lcs = LiquidCrystalSystem(parameters, self.temperature,
                                   spins, locations, original_locations)
+        #print "// lcs.getTemperature() = %s" % (lcs.getTemperature(),)
+        #print "// lcs.getPotentialEnergy() = %s" % (lcs.getPotentialEnergy(),)
+        #print "// lcs.getAverageSpinOrientation() = %s, self.getSpinOrientationVariance() = %s" % (lcs.getAverageSpinOrientation(), lcs.getSpinOrientationVariance())
+        #print "// lcs.potential = %s, self.potential = %s" % (lcs.potential, self.potential)
+        #lcs.print2DSystem()
         return lcs
 
     def getTemperature(self):
@@ -171,7 +178,7 @@ class LiquidCrystalSystem:
             locations = self.locations
 
         # Get the location property.
-        location = self.getProperty(self.locations, indices).copy()
+        location = self.getProperty(locations, indices).copy()
         
         # Translate it if necessary.
         for (dim, index) in enumerate(indices):
