@@ -5,6 +5,8 @@ from lc_state_manager import LiquidCrystalSystemStateManager
 from algorithms.monte_carlo_algorithm import MonteCarloAlgorithm
 from algorithms.new_state_selector import *
 
+import cProfile
+
 def readParametersFromFile(args):
     model = "default"
     if len(args) > 1:
@@ -72,3 +74,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #cProfile.run("main()", "profile_fast.out")
