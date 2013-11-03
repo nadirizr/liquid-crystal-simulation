@@ -14,7 +14,9 @@ class LiquidCrystalSystemStateManager:
     in different runs.
     """
     def __init__(self, parameters):
-        LCS_REPOSITORY_LOCATION = str(parameters["LCS_REPOSITORY_LOCATION"])
+        LCS_REPOSITORY_LOCATION = os.path.join(
+            str(parameters["RUN_DIR"]),
+            str(parameters["LCS_REPOSITORY_LOCATION"]))
         LCS_REPOSITORY_SUFFIX = str(parameters["LCS_REPOSITORY_SUFFIX"])
 
         self.parameters = parameters

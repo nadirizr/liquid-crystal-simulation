@@ -1,3 +1,5 @@
+import os
+
 from lc import LiquidCrystalSystem
 from new_state_selector import MonteCarloNewStateSelector
 from util import *
@@ -32,8 +34,9 @@ class MonteCarloAlgorithm:
         current system temperature to the given final temperature, in the
         temperature delta decrements that were given.
         """
-        AVIZ_OUTPUT_PATH = str(
-            self.parameters[self.parameter_prefix + "AVIZ_OUTPUT_PATH"])
+        AVIZ_OUTPUT_PATH = os.path.join(
+            str(self.parameters["RUN_DIR"]),
+            str(self.parameters[self.parameter_prefix + "AVIZ_OUTPUT_PATH"]))
         MC_TEMPERATURES = list(
             self.parameters[self.parameter_prefix + "TEMPERATURES"])
         MC_MAX_NON_IMPROVING_STEPS = int(

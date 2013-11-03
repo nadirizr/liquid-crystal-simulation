@@ -1,30 +1,55 @@
+import cProfile
 import sys
+import time
 
 from lc import LiquidCrystalSystem
 from lc_state_manager import LiquidCrystalSystemStateManager
 from algorithms.monte_carlo_algorithm import MonteCarloAlgorithm
 from algorithms.new_state_selector import *
 
-import cProfile
+def parseCommandLineArgs(args):
+    parameters = {}
+    args = args[:]
 
-def readParametersFromFile(args):
-    model = "default"
+    parameters["profile"] = False
+    if "--profile" in args or "-p" in args:
+        parameters["profile"] = True
+        try:
+            args.remove("--profile")
+        except:
+            pass
+        try:
+            args.remove("-p")
+        except:
+            pass
+
+    parameters["model"] = "default"
     if len(args) > 1:
-        model = args[1]
-    filename = "models/%s.py" % model
+        parameters["model"] = args[1]
 
+    return parameters
+
+def readParametersFromFile(model):
+    filename = "models/%s.py" % model
     print "Loading configuration: %s" % model
     parameters = {}
     exec file(filename, "r") in parameters
     return parameters
 
-def main():
-    parameters = readParametersFromFile(sys.argv)
+def main(args):
+    parameters = readParametersFromFile(args["model"])
     DIMENSIONS = parameters["DIMENSIONS"]
     INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
     USE_MC_HEATER = bool(parameters["USE_MC_HEATER"])
     USE_MC_COOLER = bool(parameters["USE_MC_COOLER"])
     INITIAL_STATE = parameters.get("INITIAL_STATE", None)
+
+    # Set the run dir under which all other dirs are created.
+    current_time = time.gmtime()
+    parameters["RUN_DIR"] = "runs/%04s%02s%02s_%02s%02s%02s_%s" % (
+            current_time.tm_year, current_time.tm_mon, current_time.tm_mday,
+            current_time.tm_hour, current_time.tm_min, current_time.tm_sec,
+            args["model"])
 
     # Set up the state manager.
     lcs_manager = LiquidCrystalSystemStateManager(parameters)
@@ -73,5 +98,8 @@ def main():
         lcs_manager.saveState("final", lcs)
 
 if __name__ == "__main__":
-    main()
-    #cProfile.run("main()", "profile_fast.out")
+    args = parseCommandLineArgs(sys.argv)
+    if args["profile"]:
+        cProfile.run("main(args)", "profile.out")
+    else:
+        main(args)
