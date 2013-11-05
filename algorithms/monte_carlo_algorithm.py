@@ -154,6 +154,8 @@ class MonteCarloAlgorithm:
         print "E = %s" % E
 
         # Go over all of the particles, and change the angles for each one.
+        average_alpha = 0.0
+        num_calcs = 0
         index_iterator = self.lcs.getSystemIndexIterator()
         for indices in index_iterator:
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
@@ -172,21 +174,29 @@ class MonteCarloAlgorithm:
                 # of the Boltzmann distibution.
                 current_spin_energy = self.lcs.getPotentialEnergyForSpin(indices)
                 oldE = E
-                old_probability = self.lcs.getCanonicalEnsembleProbability(energy=E)
 
                 self.lcs.setProperty(self.lcs.spins, indices, new_spin)
                 self.lcs.setProperty(self.lcs.locations, indices, new_location)
                 new_spin_energy = self.lcs.getPotentialEnergyForSpin(indices)
-                E += new_spin_energy - current_spin_energy
-                new_probability = self.lcs.getCanonicalEnsembleProbability(energy=E)
+                energy_difference = new_spin_energy - current_spin_energy
+                E += energy_difference
 
-                #print "// newp = %s, oldp = %s" % (new_probability, old_probability)
-                alpha = new_probability / old_probability
-                alpha = min(1.0, alpha)
+                # Calculate the transition probability alpha.
+                alpha = 1.0
+                if energy_difference >= 0.0:
+                    alpha = self.lcs.getCanonicalEnsembleProbability(
+                            energy=energy_difference)
+
+                # Perform the transition with probability alpha, or go back to
+                # the original state with probability 1-alpha.
                 p = random.random()
-                if p >= alpha:
+                if p > alpha:
                     self.lcs.setSpin(indices, current_spin)
                     self.lcs.setLocation(indices, current_location)
                     E = oldE
 
+                average_alpha += alpha
+                num_calcs += 1
+
+        print "// average_alpha = %s" % (average_alpha / num_calcs)
         print "Done."
