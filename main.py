@@ -46,7 +46,7 @@ def main(args):
 
     # Set the run dir under which all other dirs are created.
     current_time = time.gmtime()
-    parameters["RUN_DIR"] = "runs/%04s%02s%02s_%02s%02s%02s_%s" % (
+    parameters["RUN_DIR"] = "runs/%04d%02d%02d_%02d%02d%02d_%s" % (
             current_time.tm_year, current_time.tm_mon, current_time.tm_mday,
             current_time.tm_hour, current_time.tm_min, current_time.tm_sec,
             args["model"])
