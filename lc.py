@@ -118,12 +118,11 @@ class LiquidCrystalSystem:
         Calculates the non-normalized canonical ensemble probability of the
         system, which is: e^(-E/(kB*T))
         """
-        E = energy or self.getPotentialEnergy()
+        E = energy
+        if E is None:
+            E = self.getPotentialEnergy()
         T = self.temperature
-        res =  math.exp(-(abs(E) / (kB * T)))
-        #if res == 0.0:
-            #print "getCanonicalEnsembleProbability: res=%s, E=%s, kB=%s" % (res , E , kB)
-        return res
+        return math.exp(-(E / (kB * T)))
 
     def getAverageSpinOrientation(self):
         """
