@@ -66,7 +66,12 @@ class MonteCarloAlgorithm:
                 current_lcs = self.lcs.copy()
 
                 print "Performing Metropolis step... "
+                originalE = self.lcs.getPotentialEnergy()
+                originalEcurrent = current_lcs.getPotentialEnergy()
+                assert originalE == originalEcurrent
                 self._performMetropolisStep()
+                originalEafter = current_lcs.getPotentialEnergy()
+                assert originalE == originalEafter
 
                 if self.isNewStateBetter(current_lcs, self.lcs):
                     print "--> GOT BETTER STATE!"
