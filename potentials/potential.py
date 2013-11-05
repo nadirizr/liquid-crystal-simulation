@@ -9,6 +9,12 @@ class Potential:
         """
         raise NotImplemented
 
+    def update(self):
+        """
+        Forces update of internal data structures.
+        """
+        pass
+
 class TwoSpinPotential:
     """
     This is the interface for a two spin potential.

@@ -99,8 +99,9 @@ class LiquidCrystalSystem:
         """
         Calculates and returns the potential energy of the system.
         """
-        h = 0
+        self.potential.update()
 
+        h = 0
         index_iterator = self.getSystemIndexIterator()
         for indices in index_iterator:
             h += self.getPotentialEnergyForSpin(indices)

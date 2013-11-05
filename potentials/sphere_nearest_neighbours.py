@@ -53,6 +53,14 @@ class SphereNearestNeighboursPotential(Potential):
 
         return U / 2.0
 
+    def update(self):
+        """
+        This forces an update of the neighbours lists on the next call to
+        calculate.
+        """
+        self.neighbour_lists = {}
+        self.cycles_before_update = 0
+
     def _updateNeighbourLists(self, lcs):
         """
         Updates the list of neighbours for each of the spins based on the
