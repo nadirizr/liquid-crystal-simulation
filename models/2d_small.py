@@ -39,7 +39,7 @@ POTENTIAL = SphereNearestNeighboursPotential
 TWO_SPIN_POTENTIAL = GayBernesPotentialFast
 
 # Nearest neighbours parameters.
-NEAREST_NEIGHBOURS_MAX_RADIUS = average(INITIAL_SPACING) * 1.0
+NEAREST_NEIGHBOURS_MAX_RADIUS = average(INITIAL_SPACING) * 1.1
 NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 1
 NEAREST_NEIGHBOURS_UPDATE_CYCLES = 100
 
@@ -49,7 +49,7 @@ MIU = 1.0
 NI = 3.0
 
 KAPPA = 3.0
-SIGMA_S = 0.3
+SIGMA_S = 0.5
 SIGMA_E = KAPPA * SIGMA_S
 
 KAPPA_TAG = 5.0
@@ -64,17 +64,17 @@ EPSILON_E = EPSILON_S / KAPPA_TAG
 USE_MC_HEATER = True
 
 # The standard deviation of the gaussian random spacing in the system.
-MC_HEATER_SPACING_STDEV = 0.1
+MC_HEATER_SPACING_STDEV = 0.05
 # The maximum radius from the original location where the molecule can be.
 MC_HEATER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_HEATER_SPACING_STDEV * 5.0
 # The standard deviation of the gaussian random spin orientation.
-MC_HEATER_SPIN_STDEV = 0.5
+MC_HEATER_SPIN_STDEV = 0.05
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_HEATER_METROPOLIS_NUM_STEPS = 10000
+MC_HEATER_METROPOLIS_NUM_STEPS = 100000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MC_HEATER_MAX_NON_IMPROVING_STEPS = 3
+MC_HEATER_MAX_NON_IMPROVING_STEPS = 1
 
 # The temperatures to use in the Monte Carlo algorithm.
 MC_HEATER_TEMPERATURES = [5.0]
@@ -90,17 +90,17 @@ MC_HEATER_AVIZ_OUTPUT_PATH = "output/lqs_1_heat"
 USE_MC_COOLER = True
 
 # The standard deviation of the gaussian random spacing in the system.
-MC_COOLER_SPACING_STDEV = 0.1
+MC_COOLER_SPACING_STDEV = 0.05
 # The maximum radius from the original location where the molecule can be.
 MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV * 5.0
 # The standard deviation of the gaussian random spin orientation.
-MC_COOLER_SPIN_STDEV = 0.5
+MC_COOLER_SPIN_STDEV = 0.05
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_COOLER_METROPOLIS_NUM_STEPS = 10000
+MC_COOLER_METROPOLIS_NUM_STEPS = 100000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MC_COOLER_MAX_NON_IMPROVING_STEPS = 3
+MC_COOLER_MAX_NON_IMPROVING_STEPS = 1
 
 # The temperatures to use in the Monte Carlo algorithm.
 MC_COOLER_TEMPERATURES = frange(5.0, 2.0, -0.1)
