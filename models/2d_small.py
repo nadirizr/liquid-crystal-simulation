@@ -64,17 +64,17 @@ EPSILON_E = EPSILON_S / KAPPA_TAG
 USE_MC_HEATER = True
 
 # The standard deviation of the gaussian random spacing in the system.
-MC_HEATER_SPACING_STDEV = 0.05
+MC_HEATER_SPACING_STDEV = 0.1
 # The maximum radius from the original location where the molecule can be.
 MC_HEATER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_HEATER_SPACING_STDEV * 5.0
 # The standard deviation of the gaussian random spin orientation.
-MC_HEATER_SPIN_STDEV = 0.05
+MC_HEATER_SPIN_STDEV = 0.5
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_HEATER_METROPOLIS_NUM_STEPS = 100000
+MC_HEATER_METROPOLIS_NUM_STEPS = 10000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
-MC_HEATER_MAX_NON_IMPROVING_STEPS = 1
+MC_HEATER_MAX_NON_IMPROVING_STEPS = 5
 
 # The temperatures to use in the Monte Carlo algorithm.
 MC_HEATER_TEMPERATURES = [5.0]
