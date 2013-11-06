@@ -9,6 +9,7 @@ import numpy
 import random
 
 from constants import *
+import progressbar
 
 def P2(x):
     """
