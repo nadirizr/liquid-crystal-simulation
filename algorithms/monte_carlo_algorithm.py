@@ -160,12 +160,13 @@ class MonteCarloAlgorithm:
         print "E = %s" % E
 
         # Create the progress bar.
-        max_val = reduce(lambda a, b: a*b, self.lcs.dimensions, 1)
+        max_val = reduce(lambda a, b: a*b, self.lcs.dimensions)
         widgets = ['Running Metropolis (%s * %s steps): ' % (
                       max_val, MC_METROPOLIS_NUM_STEPS),
                    progressbar.Percentage(), ' (', progressbar.ETA(), ') ',
                    progressbar.Bar(), ' ', progressbar.FileTransferSpeed()]
-        pbar = progressbar.ProgressBar(widgets=widgets, maxval=max_val).start()
+        pbar = progressbar.ProgressBar(
+                widgets=widgets, maxval=max_val, term_width=120).start()
 
         # Go over all of the particles, and change the angles for each one.
         average_alpha = 0.0
