@@ -1,4 +1,5 @@
 import os
+import sys
 
 from lc import LiquidCrystalSystem
 from new_state_selector import MonteCarloNewStateSelector
@@ -202,6 +203,10 @@ class MonteCarloAlgorithm:
 
                 average_alpha += alpha
                 num_calcs += 1
+        
+            sys.stdout.write(".")
+            sys.stdout.flush()
 
+        print
         print "// average_alpha = %s" % (average_alpha / num_calcs)
         print "Done."
