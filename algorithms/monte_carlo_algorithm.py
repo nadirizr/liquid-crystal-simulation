@@ -40,6 +40,8 @@ class MonteCarloAlgorithm:
             str(self.parameters[self.parameter_prefix + "AVIZ_OUTPUT_PATH"]))
         MC_TEMPERATURES = list(
             self.parameters[self.parameter_prefix + "TEMPERATURES"])
+        MC_MAX_STEPS = int(
+            self.parameters[self.parameter_prefix + "MAX_STEPS"])
         MC_MAX_NON_IMPROVING_STEPS = int(
             self.parameters[self.parameter_prefix + "MAX_NON_IMPROVING_STEPS"])
 
@@ -62,8 +64,9 @@ class MonteCarloAlgorithm:
     
             # Continue running Metropolis steps until we reach a point where in
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
+            i = 0
             k = 0
-            while k < MC_MAX_NON_IMPROVING_STEPS:
+            while k < MC_MAX_NON_IMPROVING_STEPS and i < MC_MAX_STEPS:
                 current_lcs = self.lcs.copy()
 
                 print "Performing Metropolis step... "
@@ -91,6 +94,8 @@ class MonteCarloAlgorithm:
                     print
                     k += 1
                     self.lcs = current_lcs
+
+                i += 1
             
             # Next step with the next temperature.
             print ("Changing Temperature ... (T*=%s -> %s)" %

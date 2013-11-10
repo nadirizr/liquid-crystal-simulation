@@ -11,6 +11,22 @@ class MonteCarloNewStateSelector:
         """
         raise NotImplementedError
 
+class SelectAlwaysNewer(MonteCarloNewStateSelector):
+    
+    def isNewStateBetter(self, current_lcs, new_lcs):
+        """
+        For an equilibrium reaching algorithm, the new state is better.
+        """
+        current_energy = current_lcs.getPotentialEnergy()
+        current_temperature = current_lcs.getTemperature()
+        print "Current Energy: %s [T*=%s]" % (current_energy,
+                                              current_temperature)
+        new_energy = new_lcs.getPotentialEnergy()
+        new_temperature = new_lcs.getTemperature()
+        print "New Energy: %s [T*=%s]" % (new_energy,
+                                          new_temperature)
+        return True
+
 class SelectByLowerEnergy(MonteCarloNewStateSelector):
 
     def isNewStateBetter(self, current_lcs, new_lcs):

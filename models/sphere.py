@@ -63,6 +63,9 @@ MC_HEATER_SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
 MC_HEATER_METROPOLIS_NUM_STEPS = 10000
+# Number of steps in the cooling process to perform the Metropolis algorithm
+# before lowering the temperature further.
+MC_HEATER_MAX_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_HEATER_MAX_NON_IMPROVING_STEPS = 10
@@ -84,6 +87,9 @@ MC_COOLER_SPIN_STDEV = 1.0
 
 # Number of Metropolis steps to perform in each cooling steps.
 MC_COOLER_METROPOLIS_NUM_STEPS = 10000
+# Number of steps in the cooling process to perform the Metropolis algorithm
+# before lowering the temperature further.
+MC_COOLER_MAX_STEPS = 1000
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_COOLER_MAX_NON_IMPROVING_STEPS = 10
