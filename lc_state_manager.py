@@ -2,6 +2,7 @@ import glob
 import os
 import pickle
 import re
+import shutil
 
 from lc import LiquidCrystalSystem
 
@@ -22,13 +23,14 @@ class LiquidCrystalSystemStateManager:
         self.parameters = parameters
 
         self.repository_path = LCS_REPOSITORY_LOCATION
+        self.repository_suffix = LCS_REPOSITORY_SUFFIX
         if not os.path.isdir(self.repository_path):
             os.makedirs(self.repository_path)
         state_paths = glob.glob(os.path.join(self.repository_path,
-                                             "*.%s" % LCS_REPOSITORY_SUFFIX))
+                                             "*.%s" % self.repository_suffix))
         self.state_repository = {}
         for state_path in state_paths:
-            s = re.search(r"^.*\/(.*)\.%s" % LCS_REPOSITORY_SUFFIX, state_path)
+            s = re.search(r"^.*\/(.*)\.%s" % self.repository_suffix, state_path)
             if s and s.groups():
                 state_name = s.groups()[0]
                 self.state_repository[state_name] = state_path
@@ -66,8 +68,6 @@ class LiquidCrystalSystemStateManager:
         This state can be loaded later with loadState under the saved name.
         If the given state name already exists, it will be overriden.
         """
-        LCS_REPOSITORY_SUFFIX = str(self.parameters["LCS_REPOSITORY_SUFFIX"])
-
         state_data = {
             "temperature": lcs.temperature,
             "spins": lcs.spins,
@@ -75,7 +75,8 @@ class LiquidCrystalSystemStateManager:
         }
 
         state_path = os.path.join(self.repository_path,
-                                  "%s.%s" % (state_name, LCS_REPOSITORY_SUFFIX))
+                                  "%s.%s" % (state_name,
+                                             self.repository_suffix))
         self.state_repository[state_name] = state_path
 
         pickle.dump(state_data, file(state_path, "w"))
@@ -90,7 +91,7 @@ class LiquidCrystalSystemStateManager:
             return
 
         dest_path = os.path.join(self.repository_path,
-                                 "%s.%s" % (state_name, LCS_REPOSITORY_SUFFIX))
+                                 "%s.%s" % (state_name, self.repository_suffix))
         shutil.copy(state_path, dest_path)
         self.state_repository[state_name] = dest_path
 
