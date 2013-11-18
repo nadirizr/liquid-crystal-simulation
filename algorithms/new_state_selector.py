@@ -51,7 +51,12 @@ class SelectByHigherVariance(MonteCarloNewStateSelector):
         higher spin orientation variance.
         """
         current_spin_variance = current_lcs.getSpinOrientationVariance()
+        current_energy = current_lcs.getPotentialEnergy()
         print "Current spin orientation variance: %s" % (current_spin_variance,)
+        print "Current Energy: %s" % (current_energy,)
         new_spin_variance = new_lcs.getSpinOrientationVariance()
+        new_energy = new_lcs.getPotentialEnergy()
         print "New spin orientation variance: %s" % (new_spin_variance,)
-        return new_spin_variance > current_spin_variance
+        print "New Energy: %s" % (new_energy,)
+        return ((new_spin_variance * new_energy) >
+                (current_spin_variance * current_energy))
