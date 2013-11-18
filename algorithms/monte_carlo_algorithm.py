@@ -165,23 +165,24 @@ class MonteCarloAlgorithm:
         print "E = %s" % E
 
         # Create the progress bar.
-        max_val = reduce(lambda a, b: a*b, self.lcs.dimensions)
+        num_steps = MC_METROPOLIS_NUM_STEPS
+        num_cells = reduce(lambda a, b: a*b, self.lcs.dimensions)
         widgets = ['Running Metropolis (%s * %s steps): ' % (
-                      max_val, MC_METROPOLIS_NUM_STEPS),
+                      num_cells, num_steps),
                    progressbar.Percentage(), ' (', progressbar.ETA(), ') ',
                    progressbar.Bar(), ' ', progressbar.FileTransferSpeed()]
         pbar = progressbar.ProgressBar(
-                widgets=widgets, maxval=max_val, term_width=120).start()
+                widgets=widgets, maxval=num_steps, term_width=120).start()
 
         # Go over all of the particles, and change the angles for each one.
         average_alpha = 0.0
         num_calcs = 0
-        index_iterator = self.lcs.getSystemIndexIterator()
-        for (i, indices) in enumerate(index_iterator):
+        for step in xrange(MC_METROPOLIS_NUM_STEPS):
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
             # spin orientation from a distribution that should become more and
             # more as the Boltzmann energy distribution.
-            for step in xrange(MC_METROPOLIS_NUM_STEPS):
+            index_iterator = self.lcs.getSystemIndexIterator()
+            for (i, indices) in enumerate(index_iterator):
                 # Select a new spin and location based on the current.
                 current_spin = self.lcs.getSpin(indices)
                 current_location = self.lcs.getLocation(indices)
@@ -218,7 +219,7 @@ class MonteCarloAlgorithm:
                 average_alpha += alpha
                 num_calcs += 1
         
-            pbar.update(i+1)
+            pbar.update(step+1)
 
         pbar.finish()
         print "// average_alpha = %s" % (average_alpha / num_calcs)
