@@ -20,15 +20,15 @@ BOUNDARY_CONDITIONS = ["P", "F"]
 INITIAL_SPACING = [0.8, 0.8]
 # The standard deviation of the random spacing around the initial position
 # (with the same dimensions as DIMENSIONS).
-INITIAL_SPACING_STDEV = [0.0, 0.0]
+INITIAL_SPACING_STDEV = [0.1, 0.1]
 # The initial spin orientation vector (with the same dimensions as DIMENSIONS).
 INITIAL_SPIN_ORIENTATION = [0.0, 1.0]
 # The standard diviation of the initial spin orientation vector (with the same
 # dimensions as DIMENSIONS).
-INITIAL_SPIN_ORIENTATION_STDEV = [0.0, 0.0]
+INITIAL_SPIN_ORIENTATION_STDEV = [4.0, 4.0]
 
 # Initial effective temperature.
-INITIAL_TEMPERATURE = 2.0
+INITIAL_TEMPERATURE = 5.0
 
 ##################################################################
 #                    Potential Parameters                        #
@@ -61,7 +61,7 @@ EPSILON_E = EPSILON_S / KAPPA_TAG
 ##################################################################
 
 # Use the heating algorithm.
-USE_MC_HEATER = True
+USE_MC_HEATER = False
 
 # The standard deviation of the gaussian random spacing in the system.
 MC_HEATER_SPACING_STDEV = 0.1
