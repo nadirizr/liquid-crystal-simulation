@@ -66,6 +66,7 @@ class SphereNearestNeighboursPotential(Potential):
         Updates the list of neighbours for each of the spins based on the
         locations of the spins and the system dimensions.
         """
+        #print "// _updateNeighbourLists"
         # Reset the cached neighbour lists.
         self.neighbour_lists = {}
         self.cycles_before_update = int(
