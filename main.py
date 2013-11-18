@@ -56,7 +56,7 @@ def main(args):
 
     # Set up the initial state.
     if INITIAL_STATE:
-        lcs = lcs_manager.loadState(INITIAL_STATE)
+        lcs = lcs_manager.importState("initial", INITIAL_STATE)
         INITIAL_TEMPERATURE = lcs.getTemperature()
         DIMENSIONS = lcs.dimensions[:]
         print "Loaded initial state: %s" % INITIAL_STATE
