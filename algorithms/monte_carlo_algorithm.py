@@ -166,9 +166,7 @@ class MonteCarloAlgorithm:
 
         # Create the progress bar.
         num_steps = MC_METROPOLIS_NUM_STEPS
-        num_cells = reduce(lambda a, b: a*b, self.lcs.dimensions)
-        widgets = ['Running Metropolis (%s * %s steps): ' % (
-                      num_cells, num_steps),
+        widgets = ['Running Metropolis (%s steps): ' % (num_steps,),
                    progressbar.Percentage(), ' (', progressbar.ETA(), ') ',
                    progressbar.Bar(), ' ', progressbar.FileTransferSpeed()]
         pbar = progressbar.ProgressBar(
