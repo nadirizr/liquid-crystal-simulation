@@ -41,7 +41,11 @@ def main(args):
     DIMENSIONS = parameters["DIMENSIONS"]
     INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
     USE_MC_HEATER = bool(parameters["USE_MC_HEATER"])
+    MC_HEATER_STATE_SELECTOR = parameters.get("MC_HEATER_STATE_SELECTOR",
+                                              SelectByHigherVariance)
     USE_MC_COOLER = bool(parameters["USE_MC_COOLER"])
+    MC_COOLER_STATE_SELECTOR = parameters.get("MC_COOLER_STATE_SELECTOR",
+                                              SelectByLowerEnergy)
     INITIAL_STATE = parameters.get("INITIAL_STATE", None)
 
     # Set the run dir under which all other dirs are created.
@@ -73,7 +77,7 @@ def main(args):
 
     # Heat up the LCS.
     if USE_MC_HEATER:
-        mch = MonteCarloAlgorithm(lcs, SelectByHigherVariance(),
+        mch = MonteCarloAlgorithm(lcs, MC_HEATER_STATE_SELECTOR(),
                                   parameters, parameter_prefix="MC_HEATER_")
         print "// @@@@@@@ BEFORE HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
         mch.run()
@@ -86,7 +90,7 @@ def main(args):
 
     # Cool down the LCS.
     if USE_MC_COOLER:
-        mcc = MonteCarloAlgorithm(lcs, SelectByLowerEnergy(),
+        mcc = MonteCarloAlgorithm(lcs, MC_COOLER_STATE_SELECTOR(),
                                   parameters, parameter_prefix="MC_COOLER_")
         print "// @@@@@@@ BEFORE COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
         mcc.run()
