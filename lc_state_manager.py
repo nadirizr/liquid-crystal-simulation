@@ -79,3 +79,19 @@ class LiquidCrystalSystemStateManager:
         self.state_repository[state_name] = state_path
 
         pickle.dump(state_data, file(state_path, "w"))
+
+    def importState(self, state_name, state_path):
+        """
+        Given a path to a state file, import it into the state manager, with the
+        given name, returning the newly imported state.
+        If the name already exists, overwrites it with the imported state.
+        """
+        if not os.path.exists(state_path):
+            return
+
+        dest_path = os.path.join(self.repository_path,
+                                 "%s.%s" % (state_name, LCS_REPOSITORY_SUFFIX))
+        shutil.copy(state_path, dest_path)
+        self.state_repository[state_name] = dest_path
+
+        return self.loadState(state_name)
