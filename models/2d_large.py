@@ -12,7 +12,7 @@ from util import *
 ##################################################################
 
 # These are the system dimensions.
-DIMENSIONS = [5, 5]
+DIMENSIONS = [10, 10]
 
 # Preiodicity and boundary conditions ("P" = Periodic, "F" = Fixed).
 BOUNDARY_CONDITIONS = ["P", "F"]
@@ -32,7 +32,7 @@ INITIAL_SPIN_ORIENTATION_STDEV = [4.0, 4.0]
 INITIAL_TEMPERATURE = 3.0
 
 # The initial state to use.
-INITIAL_STATE = "states/initial_5_5.dat"
+#INITIAL_STATE = "states/initial_10_10.dat"
 
 ##################################################################
 #                    Potential Parameters                        #
@@ -97,14 +97,14 @@ MC_HEATER_AVIZ_OUTPUT_PATH = "output/lqs_1_heat"
 USE_MC_COOLER = True
 
 # The standard deviation of the gaussian random spacing in the system.
-MC_COOLER_SPACING_STDEV = 0.01
+MC_COOLER_SPACING_STDEV = 0.05
 # The maximum radius from the original location where the molecule can be.
-MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV * 25.0
+MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV * 5.0
 # The standard deviation of the gaussian random spin orientation.
 MC_COOLER_SPIN_STDEV = 0.05
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_COOLER_METROPOLIS_NUM_STEPS = 10000
+MC_COOLER_METROPOLIS_NUM_STEPS = 100000
 # Number of steps in the cooling process to perform the Metropolis algorithm
 # before lowering the temperature further.
 MC_COOLER_MAX_STEPS = 1
@@ -116,7 +116,7 @@ MC_COOLER_MAX_NON_IMPROVING_STEPS = 10
 MC_COOLER_STATE_SELECTOR = SelectAlwaysNewer
 
 # The temperatures to use in the Monte Carlo algorithm.
-MC_COOLER_TEMPERATURES = frange(3.0, 0.0, -0.1)
+MC_COOLER_TEMPERATURES = frange(3.0, 0.1, -0.1)
 
 # The path to which to output the AVIZ files.
 MC_COOLER_AVIZ_OUTPUT_PATH = "output/lqs_2_cool"
