@@ -228,7 +228,7 @@ class MonteCarloAlgorithm:
             pbar.update(step+1)
 
         pbar.finish()
-        print "New states with higher energy: %s%% (selected %s%%)" % (
+        print "New states with higher energy: %.2f%% (selected %.2f%%)" % (
                 float(num_energy_higher_calcs) * 100 / num_calcs,
                 float(num_energy_higher_selected_calcs) * 100 / num_calcs)
         print "Average ALPHA for states with higher energy: %s" % (
