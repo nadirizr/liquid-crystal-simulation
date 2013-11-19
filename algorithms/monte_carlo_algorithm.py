@@ -174,7 +174,10 @@ class MonteCarloAlgorithm:
 
         # Go over all of the particles, and change the angles for each one.
         average_alpha = 0.0
+        average_alpha_higher_energy = 0.0
         num_calcs = 0
+        num_energy_higher_calcs = 0
+        num_energy_higher_selected_calcs = 0
         for step in xrange(MC_METROPOLIS_NUM_STEPS):
             # Perform METROPOLIS_NUM_STEPS steps and each time select a new
             # spin orientation from a distribution that should become more and
@@ -206,6 +209,9 @@ class MonteCarloAlgorithm:
                     alpha = self.lcs.getCanonicalEnsembleProbability(
                             energy=energy_difference)
 
+                    num_energy_higher_calcs += 1
+                    average_alpha_higher_energy += alpha
+
                 # Perform the transition with probability alpha, or go back to
                 # the original state with probability 1-alpha.
                 p = random.random()
@@ -213,6 +219,8 @@ class MonteCarloAlgorithm:
                     self.lcs.setSpin(indices, current_spin)
                     self.lcs.setLocation(indices, current_location)
                     E = oldE
+                else:
+                    num_energy_higher_selected_calcs += (energy_difference >= 0)
 
                 average_alpha += alpha
                 num_calcs += 1
@@ -220,5 +228,10 @@ class MonteCarloAlgorithm:
             pbar.update(step+1)
 
         pbar.finish()
-        print "// average_alpha = %s" % (average_alpha / num_calcs)
+        print "New states with higher energy: %s%% (selected %s%%)" % (
+                float(num_energy_higher_calcs) * 100 / num_calcs,
+                float(num_energy_higher_selected_calcs) * 100 / num_calcs)
+        print "Average ALPHA for states with higher energy: %s" % (
+                average_alpha_higher_energy / num_energy_higher_calcs)
+        print "Average ALPHA for all states: %s" % (average_alpha / num_calcs)
         print "Done."
