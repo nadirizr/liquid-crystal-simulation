@@ -1,10 +1,4 @@
-from potentials.lj_potential import LenardJonesPotential
-from potentials.gb_potential import GayBernesPotential
-from potentials.gb_potential_fast import GayBernesPotentialFast
-from potentials.fixed_nearest_neighbours import FixedNearestNeighboursPotential
-from potentials.sphere_nearest_neighbours import SphereNearestNeighboursPotential
-from constants import kB
-from util import *
+from models.common import *
 
 ##################################################################
 #                    System Parameters                           #
