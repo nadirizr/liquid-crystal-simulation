@@ -73,6 +73,7 @@ def main(args):
            (INITIAL_TEMPERATURE, DIMENSIONS))
     print "*"*70
     print "*"*70
+    lcs_manager.saveState("initial", lcs)
     lcs_manager.saveState("final", lcs)
 
     # Heat up the LCS.
