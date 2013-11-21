@@ -536,14 +536,20 @@ class LiquidCrystalSystem:
         if not os.path.isdir(dirpath):
             os.makedirs(dirpath)
 
-        avg_director = self.getAverageSpinOrientation()
-        director_variance = self.getSpinOrientationVariance()
-        avg_energy = self.getPotentialEnergy()
         T = self.getTemperature()
+        avg_energy = self.getPotentialEnergy()
+
+        avg_director = self.getAverageSpinOrientation()
+        INITIAL_SPIN_ORIENTATION = self.parameters["INITIAL_SPIN_ORIENTATION"]
+        dot_with_original_director = dot(avg_director,
+                                         array(INITIAL_SPIN_ORIENTATION))
+        director_variance = self.getSpinOrientationVariance()
 
         f = file(filepath, "a")
-        f.write("%s\t%s\t%s\n" % (T, avg_energy, avg_director,
-                                  director_variance))
+        f.write("%s\t%s\t%s\t%s\t%s\n" %
+                (T, avg_energy, avg_director,
+                 dot_with_original_director,
+                 director_variance))
         f.flush()
         f.close()
 
