@@ -4,90 +4,138 @@
    <TITLE>Download and Manual Instructions</TITLE>
 
 </HEAD>
-<BODY BGCOLOR="#FFFFFF">
+<BODY BGCOLOR="#FFFFFF" vLink=#4C0B5F aLink=#4C0B5F link=#4C0B5F>
 <H1><CENTER>Manual Instructions</CENTER></H1>
-<H2><center>How to run the system:</center></H2>
+<br><br>
+<H2>Table of Contents:</H2>
+<br>
+<ul><li><a href="#run">How to run the system</a></li></ul>
+<ul><li><a href="#structure">General structure and main components:</a></li>
+<br>
+<ul><li><a href="#algorithms">algorithms</a></li></ul>
+<ul><li><a href="#models">models</a></li></ul>
+<ul><li><a href="#potentials">potentials</a></li></ul>
+<ul><li><a href="#runs">runs</a></li></ul>
+</ul>
+<ul><li><a href="#config">How to write a configuration file</a></li></ul>
+<ul><li><a href="#potential">How to add new potential</a></li></ul>
+<br>
+<br><br>
+<H2><center><a name="run">How to run the system:</a></center></H2>
 <P>
+<br>
 To run the system you only need to go to the main project library, then write in the shell- "<b>./run.sh MODEL_NAME</b>", <br>
 where MODEL_NAME should be the name of the model you use (if you don't write anything it will use the default model).
-<br> you can choose- "fixed" , "sphere" , "default" or add another model as explained below in "How to write a configuration file" section.
+<br> you can choose- "fixed" ,"2d_small,"3d_small" , "2d_large" ,"3d" , "sphere","default"
+Or add another model as explained below in "How to write a configuration file" section.
 <br>
-you should not write "MODEL_NAME.py"! The system know to take it from models library automatically.
+You can find more details about each model under <a href ="#models">"Models"</a> section.
+<br>
+You should not write "MODEL_NAME.py"! The system know to take it from models library automatically.
 <br>
 <br>
-After running the system you can see the visual result by running "<b>./aviz.sh OUTPUT_PATH</b>".<br>
-where OUTPUT_PATH should be the name of the aviz output as in the configuration file.
+After running the system you can see the visual result by running "<b>./aviz.sh OUTPUT_TITLE</b>".<br>
+where OUTPUT_TITLE should be the name of the AViz's output list as shown after finish the running of the simulation (".lst" file).
+<br>
+More details are under <a href="#runs">"runs"</a> section.
 <br>
 </P>
+<br><br>
+<H2><center><a name="structure">General structure and main components:</a></center></H2>
 <br>
-<H2><center>General structure and main components:</center></H2>
 <P>
-<center><img src="prtsc.jpg" height="200"/></center>
+<center><a href="#algorithms"><img src="algorithms.jpg" height="100"/></a><a href="#models"><img src="models.jpg" height="100"/></a><a href="#potentials"><img src="potentials.jpg" height="100"/></a><a href="#runs"><img src="runs.jpg" height="100"/></a>
+<img src="prtsc2.jpg" height="100"/><br><br><img src="prtsc3.jpg" height="100"/></center>
+
 <br>
-<font size="+2"><b> lc.py - </b></font>This class represents the system that we are working with
+<ul><font size="+1.5"><b> lc.py - </b></font>This class represents the system that we are working with
 It holds the positions and angles of molecules in a liquid crystal, and can
-perform a Monte Carlo Metropolis cooling of the liquid crystal.
+perform a Monte Carlo Metropolis cooling of the liquid crystal.</ul>
 <br>
-
-<H2><center>Algorithms:</center></H2>
-We have
-<ul><li> cooling algorithm</li><li>heating algorithm</li></ul> 
-both use Monte Carlo method.
+<ul><font size="+1.5"><b> Constants.py - </b></font>contains physical constants such as Boltzman's constant, Plunck's constant and the g factor. <br> it is possible to add some other constant if one wish to.
+</ul><br>
+<ul><font size="+1.5"><b> utils.py - </b></font>contains some useful methods, some of them can be find in newer additions of Python.
+</ul>
 <br>
-<H2><center>Models:</center></H2>
-We have
-<ul><li> fixed model </li><li> sphere model</li></ul> 
-you can also add another one as written below in "How to add a configuration file". 
 <br>
-
-<H2><center>Potentials:</center></H2>
-We have 
-<ul><li>FixedNearestNeighboursPotential approximation </li><li> "SphereNearestNeighboursPotential" approximation</li></ul> 
-the potentials - <ul><li>"GayBernesPotential" </li><li> "LenardJonesPotential"</li></ul> 
-you can also add another one as written below in "How to add new potential". 
-</P>
-<br>
-<H2><center>Output:</center></H2>
-Contains the output files to Aviz and graphs.
-
+<H3><center><a name="algorithms">Algorithms:</a></center></H3>
+This folder contains the Monte Carlo algorithm methods.
+<br> you should not change anything here.
 <br><br><br>
+<H3><center><a name="models">Models:</a></center></H3>
+<br> you can choose- 
+<ul><li><i>"fixed"</i> - the spins will stay at their places</li></ul>
+<ul><li><i>"2d_small"</i> - A system of 3X3 spins in 2 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in one direction, the other is fixed.</li></ul>
+<ul><li><i>"3d_small"</i> - A system of 5X5X5 spins in 3 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in two directions, the other is fixed.</li></ul>
+<ul><li><i>"2d_large"</i> - A system of 10X10 spins in 2 dimensions, uses the Gay- Berne Potential.Periodic boundary conditions in one direction, the other is fixed.</li></ul>
+<ul><li><i>"3d"</i> - A system of 10X10X10 spins in 3 dimensions, uses the Gay- Berne Potential, Periodic boundary conditions in two directions, the other is fixed.</li></ul>
+<ul><li><i> "sphere"</i></li></ul>
+<ul><li><i>"default"</i> = 2d_large.</li></ul>
+you can also add another one as written below in <a href="#config">"How to add a configuration file"</a>. 
+<br>
+<br><br>
+<H3><center><a name="potentials">Potentials:</a></center></H3>
+We have 
+<ul><li><i>"FixedNearestNeighboursPotential"</i> approximation </li><li><i/> "SphereNearestNeighboursPotential"</i> approximation</li></ul> 
+The potentials - <ul><li><i>"GayBernesPotential"</i> </li><li> <i>"LenardJonesPotential"</i></li></ul> 
+you can also add another one as written below in<a href="#potential"> "How to add new potential"</a>. 
+</P>
+<br><br>
+<H3><center><a name="runs">runs:</a></center></H3>
+After each run of the simulation the system will save all of the states it has gone through, as well as the ".xyz" files for AViz.
+<br>
+Inside the "runs" folder you can find a sub folder for each model you have used so far.
+<br>
+Any folder like this contains sub folders:
+<ul><li><i>"Output"</i> - contains more folders with time stumps. the stump is the time you started running the simulation.
+each one contains all the ".xyz" files and a list file ".lst" for AViz.</li></ul>
+<ul><li><i>States</i> - contains all the states the system went through during the simulation.</li></ul>
+<ul><li><i>States</i> - contains all the states the system went through during the simulation.</li></ul>
+<ul><li><i>run.log</i> - a log file with all the simulation details like shown during the simulation. </li></ul>
 
-<H2><center>How to write a configuration file:</center></H2>
+
+
+<br><br><br><br><br>
+<H2><center><a name="config">How to write a configuration file:</a></center></H2>
 <P>
-First of all you should go to the library "models", then you can copy the content of the configuration file "default.py" and name your file as you wish (with the end of .py of course)
+<br>
+First of all you should go to the library <i>"models"</i>, then you can copy the content of the configuration file "default.py" and name your file as you wish (with the end of .py of course)
 <br><br>
 Now you only need to change the parameters in your file, so it would be like the system you are willing to get. 
 <br><br>
 more explanations for some <b>system parameters</b>: <br>
-DIMENSIONS = [number of spins in x direction, number of spins in y direction, number of spins in z direction]
-<br>
-INITIAL_SPACING = [The spacing between spin locations in x direction, The spacing between spin locations in y direction , The spacing between spin locations in z direction]
-<br>
-INITIAL_SPIN_ORIENTATION = [The initial spin orientation vector in x direction , The initial spin orientation vector in y direction , The initial spin orientation vector in z direction]
+<ul><li><i>DIMENSIONS</i> = [number of spins in x direction, number of spins in y direction, number of spins in z direction]</li></ul>
+<ul><li><i>BOUNDARY_CONDITIONS</i> = ["Boundary condition for the first direction", "Boundary condition for the second direction",...,"Boundary condition for the n'th direction"] - <i>"P"</i> for Periodic, <i>"F"</i> for fixed.</li></ul>
+<ul><li><i>INITIAL_SPACING</i> = [The spacing between spin locations in x direction, The spacing between spin locations in y direction , The spacing between spin locations in z direction]</li></ul>
+<ul><li><i>INITIAL_SPIN_ORIENTATION</i> = [The initial spin orientation vector in x direction , The initial spin orientation vector in y direction , The initial spin orientation vector in z direction]</li></ul>
 <br>
 There are more parameters you can change but everything is explained in the file itself as well.
 <br><br>
 You can change all the <b>potential parameter</b>- <img src="meu.jpg" height="2%"/>,<img src="neu.jpg" height="2%"/> ,<img src="kappa.jpg" height="2%"/> ,<img src="kappa'.jpg" height="2%"/> ,<img src="epsilon0.jpg" height="2%"/>
 <br>
-POTENTIAL = name of the potential approximation you want to use, your can choose-"FixedNearestNeighboursPotential" , "SphereNearestNeighboursPotential" , or add a new potential as explained below in "How to add new potential section".
-<br> 
-TWO_SPINS_POTENTIAL= "GayBernesPotential" , "LenardJonesPotential" , or add a new potential as explained below in "How to add new potential section".
+<ul><li><i>POTENTIAL</i> = name of the potential approximation you want to use, your can choose-"FixedNearestNeighboursPotential" , "SphereNearestNeighboursPotential" , or add a new potential as explained below in "How to add new potential section".</li></ul>
+<ul><li><i>TWO_SPINS_POTENTIAL</i>= "GayBernesPotential" , "LenardJonesPotential" , or add a new potential as explained below in "How to add new potential section".</li></ul>
 <br><br>
 you should only write the name of the potential as in the potential file, with out an ending.
 
 <br><br>
-You can also change the <b>Cooling and Heating Algorithms properties</b> such as The standard deviation of the gaussian random spacing in the system.
-the standard deviation of the Gaussian random spin orientation, 
-the number of Metropolis steps to perform in each step.
-the number of steps in the cooling process to wait if there is no improvement before lowering the temperature further, the temperatures to use in the Monte Carlo algorithm,
-the path to which to output the AVIZ files.
+It is also possible to change settings for nearest neighbours such as maximum radius for neighbours.<br>
+You can also change the <b>Cooling and Heating Algorithms properties</b> such as (examples for cooling but the same for the heating process):
+<ul><li><i>MC_COOLER_SPACING_STDEV</i> = The standard deviation of the Gaussian random spacing in the system.</li></ul>
+<ul><li><i>MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF</i> = The maximum radius from the original location where the molecule can be.</li></ul>
+<ul><li><i>MC_COOLER_SPIN_STDEV</i> = The standard deviation of the Gaussian random spin orientation.</li></ul>
+<ul><li><i>MC_COOLER_METROPOLIS_NUM_STEPS</i> = the number of Metropolis steps to perform in each cooling steps.</li></ul>
+<ul><li><i>MC_COOLER_MAX_STEPS</i> = the number of steps in the cooling process to perform the Metropolis algorithm before lowering the temperature further.</li></ul>
+<ul><li><i>MC_COOLER_TEMPERATURES</i> = frange(INITIAL_TEMPERATURE, FINAL_TEMPERATURE, -CHANGING_IN_EACH_STEP)</ul>
+<ul><li><i>MC_COOLER_AVIZ_OUTPUT_PATH</i> = The path to which to output the AVIZ files</li></ul>
+
 <br>
 <font size="+1"><b> you should only change the values and nothing else! </b></font>
 <br>
 </P>
+<br><br><br><br><br>
+<H2><center><a name="potential">How to add new potential:</a></center></H2>
 <br>
-
-<H2><center>How to add new potential:</center></H2>
 <P>
 First of all you should go to the library "potentials", then you should copy the content of the file "potential.py" and name your file as you wish (with the end of .py of course)
 <br><br>
@@ -98,7 +146,7 @@ The next step is to change the class name:
 </ul>
 <br>
 now you need to write how the calculation code.
-<br> the last thing is to write the name of the new potential in the configuration file. (you can read more about how to create a new configuration file above.)
+<br> the last thing is to write the name of the new potential in the configuration file. (you can read more about <a href="#config">how to create a new configuration file above</a>.)
 </P>
 <br>
 </BODY>
