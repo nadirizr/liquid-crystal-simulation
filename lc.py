@@ -528,23 +528,22 @@ class LiquidCrystalSystem:
         f.flush()
         f.close()
 
-
     def outputInformationToFile(self, filepath):
         """
         Outputs the current information such as <U>, Cv etc to a text file.
         """
-        if len(self.dimensions) > 3:
-            return
-
         dirpath = os.path.dirname(filepath)
         if not os.path.isdir(dirpath):
             os.makedirs(dirpath)
 
-        f = file(filepath, "a")
         avg_director = self.getAverageSpinOrientation()
+        director_variance = self.getSpinOrientationVariance()
         avg_energy = self.getPotentialEnergy()
-        t = self.getTemperature()
-        f.write("%s\t%s\t%s\n" % (t, avg_energy, avg_director))
+        T = self.getTemperature()
+
+        f = file(filepath, "a")
+        f.write("%s\t%s\t%s\n" % (T, avg_energy, avg_director,
+                                  director_variance))
         f.flush()
         f.close()
 
