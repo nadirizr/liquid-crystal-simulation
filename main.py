@@ -55,6 +55,9 @@ def main(args):
             current_time.tm_hour, current_time.tm_min, current_time.tm_sec,
             args["model"])
 
+    # Copy the model file to the run dir.
+    shutil.copy("models/%s.py" % (args["model"],), parameters["RUN_DIR"])
+
     # Set up the state manager.
     lcs_manager = LiquidCrystalSystemStateManager(parameters)
 
