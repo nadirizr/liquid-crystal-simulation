@@ -77,7 +77,7 @@ def main(args):
     print "*"*70
     print "*"*70
     lcs_manager.saveState("initial", lcs)
-    lcs_manager.saveState("final", lcs)
+    lcs_manager.saveState("current", lcs)
 
     # Heat up the LCS.
     if USE_MC_HEATER:
@@ -90,7 +90,7 @@ def main(args):
 
         # Save the heated up state.
         lcs_manager.saveState("heated", lcs)
-        lcs_manager.saveState("final", lcs)
+        lcs_manager.saveState("current", lcs)
 
     # Cool down the LCS.
     if USE_MC_COOLER:
@@ -103,7 +103,9 @@ def main(args):
 
         # Save the cooled down state.
         lcs_manager.saveState("cooled", lcs)
-        lcs_manager.saveState("final", lcs)
+        lcs_manager.saveState("current", lcs)
+    
+    lcs_manager.saveState("final", lcs)
 
 if __name__ == "__main__":
     args = parseCommandLineArgs(sys.argv)
