@@ -1,4 +1,5 @@
 import cProfile
+import os
 import shutil
 import sys
 import time
@@ -55,6 +56,7 @@ def main(args):
             current_time.tm_year, current_time.tm_mon, current_time.tm_mday,
             current_time.tm_hour, current_time.tm_min, current_time.tm_sec,
             args["model"])
+    os.makedirs(parameters["RUN_DIR"])
 
     # Copy the model file to the run dir.
     shutil.copy("models/%s.py" % (args["model"],), parameters["RUN_DIR"])
