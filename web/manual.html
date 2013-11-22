@@ -4,6 +4,7 @@
    <TITLE>Download and Manual Instructions</TITLE>
 
 </HEAD>
+<a name="up"/>
 <BODY BGCOLOR="#FFFFFF" vLink=#4C0B5F aLink=#4C0B5F link=#4C0B5F>
 <H1><CENTER>Manual Instructions</CENTER></H1>
 <br><br>
@@ -39,6 +40,7 @@ where OUTPUT_TITLE should be the name of the AViz's output list as shown after f
 <br>
 More details are under <a href="#runs">"runs"</a> section.
 <br>
+<div align="right"><a href="#up">[up]</a></div>
 </P>
 <br><br>
 <H2><center><a name="structure">General structure and main components:</a></center></H2>
@@ -57,11 +59,13 @@ perform a Monte Carlo Metropolis cooling of the liquid crystal.</ul>
 <ul><font size="+1.5"><b> utils.py - </b></font>contains some useful methods, some of them can be find in newer additions of Python.
 </ul>
 <br>
+<div align="right"><a href="#up">[up]</a></div>
 <br>
 <H3><center><a name="algorithms">Algorithms:</a></center></H3>
 This folder contains the Monte Carlo algorithm methods.
 <br> you should not change anything here.
-<br><br><br>
+<br><div align="right"><a href="#up">[up]</a></div>
+<br><br>
 <H3><center><a name="models">Models:</a></center></H3>
 <br> you can choose- 
 <ul><li><i>"fixed"</i> - the spins will stay at their places</li></ul>
@@ -73,6 +77,7 @@ This folder contains the Monte Carlo algorithm methods.
 <ul><li><i>"default"</i> = 2d_large.</li></ul>
 you can also add another one as written below in <a href="#config">"How to add a configuration file"</a>. 
 <br>
+<div align="right"><a href="#up">[up]</a></div>
 <br><br>
 <H3><center><a name="potentials">Potentials:</a></center></H3>
 We have 
@@ -80,7 +85,9 @@ We have
 The potentials - <ul><li><i>"GayBernesPotential"</i> </li><li> <i>"LenardJonesPotential"</i></li></ul> 
 you can also add another one as written below in<a href="#potential"> "How to add new potential"</a>. 
 </P>
-<br><br>
+<br>
+<div align="right"><a href="#up">[up]</a></div>
+<br>
 <H3><center><a name="runs">runs:</a></center></H3>
 After each run of the simulation the system will save all of the states it has gone through, as well as the ".xyz" files for AViz.
 <br>
@@ -95,7 +102,9 @@ each one contains all the ".xyz" files and a list file ".lst" for AViz.</li></ul
 
 
 
-<br><br><br><br><br>
+<br>
+<div align="right"><a href="#up">[up]</a></div>
+<br><br><br><br>
 <H2><center><a name="config">How to write a configuration file:</a></center></H2>
 <P>
 <br>
@@ -132,6 +141,7 @@ You can also change the <b>Cooling and Heating Algorithms properties</b> such as
 <br>
 <font size="+1"><b> you should only change the values and nothing else! </b></font>
 <br>
+<div align="right"><a href="#up">[up]</a></div>
 </P>
 <br><br><br><br><br>
 <H2><center><a name="potential">How to add new potential:</a></center></H2>
@@ -148,6 +158,7 @@ The next step is to change the class name:
 now you need to write how the calculation code.
 <br> the last thing is to write the name of the new potential in the configuration file. (you can read more about <a href="#config">how to create a new configuration file above</a>.)
 </P>
+<div align="right"><a href="#up">[up]</a></div>
 <br>
 </BODY>
 </HTML>
