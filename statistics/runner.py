@@ -13,6 +13,7 @@ def writeResultsToHtmlFile(filename, all_data, viz_data):
         except:
             return
 
+    num_models_out = len(all_data)
     all_data_out = "{\n"
     viz_data_out = "{\n"
     for (model, event_infos) in all_data.items():
@@ -27,7 +28,8 @@ def writeResultsToHtmlFile(filename, all_data, viz_data):
 
         for event_index, event_info in enumerate(event_infos):
             all_data_out += (
-"""            %d: { 'temperature': %s,
+"""            %d: { 'time': %s,
+                     'temperature': %s,
                      'energy': %s,
                      'director_variance': %s,
                      'avg_director_dist': %s,
@@ -36,7 +38,7 @@ def writeResultsToHtmlFile(filename, all_data, viz_data):
                      'potential_approx': '%s',
                      'process': '%s',
                      'time_used': %d },
-""" % ((event_index,) + event_info))
+""" % ((event_index, event_index) + event_info))
             viz_data_out += (
 """            %d: { 'file': '%s' },
 """ % (event_index, viz_data_images[event_index]))
@@ -57,6 +59,7 @@ def writeResultsToHtmlFile(filename, all_data, viz_data):
 
     f = open(filename, "w");
     f.write(js_code % {
+        "num_models": str(num_models_out),
         "all_data": str(all_data_out),
         "viz_data": str(viz_data_out),
     })

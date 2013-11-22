@@ -6,9 +6,26 @@
       google.setOnLoadCallback(drawAll);
 
       var chart = null;
+      var num_models = %(num_models)s;
       var all_data = %(all_data)s;
       var viz_data = %(viz_data)s;
       var vizChart = null;
+      var data_field_names = ["time", "temperature", "energy",
+                              "director_variance", "avg_director_dist",
+                              "time_used", "num_directors", "potential",
+                              "potential_approx", "process"];
+      var data_field_titles = { 
+          "time": "Time",
+          "temperature": "Temperature",
+          "energy": "Energy",
+          "director_variance": "Director Variance",
+          "avg_director_dist": "Average Director Distance from Original",
+          "time_used": "Time Used",
+          "num_directors": "Number of Directors",
+          "potential": "Potential",
+          "potential_approx": "Potential Approximation",
+          "process": "Process",
+      }
       
       function drawAll() {
         detectScreenSize();
@@ -36,31 +53,31 @@
       function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Model');
-        data.addColumn('number', 'Event');
+        data.addColumn('number', 'Time');
         data.addColumn('number', 'Temperature');
         data.addColumn('number', 'Energy');
         data.addColumn('number', 'Director Variance');
         data.addColumn('number', 'Average Director Distance from Original');
+        data.addColumn('number', 'Time Used');
         data.addColumn('number', 'Number of Directors');
         data.addColumn('string', 'Potential');
         data.addColumn('string', 'Potential Approximation');
         data.addColumn('string', 'Process');
-        data.addColumn('number', 'Time Used');
 
         for (var model in all_data) {
           for (var time_index in all_data[model]) {
             var r = all_data[model][time_index];
             data.addRow([model, parseInt(time_index), r.temperature, r.energy,
                          r.director_variance, r.avg_director_dist,
-                         r.num_directors, r.potential, r.potential_approx,
-                         r.process, r.time_used]);
+                         r.time_used, r.num_directors, r.potential,
+                         r.potential_approx, r.process]);
           }
         }
         data.addRows[all_data];
         chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
         chart.draw(data,
                    {width: parseInt(winW*0.5), height: parseInt(winH*0.5),
-                    state: '{"xZoomedIn":false,"showTrails":true,"yZoomedDataMin":0,"yZoomedIn":false,"xAxisOption":"_ALPHABETICAL","orderedByX":false,"xLambda":1,"colorOption":"_UNIQUE_COLOR","nonSelectedAlpha":0.4,"playDuration":15000,"xZoomedDataMax":3,"sizeOption":"5","iconKeySettings":[],"duration":{"multiplier":1,"timeUnit":"Y"},"yZoomedDataMax":1,"orderedByY":false,"iconType":"BUBBLE","xZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"time":"1900","uniColorForNonSelected":false,"yLambda":1,"yAxisOption":"2"}'});
+                    state: '{"xZoomedIn":false,"showTrails":true,"yZoomedDataMin":0,"yZoomedIn":false,"xAxisOption":"_TIME","orderedByX":false,"xLambda":1,"colorOption":"_UNIQUE_COLOR","nonSelectedAlpha":0.4,"playDuration":15000,"xZoomedDataMax":3,"sizeOption":"5","iconKeySettings":[],"duration":{"multiplier":1,"timeUnit":"Y"},"yZoomedDataMax":1,"orderedByY":false,"iconType":"BUBBLE","xZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"time":"1900","uniColorForNonSelected":false,"yLambda":1,"yAxisOption":"2"}'});
 
         google.visualization.events.addListener(chart, 'statechange', function() {
           var state_string = chart.getState();
@@ -68,57 +85,64 @@
             return;
           }
 
-          selected_models = getSelectedModels(chart);
-          if (selected_models.length == 0) {
-            drawVisualDisplay("--", -1);
-            return;
-          }
-
+          // If there is a specific time selected, find it.
           current_time = 0;
           time_matches = /"time":"([0-9]+)"/.exec(state_string);
           if (time_matches != null && time_matches.length > 1) {
             current_time = parseInt(time_matches[1]) - 1900;
           }
 
+          // Determine the X axis type.
+          x_axis = 1;
+          x_axis_matches = /"xAxisOption":"([0-9]+)"/.exec(state_string);
+          if (x_axis_matches != null && x_axis_matches.length > 1) {
+            x_axis = parseInt(x_axis_matches[1]);
+          }
+          x_axis_matches = /"xAxisOption":"(_TIME)"/.exec(state_string);
+          if (x_axis_matches != null && x_axis_matches.length > 1) {
+            x_axis = 1;
+          }
+          x_axis_matches = /"xAxisOption":"(_ALPHABETICAL)"/.exec(state_string);
+          if (x_axis_matches != null && x_axis_matches.length > 1) {
+            x_axis = 100;
+          }
+
+          // Determine the Y axis type.
+          y_axis = 2;
+          y_axis_matches = /"yAxisOption":"([0-9]+)"/.exec(state_string);
+          if (y_axis_matches != null && y_axis_matches.length > 1) {
+            y_axis = parseInt(y_axis_matches[1]);
+          }
+          y_axis_matches = /"yAxisOption":"(_TIME)"/.exec(state_string);
+          if (y_axis_matches != null && y_axis_matches.length > 1) {
+            y_axis = 1;
+          }
+          y_axis_matches = /"yAxisOption":"(_ALPHABETICAL)"/.exec(state_string);
+          if (y_axis_matches != null && y_axis_matches.length > 1) {
+            y_axis = 100;
+          }
+
+          // Find the selected models, and display the visual model.
+          selected_models = getSelectedModels(chart);
+          if (selected_models.length == 0) {
+            if (num_models == 1) {
+              selected_models = [];
+              for (var model in all_data) {
+                selected_models.push(model);
+              }
+            } else {
+              drawVisualDisplay(["--"], -1);
+              return;
+            }
+          }
+
+          // Draw the parameter comparison table.
+          drawParameterComparatorChart(x_axis-1, y_axis-1, selected_models);
+
+          // Draw the visual model of the first selected model.
           //drawVisualDisplay(selected_models[0], current_time);
-          drawVisualDisplay("--", -1);
-          
-/*          if (selected_models.length != 1) {
-            drawVisualDisplay('--', []);
-            return;
-          }
-          
-          line_matches = /"iconType":"(LINE)"/.exec(state_string);
-          if (line_matches != null && line_matches.length > 1) {
-            drawVisualDisplay(0, selected_agent_ids);
-            return;
-          }
-
-          time_matches = /"time":"([0-9]+)"/.exec(state_string);
-          if (time_matches != null && time_matches.length > 1) {
-            problem_id = parseInt(time_matches[1]) - 1900;
-            drawEventChart(problem_id, selected_agent_ids);
-          }*/
+          drawVisualDisplay(["--"], -1);
         });
-      }
-
-      function drawVisualDisplay(model, time) {
-        var img = document.getElementById("viz_display_img");
-        var title = document.getElementById("viz_display_title");
-
-        if (model == "--" || time < 0) {
-          img.width = 0;
-          img.height = 0;
-          img.src = "//:0";
-          img.alt = "";
-          title.innerHTML = "";
-        } else {
-          img.width = parseInt(winW*0.5);
-          img.height = parseInt(winH*0.5);
-          img.src = viz_data[model][time];
-          img.alt = model + "[" + time + "]: " + viz_data[model][time].file;
-          title.innerHTML = "'" + model + "' (time: " + time + ")";
-        }
       }
 
       function getSelectedModels(chart) {
@@ -135,111 +159,92 @@
         }
         return models;
       }
-/*
-      function drawEventChart(problem_id, agent_ids) {
+
+      function drawParameterComparatorChart(x_axis_index, y_axis_index,
+                                            models) {
         var data = new google.visualization.DataTable();
 
-        if (problem_id == '--' || agent_ids.length == 0) {
-          data.addColumn('string', 'Nothing');
+        // If there are no selected models, or either of the parameters chosen
+        // as the X or Y axis are not ones that can be compared (above 5), don't
+        // display anything.
+        if (models.length == 0 || models[0] == "--" ||
+            x_axis_index > 5 || y_axis_index > 5) {
+          data.addColumn('number', 'Nothing');
           data.addColumn('number', 0);
-          new google.visualization.BarChart(document.getElementById('event_chart_div')).
+          new google.visualization.ScatterChart(
+              document.getElementById('parameter_chart_div')).
             draw(data,
-                {title: 'Problem: ' + problem_id.toString(),
+                {title: "Model: ''",
                  width:1, height:1,
                  legend: {position: 'none'},
-                 isStacked: true});
+            });
           return;
         }
 
-        raw_data = buildProblemRawData(problem_id, agent_ids);
+        // Determine the axis field names and titles.
+        x_axis = data_field_names[x_axis_index];
+        x_axis_title = data_field_titles[x_axis];
+        y_axis = data_field_names[y_axis_index];
+        y_axis_title = data_field_titles[y_axis];
 
-        data.addColumn('string', 'Agent');
-        for (var i = 0; i  < raw_data.length; ++i) {
-          data.addColumn('number', raw_data[i][0]);    
-        }
-  
-        data.addRows(raw_data[0].length - 1);
-        
-        for (var i in agent_ids) {
-          data.setValue(parseInt(i), 0, agent_ids[i]);
+        data.addColumn('number', x_axis);
+        for (var model in models) {
+          data.addColumn('number', models[model]);
         }
 
-        for (var j = 1; j < raw_data[0].length; ++j) {
-          var last_time = 0.0;
-          for (var i = 0; i  < raw_data.length; ++i) {
-            current_time = parseFloat(raw_data[i][j][0]);
-            if (current_time < 0) {
-              break;
+        for (var i = 0; i < models.length; ++i) {
+          var model = models[i];
+          var model_data = all_data[model];
+          for (var j in model_data) {
+            event_data = model_data[j];
+            row_data = [event_data[x_axis]];
+            for (var k = 0; k < models.length; ++k) {
+              if (k == i) {
+                row_data.push(event_data[y_axis]);
+              } else {
+                row_data.push(null);
+              }
             }
-
-            data.setValue(j-1, i+1, current_time - last_time);
-            data.setFormattedValue(
-                j-1, i+1, 'TIME: ' + raw_data[i][j][0].toString() + ': ' +
-                          raw_data[i][j][1].toString());
-            last_time = current_time;
+            data.addRow(row_data);
           }
         }
 
         // Create and draw the visualization.
-        var problem_title = 'Problem: ' + problem_id.toString();
-        if (parseInt(problem_id) == 0) {
-          problem_title = 'Average for all Problems';
+        var models_title = "Model: '" + models[0] + "'";
+        if (models.length > 1) {
+          models_title = "Models: ";
+          for (var model in models) {
+            models_title += models_title + "'" + models[model] + "' ";
+          }
         }
-        new google.visualization.BarChart(document.getElementById('event_chart_div')).
-            draw(data,
-                {title: problem_title,
-                 width: parseInt(winW*0.5), height: parseInt(winH*0.5),
-                 vAxis:  {title: "Agent"},
-                 hAxis:  {title: "Timeline"},
-                 legend: {position: 'none'},
-                 isStacked: true});
+        new google.visualization.ScatterChart(
+            document.getElementById('parameter_chart_div')).
+          draw(data,
+               {title: models_title,
+                width: parseInt(winW*0.5), height: parseInt(winH*0.5),
+                vAxis:  {title: y_axis_title},
+                hAxis:  {title: x_axis_title},
+                legend: {position: 'right'}});
       }
 
-      function buildProblemRawData(problem_id, agent_ids) { 
-        // Construct the problem data list, which contains lists of events per
-        // agent for the problem.
-        highest_num_events = 0;
-        problem_data = []
-        for (var a in agent_ids) {
-          agent_id = agent_ids[a];
-          problems = all_data[agent_id];
-          problem = problems[parseInt(problem_id)];
+      function drawVisualDisplay(models, time) {
+        var img = document.getElementById("viz_display_img");
+        var title = document.getElementById("viz_display_title");
 
-          keys = [];
-          for (var time in problem.events) {
-            keys.push(parseFloat(time));
-          }
-          keys.sort();
-        
-          agent_problem_data = [];
-          for (var i in keys) {
-            agent_problem_data.push([keys[i], problem.events[keys[i]]]);
-          }
-          problem_data.push(agent_problem_data);
-
-          if (agent_problem_data.length > highest_num_events) {
-            highest_num_events = agent_problem_data.length;
-          }
+        if (models.length == 0 || models[0] == "--" || time < 0) {
+          img.width = 0;
+          img.height = 0;
+          img.src = "//:0";
+          img.alt = "";
+          title.innerHTML = "";
+        } else {
+          img.width = parseInt(winW*0.5);
+          img.height = parseInt(winH*0.5);
+          img.src = viz_data[model][time];
+          img.alt = model + "[" + time + "]: " + viz_data[model][time].file;
+          title.innerHTML = "'" + model + "' (time: " + time + ")";
         }
-
-        // Construct the raw data itself.
-        raw_data = []
-        for (var i = 0; i < highest_num_events; ++i) {
-          raw_data.push(['Step ' + (i+1).toString()]);
-        }
-        for (var i in problem_data) {
-          agent_data = problem_data[i];
-          for (var j in agent_data) {
-            raw_data[j].push(agent_data[j]);
-          }
-          for (var j = agent_data.length; j < highest_num_events; ++j) {
-            raw_data[j].push([-1, '']);
-          }
-        }
-
-        return raw_data;
       }
-*/
     </script>
   </head>
   <body>
@@ -253,6 +258,11 @@
             <span id="viz_display_title"/>
             <img name='viz_display_img' id="viz_display_img" src="//:0" width=0 height=0 alt=""/>
           </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="parameter_chart_div"/>
         </td>
       </tr>
     </table>
