@@ -26,24 +26,25 @@
 <H2><center><a name="run">How to run the system:</a></center></H2>
 <P>
 <br>
-To run the system you only need to go to the main project library, then write in the shell- "<b>./run.sh MODEL_NAME</b>", <br>
-where MODEL_NAME should be the name of the model you use (if you don't write anything it will use the default model).
-<br> you can choose- "fixed" ,"2d_small,"3d_small" , "2d_large" ,"3d" , "sphere","default"
-Or add another model as explained below in "How to write a configuration file" section.
+To run the system you only need to go to the main project library, and then write in the shell: "<b>./run.sh MODEL_NAME</b>" <br>
+Where MODEL_NAME should be the name of the model you use (if you don't write anything it will use the default model).
+<br> You can choose - "2d_small, "3d_small", "2d_large", "3d", "fixed", "sphere" or "default".
+You can also add another model as explained below in "How to write a configuration file" section.
 <br>
 You can find more details about each model under <a href ="#models">"Models"</a> section.
 <br>
-You should not write "MODEL_NAME.py"! The system know to take it from models library automatically.
+You should not write "MODEL_NAME.py" or give it a path! The system knows to take it from models library automatically.
 <br>
 <br>
-After running the system you can see the visual result by running "<b>./aviz.sh OUTPUT_TITLE</b>".<br>
-where OUTPUT_TITLE should be the name of the AViz's output list as shown after finish the running of the simulation (".lst" file).
+After running the system you can see the visual result in AViz by running: "<b>./aviz.sh OUTPUT_TITLE</b>"<br>
+Where OUTPUT_TITLE should be the name of the run directory as shown after the simulation finishes, or simply the model that was run (it will take the last one chronologically).
 <br>
 More details are under <a href="#runs">"runs"</a> section.
 <br>
-If you wish to get some statistics of the simulations you have done- that's also very easy- all you need to do is write  in the shell(after finishing the simulations) - "<b> ./generate_stat.sh MODEL_NAME</b>". That will create a web page called "compare_chart.html" inside the folder "Web".
+If you wish to generate some statistics of the simulations you have done, that's also very easy - all you need to do is write in the shell (after finishing the simulations): "<b> ./generate_stat.sh MODEL_NAME</b>" <br>
+That will create a web page called "compare_chart.html" inside the folder "web" with all of the statistics neatly displayed.
 <br>
-If you want to add the animations from AViz to those statistics you should add at the end of the line in shell- "<b>--aviz</b>".
+If you want to add the animations from AViz to those statistics you should add at the end of the line in shell that runs the statistics: "<b>-a</b>" or "<b>--aviz</b>"
 <br>
 More details about the statistics are under <a href="#statistic">"statistic"</a> section.
 <br>
@@ -61,7 +62,7 @@ More details about the statistics are under <a href="#statistic">"statistic"</a>
 It holds the positions and angles of molecules in a liquid crystal, and can
 perform a Monte Carlo Metropolis cooling of the liquid crystal.</ul>
 <br>
-<ul><font size="+1.5"><b> Constants.py - </b></font>contains physical constants such as Boltzman's constant, Plunck's constant and the g factor. <br> it is possible to add some other constant if one wish to.
+<ul><font size="+1.5"><b> Constants.py - </b></font>contains physical constants such as Boltzman's constant, Plunck's constant and the g factor. <br> it is possible to add some other constant here if one wishes to.
 </ul><br>
 <ul><font size="+1.5"><b> utils.py - </b></font>contains some useful methods, some of them can be find in newer additions of Python.
 </ul>
@@ -70,11 +71,11 @@ perform a Monte Carlo Metropolis cooling of the liquid crystal.</ul>
 <br>
 <H3><center><a name="algorithms">Algorithms:</a></center></H3>
 This folder contains the Monte Carlo algorithm methods.
-<br> you should not change anything here.
+<br> You should not change anything here.
 <br><div align="right"><a href="#up">[up]</a></div>
 <br><br>
 <H3><center><a name="models">Models:</a></center></H3>
-<br> you can choose- 
+<br> You can choose: 
 <ul><li><i>"fixed"</i> - the spins will stay at their places</li></ul>
 <ul><li><i>"2d_small"</i> - A system of 3X3 spins in 2 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in one direction, the other is fixed.</li></ul>
 <ul><li><i>"3d_small"</i> - A system of 5X5X5 spins in 3 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in two directions, the other is fixed.</li></ul>
@@ -82,7 +83,7 @@ This folder contains the Monte Carlo algorithm methods.
 <ul><li><i>"3d"</i> - A system of 10X10X10 spins in 3 dimensions, uses the Gay- Berne Potential, Periodic boundary conditions in two directions, the other is fixed.</li></ul>
 <ul><li><i> "sphere"</i></li></ul>
 <ul><li><i>"default"</i> = 2d_large.</li></ul>
-you can also add another one as written below in <a href="#config">"How to add a configuration file"</a>. 
+You can also add another one as written below in <a href="#config">"How to add a configuration file"</a>. 
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 <br><br>
@@ -90,7 +91,7 @@ you can also add another one as written below in <a href="#config">"How to add a
 We have 
 <ul><li><i>"FixedNearestNeighboursPotential"</i> approximation </li><li><i/> "SphereNearestNeighboursPotential"</i> approximation</li></ul> 
 The potentials - <ul><li><i>"GayBernesPotential"</i> </li><li> <i>"LenardJonesPotential"</i></li></ul> 
-you can also add another one as written below in<a href="#potential"> "How to add new potential"</a>. 
+You can also add another one as written below in<a href="#potential"> "How to add new potential"</a>. 
 </P>
 <br>
 <div align="right"><a href="#up">[up]</a></div>
@@ -101,11 +102,11 @@ After each run of the simulation the system will save all of the states it has g
 Inside the "runs" folder you can find a sub folder for each model you have used so far.
 <br>
 Any folder like this contains sub folders:
-<ul><li><i>"Output"</i> - contains more folders with time stumps. the stump is the time you started running the simulation.
-each one contains all the ".xyz" files and a list file ".lst" for AViz.</li></ul>
-<ul><li><i>States</i> - contains all the states the system went through during the simulation.</li></ul>
+<ul><li><i>"Output"</i> - contains more folders with time stamps. the stamp is the time you started running the simulation.
+Each one contains all the ".xyz" files and a list file ".lst" for AViz.</li></ul>
 <ul><li><i>States</i> - contains all the states the system went through during the simulation.</li></ul>
 <ul><li><i>run.log</i> - a log file with all the simulation details like shown during the simulation. </li></ul>
+<ul><li><i>MODEL_NAME.py</i> - the model file the simulation was run with. </li></ul>
 
 
 
@@ -115,11 +116,11 @@ each one contains all the ".xyz" files and a list file ".lst" for AViz.</li></ul
 <H2><center><a name="config">How to write a configuration file:</a></center></H2>
 <P>
 <br>
-First of all you should go to the library <i>"models"</i>, then you can copy the content of the configuration file "default.py" and name your file as you wish (with the end of .py of course)
+First of all you should go to the library <i>"models"</i>, then you can copy the content of the configuration file "default.py" and name your file as you wish (with the end of .py of course). You can also copy another file that is more suitable to your needs, and change that.
 <br><br>
 Now you only need to change the parameters in your file, so it would be like the system you are willing to get. 
 <br><br>
-more explanations for some <b>system parameters</b>: <br>
+More explanations for some <b>system parameters</b>: <br>
 <ul><li><i>DIMENSIONS</i> = [number of spins in x direction, number of spins in y direction, number of spins in z direction]</li></ul>
 <ul><li><i>BOUNDARY_CONDITIONS</i> = ["Boundary condition for the first direction", "Boundary condition for the second direction",...,"Boundary condition for the n'th direction"] - <i>"P"</i> for Periodic, <i>"F"</i> for fixed.</li></ul>
 <ul><li><i>INITIAL_SPACING</i> = [The spacing between spin locations in x direction, The spacing between spin locations in y direction , The spacing between spin locations in z direction]</li></ul>
@@ -132,7 +133,7 @@ You can change all the <b>potential parameter</b>- <img src="meu.jpg" height="2%
 <ul><li><i>POTENTIAL</i> = name of the potential approximation you want to use, your can choose-"FixedNearestNeighboursPotential" , "SphereNearestNeighboursPotential" , or add a new potential as explained below in "How to add new potential section".</li></ul>
 <ul><li><i>TWO_SPINS_POTENTIAL</i>= "GayBernesPotential" , "LenardJonesPotential" , or add a new potential as explained below in "How to add new potential section".</li></ul>
 <br><br>
-you should only write the name of the potential as in the potential file, with out an ending.
+You should only write the name of the potential as in the potential file, with out a suffix of any kind.
 
 <br><br>
 It is also possible to change settings for nearest neighbours such as maximum radius for neighbours.<br>
@@ -146,7 +147,7 @@ You can also change the <b>Cooling and Heating Algorithms properties</b> such as
 <ul><li><i>MC_COOLER_AVIZ_OUTPUT_PATH</i> = The path to which to output the AVIZ files</li></ul>
 
 <br>
-<font size="+1"><b> you should only change the values and nothing else! </b></font>
+<font size="+1"><b> You should only change the values and nothing else! </b></font>
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 </P>
@@ -154,16 +155,16 @@ You can also change the <b>Cooling and Heating Algorithms properties</b> such as
 <H2><center><a name="potential">How to add new potential:</a></center></H2>
 <br>
 <P>
-First of all you should go to the library "potentials", then you should copy the content of the file "potential.py" and name your file as you wish (with the end of .py of course)
+First of all you should go to the library "potentials", then you should copy the content of the file "potential.py" and name your file as you wish (with the end of .py of course). You might opt to copy an existing potential that more closely fits your needs, and create a new file to start with.
 <br><br>
 The next step is to change the class name:
 <ul>
-<li>if you want to add a new type of approximation you can delete everything under "TwoSpinsPotential" and change the name of Potential to the new approximation. </li>
-<li>if you want to add a new potential you can delete everything between "Potential" and "TwoSpinsPotential" and change the name of TwoSpinsPotential to the new potential. </li>
+<li>If you want to add a new type of approximation you can delete everything under "TwoSpinsPotential" and change the name of Potential to the new approximation. </li>
+<li>If you want to add a new potential you can delete everything between "Potential" and "TwoSpinsPotential" and change the name of TwoSpinsPotential to the new potential. </li>
 </ul>
 <br>
-now you need to write how the calculation code.
-<br> the last thing is to write the name of the new potential in the configuration file. (you can read more about <a href="#config">how to create a new configuration file above</a>.)
+Now you need to write the calculation code. Use other potentials as boiler plates, they are well documented.
+<br> The last thing is to write the name of the new potential in the configuration file. (you can read more about <a href="#config">how to create a new configuration file above</a>.)
 </P>
 <div align="right"><a href="#up">[up]</a></div>
 <br>
@@ -174,9 +175,9 @@ now you need to write how the calculation code.
 <br>
 <li>If you press "play" key you will see the animation moving on the right of the page showing the right points on the left chart. </li>
 <br>
-<li> It is also possible to choose the models you wish to investigate. It is done by selecting the wanted models on the right side of the main chart. </li> 
+<li>It is also possible to choose the models you wish to investigate. It is done by selecting the wanted models on the right side of the main chart. </li> 
 <br>
-<li>Another thing you can change is the <b><i>colour of the chart</i></b>, on the right of the chart.</li>
+<li>Another thing you can change is the <b><i>colour of the points in the chart</i></b>, on the right of the chart, according to temperature for example.</li>
 <br>
 <li>You can also change the <b><i>type of chart</i></b>- linear, time bubbles etc...</li>
 <br>
