@@ -1,7 +1,10 @@
 from util import *
 from potential import TwoSpinPotential
 
-from cpp.potentials.gb_potential_impl import GayBernesPotentialImpl
+try:
+    from cpp.potentials.gb_potential_impl import GayBernesPotentialImpl
+except:
+    GayBernesPotentialImpl = None
 
 class GayBernesPotentialFast(TwoSpinPotential):
     """
