@@ -16,6 +16,7 @@ else
   echo "XYZ files are: $XYZ_PATTERN????????.xyz"
 fi
 
+mkdir -p $PNG_DIR
 if [[ -d "$PNG_DIR" ]]; then
   echo "Output directory for model PNGs: $PNG_DIR"
 else
@@ -66,11 +67,15 @@ NUM_FILES=${#FILE_LIST[*]}
 
 for XYZ_FILE in ${FILE_LIST[*]}
 do
-  # Set the name of the corresponding PNG file.
-  PNG_FILE="$XYZ_DIR_NAME`basename $XYZ_FILE .xyz`.png"
+  # Set the name of the generated PNG file.
+  PNG_FILE="$XYZ_DIR_NAME`basename $XYZ_FILE .xyz`.0001.png"
 
   # Create a PNG with AVIZ.
-  aviz -snapq $XYZ_FILE -geometry $GEOMETRY1
+  aviz -snapq $XYZ_FILE -geometry $GEOMETRY1 >& /dev/null
+  if ![[ -e $PNG_FILE ]]; then
+    echo "PNG file could not be created by AVIZ: $PNG_FILE"
+    continue
+  fi
 
   # Set the dimensions correctly (width and height).
   convert -geometry $GEOMETRY2 $PNG_FILE $PNG_FILE
@@ -80,7 +85,8 @@ do
   convert -font $FONT -fill $COLOR -draw "text 25,49 $MODEL" $PNG_FILE $PNG_FILE
 
   # Move the PNG to the right place.
-  mv $PNG_FILE $OUT_DIR
+  PNG_OUT_FILE="`basename $PNG_FILE .0001.png`.png"
+  mv $PNG_FILE $OUT_DIR/$PNG_OUT_FILE
 done
 
 # Cleanup.
