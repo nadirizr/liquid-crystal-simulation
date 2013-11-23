@@ -86,11 +86,11 @@ do
 
   # Add the text overlay.
   convert -mattecolor blue -frame 6x6 $PNG_FILE $PNG_FILE
-  convert -font $FONT -fill $COLOR -draw "text 25,49 $MODEL" $PNG_FILE $PNG_FILE
+  convert -font $FONT -fill $COLOR -draw "text 25,49 '$MODEL'" $PNG_FILE $PNG_FILE
 
   # Move the PNG to the right place.
   PNG_OUT_FILE="`basename $PNG_FILE .0001.png`.png"
-  mv $PNG_FILE $OUT_DIR/$PNG_OUT_FILE
+  mv -f $PNG_FILE $OUT_DIR/$PNG_OUT_FILE
 done
 
 # Cleanup.
