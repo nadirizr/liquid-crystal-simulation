@@ -66,33 +66,23 @@ def writeResultsToHtmlFile(filename, all_data, viz_data):
     f.flush()
     f.close()
 
-def writeResultsToCsvFile(filename, results):
-  col_names = ["Agent", "Problem", "Time Limit", "Used Time", "Time Consumption",
-               "Average Time Consumption", "Solution Length", "Optimal Solution Length",
-               "Score", "Average Score", "Failure Rate", "Expanded Nodes"]
-  table_str = ",".join(["'" + str(col) + "'" for col in col_names]) + "\n"
-  for agent_name in results:
-    for i, p in enumerate(results[agent_name]):
-      problem_name = str(i)
-      if i == 0:
-        problem_name = "Average"
-      solution_length = p[5] and len(p[5]) or None
-      score = p[5] and (float(p[0][2]) / float(solution_length)) or 0.0
-      table_row = [agent_name, problem_name, p[1], p[2], p[3], p[4], solution_length,
-                   p[0][2], score, p[6], p[7], p[8]]
-      table_str += ",".join(["'" + str(val) + "'" for val in table_row]) + "\n"
+args = sys.argv[1:]
 
-  f = open(filename, "w")
-  f.write(table_str)
-  f.flush()
-  f.close()
+# Check if the user selected -a or --aviz.
+generate_images_with_aviz = False
+if "-a" in args:
+    generate_images_with_aviz = True
+    args.remove("-a")
+if "--aviz" in args:
+    generate_images_with_aviz = True
+    args.remove("--aviz")
 
-# Treat all arguments as runs patterns.
-runs_patterns = sys.argv[1:]
+# Treat all other arguments as runs patterns.
+runs_patterns = args[:]
 if not runs_patterns:
     runs_patterns = [""]
 
-generator = StatisticsGenerator("runs")
+generator = StatisticsGenerator("runs", "web/models")
 
 print "#"*80
 print "Generating statistics for runs:"
@@ -101,6 +91,8 @@ print "\n".join(["\n".join(generator.getMatchingRuns(runs_pattern))
 print "#"*80
 print
 
-all_data, viz_data = generator.generate(runs_patterns)
+all_data, viz_data = generator.generate(
+        runs_patterns,
+        only_complete=True,
+        generate_images=generate_images_with_aviz)
 writeResultsToHtmlFile("compare_chart.html", all_data, viz_data)
-#writeResultsToCsvFile("compare_chart.csv", results)

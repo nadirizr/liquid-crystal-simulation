@@ -6,16 +6,20 @@ class StatisticsGenerator:
     Generates all necessary statistics for displaying the motion chart of
     run results.
     """
-    def __init__(self, runs_dir):
+    def __init__(self, runs_dir, image_dir):
         self.runs_dir = runs_dir
+        self.image_dir = image_dir
 
-    def generate(self, runs_patterns=None, only_complete=True):
+    def generate(self, runs_patterns=None, only_complete=True,
+                 generate_images=False):
         """
         Generates the statistics for all runs, or for a subset that matches
         specific text patterns, or only complete runs.
         Returns a dictionary by model of lists of tuples for each event in the
         run, and a dictionary by model of lists of image files to display the
         actual run.
+        If generate_images is True, also uses AVIZ to create PNG files for the
+        model itself, and links it in.
         """
         # Get all of the runs to generate statistics for.
         if not runs_patterns:
@@ -69,6 +73,10 @@ class StatisticsGenerator:
             cooling_events = self._getEvents(
                     current_run, parameters["MC_COOLER_AVIZ_OUTPUT_PATH"])
 
+            # Create the images with AVIZ if necessary.
+            if generate_images:
+                self._generateImages(model, current_run)
+
             # Create the event list for this model.
             event_list = []
             image_list = []
@@ -89,7 +97,8 @@ class StatisticsGenerator:
                     event[5], # Time Used
                 ))
 
-                image_list.append("%s/%s.png" % (current_run, event[0]))
+                image_list.append("%s/%s/%s.png" %
+                                  (self.image_dir, model, event[0]))
 
             all_data[model] = event_list
             viz_data[model] = image_list
@@ -159,3 +168,27 @@ class StatisticsGenerator:
                 current_time))
 
         return events
+
+    def _generateImages(self, model, current_run, output_file_prefix):
+        """
+        Generates the PNG files using AVIZ for the given run directory and the
+        given output file prefixes and the name of the model.
+        """
+        # Determine where the script is.
+        generate_script_path = "./generate_model.sh"
+        if not os.path.exists(generate_script_path):
+            generate_script_path = "./statistics/generate_model.sh"
+        if not os.path.exists(generate_script_path):
+            print "Couldn't find model generation with AVIZ script."
+            return
+
+        # Set up the command line arguments.
+        xyz_file_pattern = "%s/%s" % (current_run, output_file_prefix)
+        output_directory = "%s/%s" % (self.image_dir, model)
+
+        # Run the script.
+        cmd_line = "%s %s %s %s" % (generate_script_path,
+                                    xyz_file_pattern,
+                                    output_directory,
+                                    model)
+        os.system(cmd_line)
