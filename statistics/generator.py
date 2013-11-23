@@ -74,9 +74,13 @@ class StatisticsGenerator:
             cooling_events = self._getEvents(
                     current_run, parameters["MC_COOLER_AVIZ_OUTPUT_PATH"])
 
-            # Create the images with AVIZ if necessary.
+            # Create the images with AVIZ if necessary for both heating and
+            # cooling processes.
             if generate_images:
-                self._generateImages(model, current_run)
+                self._generateImages(model, current_run,
+                                     parameters["MC_HEATER_AVIZ_OUTPUT_PATH"])
+                self._generateImages(model, current_run,
+                                     parameters["MC_COOLER_AVIZ_OUTPUT_PATH"])
 
             # Create the event list for this model.
             event_list = []
