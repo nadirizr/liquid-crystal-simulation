@@ -6,9 +6,10 @@ class StatisticsGenerator:
     Generates all necessary statistics for displaying the motion chart of
     run results.
     """
-    def __init__(self, runs_dir, image_dir):
+    def __init__(self, runs_dir, image_dir, web_image_dir):
         self.runs_dir = runs_dir
         self.image_dir = image_dir
+        self.web_image_dir = web_image_dir
 
     def generate(self, runs_patterns=None, only_complete=True,
                  generate_images=False):
@@ -98,7 +99,7 @@ class StatisticsGenerator:
                 ))
 
                 image_list.append("%s/%s/%s.png" %
-                                  (self.image_dir, model, event[0]))
+                                  (self.web_image_dir, model, event[0]))
 
             all_data[model] = event_list
             viz_data[model] = image_list

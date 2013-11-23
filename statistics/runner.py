@@ -82,7 +82,7 @@ runs_patterns = args[:]
 if not runs_patterns:
     runs_patterns = [""]
 
-generator = StatisticsGenerator("runs", "web/models")
+generator = StatisticsGenerator("runs", "web/models", "models")
 
 print "#"*80
 print "Generating statistics for runs:"
@@ -95,4 +95,4 @@ all_data, viz_data = generator.generate(
         runs_patterns,
         only_complete=True,
         generate_images=generate_images_with_aviz)
-writeResultsToHtmlFile("compare_chart.html", all_data, viz_data)
+writeResultsToHtmlFile("web/compare_chart.html", all_data, viz_data)
