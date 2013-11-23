@@ -589,7 +589,7 @@
           model = models[0];
           img.width = parseInt(winW*0.5);
           img.height = parseInt(winH*0.5);
-          img.src = viz_data[model][time];
+          img.src = viz_data[model][time].file;
           img.alt = model + "[" + time + "]: " + viz_data[model][time].file;
           title.innerHTML = "'" + model + "' (time: " + time + ")";
         }
