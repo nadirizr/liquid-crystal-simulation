@@ -1,0 +1,964 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {'packages':['corechart','motionchart']});
+      google.setOnLoadCallback(drawAll);
+
+      var chart = null;
+      var num_models = 2;
+      var all_data = {
+          '3d_small': {
+            0: { 'time': 0,
+                     'temperature': 3.0,
+                     'energy': -9.88555894637e-15,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 3182 },
+            1: { 'time': 1,
+                     'temperature': 3.0,
+                     'energy': -2.08977064426e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 6337 },
+            2: { 'time': 2,
+                     'temperature': 2.9,
+                     'energy': -2.05298914439e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 9530 },
+            3: { 'time': 3,
+                     'temperature': 2.8,
+                     'energy': -2.29391605927e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 12990 },
+            4: { 'time': 4,
+                     'temperature': 2.7,
+                     'energy': -2.24780478927e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 16555 },
+            5: { 'time': 5,
+                     'temperature': 2.6,
+                     'energy': -2.33736222888e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 19868 },
+            6: { 'time': 6,
+                     'temperature': 2.5,
+                     'energy': -2.27110660874e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 23145 },
+            7: { 'time': 7,
+                     'temperature': 2.4,
+                     'energy': -1.85896256227e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 31704 },
+            8: { 'time': 8,
+                     'temperature': 2.3,
+                     'energy': -2.24665495655e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 34838 },
+            9: { 'time': 9,
+                     'temperature': 2.2,
+                     'energy': -2.10020935639e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 38018 },
+            10: { 'time': 10,
+                     'temperature': 2.1,
+                     'energy': -2.37370136576e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 41212 },
+            11: { 'time': 11,
+                     'temperature': 2.0,
+                     'energy': -2.36816225759e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 44399 },
+            12: { 'time': 12,
+                     'temperature': 1.9,
+                     'energy': -2.45940851552e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 47633 },
+            13: { 'time': 13,
+                     'temperature': 1.8,
+                     'energy': -2.18700938015e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 50878 },
+            14: { 'time': 14,
+                     'temperature': 1.7,
+                     'energy': -2.27139289524e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 54139 },
+            15: { 'time': 15,
+                     'temperature': 1.6,
+                     'energy': -2.23198587543e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 57402 },
+            16: { 'time': 16,
+                     'temperature': 1.5,
+                     'energy': -2.23841101655e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 60651 },
+            17: { 'time': 17,
+                     'temperature': 1.4,
+                     'energy': -2.43871308292e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 63913 },
+            18: { 'time': 18,
+                     'temperature': 1.3,
+                     'energy': -2.5655085191e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 67170 },
+            19: { 'time': 19,
+                     'temperature': 1.2,
+                     'energy': -2.39631592775e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 70448 },
+            20: { 'time': 20,
+                     'temperature': 1.1,
+                     'energy': -2.65408748051e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 73719 },
+            21: { 'time': 21,
+                     'temperature': 1.0,
+                     'energy': -2.9734363174e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 77000 },
+            22: { 'time': 22,
+                     'temperature': 0.9,
+                     'energy': -3.03152008762e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 102326 },
+            23: { 'time': 23,
+                     'temperature': 0.8,
+                     'energy': -3.11992842646e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 105802 },
+            24: { 'time': 24,
+                     'temperature': 0.7,
+                     'energy': -3.50783260733e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 168492 },
+            25: { 'time': 25,
+                     'temperature': 0.6,
+                     'energy': -4.13632030366e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 171908 },
+            26: { 'time': 26,
+                     'temperature': 0.5,
+                     'energy': -6.48077016443e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 175287 },
+            27: { 'time': 27,
+                     'temperature': 0.4,
+                     'energy': -9.32456471265e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 178777 },
+            28: { 'time': 28,
+                     'temperature': 0.3,
+                     'energy': -1.18510403113e-13,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 182356 },
+            29: { 'time': 29,
+                     'temperature': 0.2,
+                     'energy': -1.35823262081e-13,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 185919 },
+            30: { 'time': 30,
+                     'temperature': 0.1,
+                     'energy': -1.50880133977e-13,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 189558 },
+          },
+          '3d_other': {
+            0: { 'time': 0,
+                     'temperature': 3.0,
+                     'energy': -9.88555894637e-15,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            1: { 'time': 1,
+                     'temperature': 3.0,
+                     'energy': -2.08977064426e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            2: { 'time': 2,
+                     'temperature': 2.9,
+                     'energy': -2.05298914439e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            3: { 'time': 3,
+                     'temperature': 2.8,
+                     'energy': -2.29391605927e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            4: { 'time': 4,
+                     'temperature': 2.7,
+                     'energy': -2.24780478927e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            5: { 'time': 5,
+                     'temperature': 2.6,
+                     'energy': -2.33736222888e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            6: { 'time': 6,
+                     'temperature': 2.5,
+                     'energy': -2.27110660874e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            7: { 'time': 7,
+                     'temperature': 2.4,
+                     'energy': -1.85896256227e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            8: { 'time': 8,
+                     'temperature': 2.3,
+                     'energy': -2.24665495655e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            9: { 'time': 9,
+                     'temperature': 2.2,
+                     'energy': -2.10020935639e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            10: { 'time': 10,
+                     'temperature': 2.1,
+                     'energy': -2.37370136576e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            11: { 'time': 11,
+                     'temperature': 2.0,
+                     'energy': -2.36816225759e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            12: { 'time': 12,
+                     'temperature': 1.9,
+                     'energy': -2.45940851552e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            13: { 'time': 13,
+                     'temperature': 1.8,
+                     'energy': -2.18700938015e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            14: { 'time': 14,
+                     'temperature': 1.7,
+                     'energy': -2.27139289524e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            15: { 'time': 15,
+                     'temperature': 1.6,
+                     'energy': -2.23198587543e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            16: { 'time': 16,
+                     'temperature': 1.5,
+                     'energy': -2.23841101655e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            17: { 'time': 17,
+                     'temperature': 1.4,
+                     'energy': -2.43871308292e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            18: { 'time': 18,
+                     'temperature': 1.3,
+                     'energy': -2.5655085191e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            19: { 'time': 19,
+                     'temperature': 1.2,
+                     'energy': -2.39631592775e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            20: { 'time': 20,
+                     'temperature': 1.1,
+                     'energy': -2.65408748051e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            21: { 'time': 21,
+                     'temperature': 1.0,
+                     'energy': -2.9734363174e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            22: { 'time': 22,
+                     'temperature': 0.9,
+                     'energy': -3.03152008762e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            23: { 'time': 23,
+                     'temperature': 0.8,
+                     'energy': -3.11992842646e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            24: { 'time': 24,
+                     'temperature': 0.7,
+                     'energy': -3.50783260733e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            25: { 'time': 25,
+                     'temperature': 0.6,
+                     'energy': -4.13632030366e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            26: { 'time': 26,
+                     'temperature': 0.5,
+                     'energy': -6.48077016443e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            27: { 'time': 27,
+                     'temperature': 0.4,
+                     'energy': -9.32456471265e-14,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            28: { 'time': 28,
+                     'temperature': 0.3,
+                     'energy': -1.18510403113e-13,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            29: { 'time': 29,
+                     'temperature': 0.2,
+                     'energy': -1.35823262081e-13,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+            30: { 'time': 30,
+                     'temperature': 0.1,
+                     'energy': -1.50880133977e-13,
+                     'director_variance': 0.0,
+                     'avg_director_dist': 0.0,
+                     'num_directors': 125,
+                     'potential': 'GayBernesPotentialFast',
+                     'potential_approx': 'SphereNearestNeighboursPotential',
+                     'process': 'Cooling',
+                     'time_used': 0 },
+          },
+        };
+;
+      var viz_data = {
+          '3d_small': {
+            0: { 'file': 'models/3d_small/lqs_2_cool00000001.png' },
+            1: { 'file': 'models/3d_small/lqs_2_cool00000002.png' },
+            2: { 'file': 'models/3d_small/lqs_2_cool00000003.png' },
+            3: { 'file': 'models/3d_small/lqs_2_cool00000004.png' },
+            4: { 'file': 'models/3d_small/lqs_2_cool00000005.png' },
+            5: { 'file': 'models/3d_small/lqs_2_cool00000006.png' },
+            6: { 'file': 'models/3d_small/lqs_2_cool00000007.png' },
+            7: { 'file': 'models/3d_small/lqs_2_cool00000008.png' },
+            8: { 'file': 'models/3d_small/lqs_2_cool00000009.png' },
+            9: { 'file': 'models/3d_small/lqs_2_cool00000010.png' },
+            10: { 'file': 'models/3d_small/lqs_2_cool00000011.png' },
+            11: { 'file': 'models/3d_small/lqs_2_cool00000012.png' },
+            12: { 'file': 'models/3d_small/lqs_2_cool00000013.png' },
+            13: { 'file': 'models/3d_small/lqs_2_cool00000014.png' },
+            14: { 'file': 'models/3d_small/lqs_2_cool00000015.png' },
+            15: { 'file': 'models/3d_small/lqs_2_cool00000016.png' },
+            16: { 'file': 'models/3d_small/lqs_2_cool00000017.png' },
+            17: { 'file': 'models/3d_small/lqs_2_cool00000018.png' },
+            18: { 'file': 'models/3d_small/lqs_2_cool00000019.png' },
+            19: { 'file': 'models/3d_small/lqs_2_cool00000020.png' },
+            20: { 'file': 'models/3d_small/lqs_2_cool00000021.png' },
+            21: { 'file': 'models/3d_small/lqs_2_cool00000022.png' },
+            22: { 'file': 'models/3d_small/lqs_2_cool00000023.png' },
+            23: { 'file': 'models/3d_small/lqs_2_cool00000024.png' },
+            24: { 'file': 'models/3d_small/lqs_2_cool00000025.png' },
+            25: { 'file': 'models/3d_small/lqs_2_cool00000026.png' },
+            26: { 'file': 'models/3d_small/lqs_2_cool00000027.png' },
+            27: { 'file': 'models/3d_small/lqs_2_cool00000028.png' },
+            28: { 'file': 'models/3d_small/lqs_2_cool00000029.png' },
+            29: { 'file': 'models/3d_small/lqs_2_cool00000030.png' },
+            30: { 'file': 'models/3d_small/lqs_2_cool00000031.png' },
+          },
+          '3d_other': {
+            0: { 'file': 'models/3d_other/lqs_2_cool00000001.png' },
+            1: { 'file': 'models/3d_other/lqs_2_cool00000002.png' },
+            2: { 'file': 'models/3d_other/lqs_2_cool00000003.png' },
+            3: { 'file': 'models/3d_other/lqs_2_cool00000004.png' },
+            4: { 'file': 'models/3d_other/lqs_2_cool00000005.png' },
+            5: { 'file': 'models/3d_other/lqs_2_cool00000006.png' },
+            6: { 'file': 'models/3d_other/lqs_2_cool00000007.png' },
+            7: { 'file': 'models/3d_other/lqs_2_cool00000008.png' },
+            8: { 'file': 'models/3d_other/lqs_2_cool00000009.png' },
+            9: { 'file': 'models/3d_other/lqs_2_cool00000010.png' },
+            10: { 'file': 'models/3d_other/lqs_2_cool00000011.png' },
+            11: { 'file': 'models/3d_other/lqs_2_cool00000012.png' },
+            12: { 'file': 'models/3d_other/lqs_2_cool00000013.png' },
+            13: { 'file': 'models/3d_other/lqs_2_cool00000014.png' },
+            14: { 'file': 'models/3d_other/lqs_2_cool00000015.png' },
+            15: { 'file': 'models/3d_other/lqs_2_cool00000016.png' },
+            16: { 'file': 'models/3d_other/lqs_2_cool00000017.png' },
+            17: { 'file': 'models/3d_other/lqs_2_cool00000018.png' },
+            18: { 'file': 'models/3d_other/lqs_2_cool00000019.png' },
+            19: { 'file': 'models/3d_other/lqs_2_cool00000020.png' },
+            20: { 'file': 'models/3d_other/lqs_2_cool00000021.png' },
+            21: { 'file': 'models/3d_other/lqs_2_cool00000022.png' },
+            22: { 'file': 'models/3d_other/lqs_2_cool00000023.png' },
+            23: { 'file': 'models/3d_other/lqs_2_cool00000024.png' },
+            24: { 'file': 'models/3d_other/lqs_2_cool00000025.png' },
+            25: { 'file': 'models/3d_other/lqs_2_cool00000026.png' },
+            26: { 'file': 'models/3d_other/lqs_2_cool00000027.png' },
+            27: { 'file': 'models/3d_other/lqs_2_cool00000028.png' },
+            28: { 'file': 'models/3d_other/lqs_2_cool00000029.png' },
+            29: { 'file': 'models/3d_other/lqs_2_cool00000030.png' },
+            30: { 'file': 'models/3d_other/lqs_2_cool00000031.png' },
+          },
+        };
+;
+      var vizChart = null;
+      var data_field_names = ["time", "temperature", "energy",
+                              "director_variance", "avg_director_dist",
+                              "time_used", "num_directors", "potential",
+                              "potential_approx", "process"];
+      var data_field_titles = { 
+          "time": "Time",
+          "temperature": "Temperature",
+          "energy": "Energy",
+          "director_variance": "Director Variance",
+          "avg_director_dist": "Average Director Distance from Original",
+          "time_used": "Time Used",
+          "num_directors": "Number of Directors",
+          "potential": "Potential",
+          "potential_approx": "Potential Approximation",
+          "process": "Process",
+      }
+      
+      function drawAll() {
+        detectScreenSize();
+        drawChart();
+      }
+
+      var winW = 630, winH = 460;
+      function detectScreenSize() {
+        if (document.body && document.body.offsetWidth) {
+          winW = document.body.offsetWidth;
+          winH = document.body.offsetHeight;
+        }
+        if (document.compatMode=='CSS1Compat' &&
+            document.documentElement &&
+            document.documentElement.offsetWidth ) {
+          winW = document.documentElement.offsetWidth;
+          winH = document.documentElement.offsetHeight;
+        }
+        if (window.innerWidth && window.innerHeight) {
+          winW = window.innerWidth;
+          winH = window.innerHeight;
+        }
+      }
+      
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Model');
+        data.addColumn('number', 'Time');
+        data.addColumn('number', 'Temperature');
+        data.addColumn('number', 'Energy');
+        data.addColumn('number', 'Director Variance');
+        data.addColumn('number', 'Average Director Distance from Original');
+        data.addColumn('number', 'Time Used');
+        data.addColumn('number', 'Number of Directors');
+        data.addColumn('string', 'Potential');
+        data.addColumn('string', 'Potential Approximation');
+        data.addColumn('string', 'Process');
+
+        for (var model in all_data) {
+          for (var time_index in all_data[model]) {
+            var r = all_data[model][time_index];
+            data.addRow([model, parseInt(time_index), r.temperature, r.energy,
+                         r.director_variance, r.avg_director_dist,
+                         r.time_used, r.num_directors, r.potential,
+                         r.potential_approx, r.process]);
+          }
+        }
+        data.addRows[all_data];
+        chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
+        chart.draw(data,
+                   {width: parseInt(winW*0.5), height: parseInt(winH*0.5),
+                    state: '{"xZoomedIn":false,"showTrails":true,"yZoomedDataMin":0,"yZoomedIn":false,"xAxisOption":"_TIME","orderedByX":false,"xLambda":1,"colorOption":"_UNIQUE_COLOR","nonSelectedAlpha":0.4,"playDuration":15000,"xZoomedDataMax":3,"sizeOption":"5","iconKeySettings":[],"duration":{"multiplier":1,"timeUnit":"Y"},"yZoomedDataMax":1,"orderedByY":false,"iconType":"BUBBLE","xZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"time":"1900","uniColorForNonSelected":false,"yLambda":1,"yAxisOption":"2"}'});
+
+        google.visualization.events.addListener(chart, 'statechange', function() {
+          var state_string = chart.getState();
+          if (state_string == null) {
+            return;
+          }
+
+          // If there is a specific time selected, find it.
+          current_time = 0;
+          time_matches = /"time":"([0-9]+)"/.exec(state_string);
+          if (time_matches != null && time_matches.length > 1) {
+            current_time = parseInt(time_matches[1]) - 1900;
+          }
+
+          // Determine the X axis type.
+          x_axis = 1;
+          x_axis_matches = /"xAxisOption":"([0-9]+)"/.exec(state_string);
+          if (x_axis_matches != null && x_axis_matches.length > 1) {
+            x_axis = parseInt(x_axis_matches[1]);
+          }
+          x_axis_matches = /"xAxisOption":"(_TIME)"/.exec(state_string);
+          if (x_axis_matches != null && x_axis_matches.length > 1) {
+            x_axis = 1;
+          }
+          x_axis_matches = /"xAxisOption":"(_ALPHABETICAL)"/.exec(state_string);
+          if (x_axis_matches != null && x_axis_matches.length > 1) {
+            x_axis = 100;
+          }
+
+          // Determine the Y axis type.
+          y_axis = 2;
+          y_axis_matches = /"yAxisOption":"([0-9]+)"/.exec(state_string);
+          if (y_axis_matches != null && y_axis_matches.length > 1) {
+            y_axis = parseInt(y_axis_matches[1]);
+          }
+          y_axis_matches = /"yAxisOption":"(_TIME)"/.exec(state_string);
+          if (y_axis_matches != null && y_axis_matches.length > 1) {
+            y_axis = 1;
+          }
+          y_axis_matches = /"yAxisOption":"(_ALPHABETICAL)"/.exec(state_string);
+          if (y_axis_matches != null && y_axis_matches.length > 1) {
+            y_axis = 100;
+          }
+
+          // Find the selected models, and display the visual model.
+          selected_models = getSelectedModels(chart);
+          if (selected_models.length == 0) {
+            if (num_models == 1) {
+              selected_models = [];
+              for (var model in all_data) {
+                selected_models.push(model);
+              }
+            } else {
+              drawVisualDisplay(["--"], -1);
+              return;
+            }
+          }
+
+          // Draw the parameter comparison table.
+          drawParameterComparatorChart(x_axis-1, y_axis-1, selected_models);
+
+          // Draw the visual model of the first selected model.
+          //drawVisualDisplay(selected_models[0], current_time);
+          drawVisualDisplay(["--"], -1);
+        });
+      }
+
+      function getSelectedModels(chart) {
+        var state_string = chart.getState();
+        if (state_string == null) {
+          return [];
+        }
+
+        var models = [];
+        for (var model in all_data) {
+          if (new RegExp('"' + model + '"').test(state_string)) {
+            models.push(model);
+          }
+        }
+        return models;
+      }
+
+      function drawParameterComparatorChart(x_axis_index, y_axis_index,
+                                            models) {
+        var data = new google.visualization.DataTable();
+
+        // If there are no selected models, or either of the parameters chosen
+        // as the X or Y axis are not ones that can be compared (above 5), don't
+        // display anything.
+        if (models.length == 0 || models[0] == "--" ||
+            x_axis_index > 5 || y_axis_index > 5) {
+          data.addColumn('number', 'Nothing');
+          data.addColumn('number', 0);
+          new google.visualization.ScatterChart(
+              document.getElementById('parameter_chart_div')).
+            draw(data,
+                {title: "Model: ''",
+                 width:1, height:1,
+                 legend: {position: 'none'},
+            });
+          return;
+        }
+
+        // Determine the axis field names and titles.
+        x_axis = data_field_names[x_axis_index];
+        x_axis_title = data_field_titles[x_axis];
+        y_axis = data_field_names[y_axis_index];
+        y_axis_title = data_field_titles[y_axis];
+
+        data.addColumn('number', x_axis);
+        for (var model in models) {
+          data.addColumn('number', models[model]);
+        }
+
+        for (var i = 0; i < models.length; ++i) {
+          var model = models[i];
+          var model_data = all_data[model];
+          for (var j in model_data) {
+            event_data = model_data[j];
+            row_data = [event_data[x_axis]];
+            for (var k = 0; k < models.length; ++k) {
+              if (k == i) {
+                row_data.push(event_data[y_axis]);
+              } else {
+                row_data.push(null);
+              }
+            }
+            data.addRow(row_data);
+          }
+        }
+
+        // Create and draw the visualization.
+        var models_title = "Model: '" + models[0] + "'";
+        if (models.length > 1) {
+          models_title = "Models: ";
+          for (var model in models) {
+            models_title += models_title + "'" + models[model] + "' ";
+          }
+        }
+        new google.visualization.ScatterChart(
+            document.getElementById('parameter_chart_div')).
+          draw(data,
+               {title: models_title,
+                width: parseInt(winW*0.5), height: parseInt(winH*0.5),
+                vAxis:  {title: y_axis_title},
+                hAxis:  {title: x_axis_title},
+                legend: {position: 'right'}});
+      }
+
+      function drawVisualDisplay(models, time) {
+        var img = document.getElementById("viz_display_img");
+        var title = document.getElementById("viz_display_title");
+
+        if (models.length == 0 || models[0] == "--" || time < 0) {
+          img.width = 0;
+          img.height = 0;
+          img.src = "//:0";
+          img.alt = "";
+          title.innerHTML = "";
+        } else {
+          img.width = parseInt(winW*0.5);
+          img.height = parseInt(winH*0.5);
+          img.src = viz_data[model][time];
+          img.alt = model + "[" + time + "]: " + viz_data[model][time].file;
+          title.innerHTML = "'" + model + "' (time: " + time + ")";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <div id="chart_div"/>
+        </td>
+        <td>
+          <div id="viz_display_div">
+            <span id="viz_display_title"/>
+            <img name='viz_display_img' id="viz_display_img" src="//:0" width=0 height=0 alt=""/>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="parameter_chart_div"/>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
