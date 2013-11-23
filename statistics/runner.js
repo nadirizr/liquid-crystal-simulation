@@ -255,8 +255,8 @@
         </td>
         <td>
           <div id="viz_display_div">
-            <span id="viz_display_title"/>
             <img name='viz_display_img' id="viz_display_img" src="//:0" width=0 height=0 alt=""/>
+            <span id="viz_display_title"/>
           </div>
         </td>
       </tr>
