@@ -1,0 +1,7 @@
+Loading configuration: 3d
+Traceback (most recent call last):
+  File "main.py", line 115, in ?
+    main(args)
+  File "main.py", line 59, in main
+    shutil.copy("models/%s.py" % (args["model"],), parameters["RUN_DIR"])
+NameError: global name 'shutil' is not defined
