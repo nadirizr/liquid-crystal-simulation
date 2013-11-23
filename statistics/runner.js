@@ -213,7 +213,7 @@
         if (models.length > 1) {
           models_title = "Models: ";
           for (var model in models) {
-            models_title += models_title + "'" + models[model] + "' ";
+            models_title += "'" + models[model] + "' ";
           }
         }
         new google.visualization.ScatterChart(
@@ -238,8 +238,8 @@
           title.innerHTML = "";
         } else {
           model = models[0];
-          img.width = parseInt(winW*0.5);
-          img.height = parseInt(winH*0.5);
+          img.width = parseInt(winH*0.6);
+          img.height = parseInt(winH*0.6*0.75);
           img.src = viz_data[model][time].file;
           img.alt = model + "[" + time + "]: " + viz_data[model][time].file;
           title.innerHTML = "'" + model + "' (time: " + time + ")";
