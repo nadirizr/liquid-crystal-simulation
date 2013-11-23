@@ -75,7 +75,7 @@ do
   fi
 
   # Create a PNG with AVIZ.
-  aviz -snapq $XYZ_FILE -geometry $GEOMETRY1 >& /dev/null
+  aviz -snapq $XYZ_FILE -vpm 3d.vpm -geometry $GEOMETRY1 >& /dev/null
   if [ ! -e $PNG_FILE ]; then
     echo "PNG file could not be created by AVIZ: $PNG_FILE"
     continue
