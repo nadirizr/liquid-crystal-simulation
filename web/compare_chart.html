@@ -834,8 +834,7 @@
           drawParameterComparatorChart(x_axis-1, y_axis-1, selected_models);
 
           // Draw the visual model of the first selected model.
-          //drawVisualDisplay(selected_models[0], current_time);
-          drawVisualDisplay(["--"], -1);
+          drawVisualDisplay(selected_models, current_time);
         });
       }
 
@@ -932,6 +931,7 @@
           img.alt = "";
           title.innerHTML = "";
         } else {
+          model = models[0];
           img.width = parseInt(winW*0.5);
           img.height = parseInt(winH*0.5);
           img.src = viz_data[model][time];
