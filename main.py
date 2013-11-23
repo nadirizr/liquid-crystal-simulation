@@ -44,10 +44,10 @@ def main(args):
     INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
     USE_MC_HEATER = bool(parameters["USE_MC_HEATER"])
     MC_HEATER_STATE_SELECTOR = parameters.get("MC_HEATER_STATE_SELECTOR",
-                                              SelectByHigherVariance)
+                                              SelectAlwaysNewer)
     USE_MC_COOLER = bool(parameters["USE_MC_COOLER"])
     MC_COOLER_STATE_SELECTOR = parameters.get("MC_COOLER_STATE_SELECTOR",
-                                              SelectByLowerEnergy)
+                                              SelectAlwaysNewer)
     INITIAL_STATE = parameters.get("INITIAL_STATE", None)
 
     # Set the run dir under which all other dirs are created.
