@@ -20,6 +20,7 @@
 </ul>
 <ul><li><a href="#config">How to write a configuration file</a></li></ul>
 <ul><li><a href="#potential">How to add new potential</a></li></ul>
+<ul><li><a href="#statistic">How to use the statistic page</a></li></ul>
 <br>
 <br><br>
 <H2><center><a name="run">How to run the system:</a></center></H2>
@@ -39,6 +40,12 @@ After running the system you can see the visual result by running "<b>./aviz.sh 
 where OUTPUT_TITLE should be the name of the AViz's output list as shown after finish the running of the simulation (".lst" file).
 <br>
 More details are under <a href="#runs">"runs"</a> section.
+<br>
+If you wish to get some statistics of the simulations you have done- that's also very easy- all you need to do is write  in the shell(after finishing the simulations) - "<b> ./generate_stat.sh MODEL_NAME</b>". That will create a web page called "compare_chart.html" inside the folder "Web".
+<br>
+If you want to add the animations from AViz to those statistics you should add at the end of the line in shell- "<b>--aviz</b>".
+<br>
+More details about the statistics are under <a href="#statistic">"statistic"</a> section.
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 </P>
@@ -158,6 +165,21 @@ The next step is to change the class name:
 now you need to write how the calculation code.
 <br> the last thing is to write the name of the new potential in the configuration file. (you can read more about <a href="#config">how to create a new configuration file above</a>.)
 </P>
+<div align="right"><a href="#up">[up]</a></div>
+<br>
+
+<H2><center><a name="statistic">How to use the statistics page</a></center></H2>
+<br>
+<li>In order to <i><b>change the axes</b></i> you should only click on the axis's name and change it to what you want, the Chart will change respectively. </li>
+<br>
+<li>Another thing you can change is the <b><i>colour of the chart</i></b>, on the right of the chart.</li>
+<br>
+<li>You can also change the <b><i>type of chart</i></b>- linear, time bubbles etc...</li>
+<br>
+<li>By clicking on a dot in the chart the picture on the right will replaced by the correct state of the system.</li>
+<br>
+
+<br>
 <div align="right"><a href="#up">[up]</a></div>
 <br>
 </BODY>
