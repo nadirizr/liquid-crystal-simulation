@@ -8,7 +8,7 @@ XYZ_PATTERN="$1"
 PNG_DIR="$2"
 MODEL="$3"
 
-if [[ -z "`ls $XYZ_PATTERN????????.xyz`" ]]; then
+if [ -z "`ls $XYZ_PATTERN????????.xyz`" ]; then
   echo "Didn't find any XYZ files matching pattern: $XYZ_PATTERN????????.xyz"
   echo "Aborting PNG model generation."
   exit 1
@@ -17,7 +17,7 @@ else
 fi
 
 mkdir -p $PNG_DIR
-if [[ -d "$PNG_DIR" ]]; then
+if [ -d "$PNG_DIR" ]; then
   echo "Output directory for model PNGs: $PNG_DIR"
 else
   echo "Invalid output directory for model PNGs: $PNG_DIR"
@@ -25,7 +25,7 @@ else
   exit 1
 fi
 
-if [[ -z "`which aviz`" ]]; then
+if [ -z "`which aviz`" ]; then
   echo "AVIZ not detected."
   echo "Aborting PNG model generation."
   exit 0
@@ -67,12 +67,16 @@ NUM_FILES=${#FILE_LIST[*]}
 
 for XYZ_FILE in ${FILE_LIST[*]}
 do
-  # Set the name of the generated PNG file.
-  PNG_FILE="$XYZ_DIR_NAME`basename $XYZ_FILE .xyz`.0001.png"
+  # Set the name of the generated PNG file, and if it exists overwrite.
+  PNG_FILE="$XYZ_DIR_NAME/`basename $XYZ_FILE .xyz`.0001.png"
+  if [ -e $PNG_FILE ]; then
+    echo "Overwriting already existing PNG file: $PNG_FILE"
+    rm -f $PNG_FILE
+  fi
 
   # Create a PNG with AVIZ.
   aviz -snapq $XYZ_FILE -geometry $GEOMETRY1 >& /dev/null
-  if ![[ -e $PNG_FILE ]]; then
+  if [ ! -e $PNG_FILE ]; then
     echo "PNG file could not be created by AVIZ: $PNG_FILE"
     continue
   fi
