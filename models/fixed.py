@@ -22,7 +22,7 @@ INITIAL_SPIN_ORIENTATION = [0.0, 1.0]
 INITIAL_SPIN_ORIENTATION_STDEV = [0.0, 0.0]
 
 # Initial temperature in [K].
-INITIAL_TEMPERATURE = 0.0
+INITIAL_TEMPERATURE = 0.01
 
 ##################################################################
 #                    Potential Parameters                        #
@@ -31,6 +31,9 @@ INITIAL_TEMPERATURE = 0.0
 # The potential to use.
 POTENTIAL = FixedNearestNeighboursPotential
 TWO_SPIN_POTENTIAL = GayBernesPotential
+
+# Nearest neighbours parameters.
+NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 1
 
 # The potential parameters.
 EPSILON_0 = kB

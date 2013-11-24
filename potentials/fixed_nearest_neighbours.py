@@ -11,6 +11,7 @@ class FixedNearestNeighboursPotential(Potential):
         Uses the given two spin potential for the calculations.
         """
         self.potential = potential
+        self.parameters = parameters
 
     def calculate(self, lcs, indices):
         """
@@ -19,7 +20,7 @@ class FixedNearestNeighboursPotential(Potential):
         U = 0
 
         # Get the neighbour list for the given cell.
-        NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = list(
+        NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = int(
                 self.parameters["NEAREST_NEIGHBOURS_MAX_INDEX_RANGE"])
         index_ranges = [NEAREST_NEIGHBOURS_MAX_INDEX_RANGE
                         for i in range(len(indices))]
