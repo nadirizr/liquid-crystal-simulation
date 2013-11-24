@@ -62,22 +62,24 @@ MC_HEATER_SPACING_STDEV = 0.1
 # The maximum radius from the original location where the molecule can be.
 MC_HEATER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_HEATER_SPACING_STDEV * 5.0
 # The standard deviation of the gaussian random spin orientation.
-MC_HEATER_SPIN_STDEV = 1.0
+MC_HEATER_SPIN_STDEV = 0.5
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_HEATER_METROPOLIS_NUM_STEPS = 10000
+MC_HEATER_METROPOLIS_NUM_STEPS = 100000
 # Number of steps in the cooling process to perform the Metropolis algorithm
 # before lowering the temperature further.
-MC_HEATER_MAX_STEPS = 1000
+MC_HEATER_MAX_STEPS = 3
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_HEATER_MAX_NON_IMPROVING_STEPS = 3
 
 # The temperatures to use in the Monte Carlo algorithm.
-MC_HEATER_TEMPERATURES = [5.0]
+MC_HEATER_TEMPERATURES = [3.0]
 
 # The path to which to output the AVIZ files.
 MC_HEATER_AVIZ_OUTPUT_PATH = "output/lqs_1_heat"
+# The prefix to the names of the states.
+MC_HEATER_STATE_PREFIX = "lqs_1_heat"
 
 ##################################################################
 #                Cooling Algorithm Properties                    #
@@ -94,22 +96,21 @@ MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV * 5.0
 MC_COOLER_SPIN_STDEV = 0.05
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_COOLER_METROPOLIS_NUM_STEPS = 100000
+MC_COOLER_METROPOLIS_NUM_STEPS = 10000
 # Number of steps in the cooling process to perform the Metropolis algorithm
 # before lowering the temperature further.
 MC_COOLER_MAX_STEPS = 1
 # Number of steps in the cooling process to wait if there is no improvement
 # before lowering the temperature further.
 MC_COOLER_MAX_NON_IMPROVING_STEPS = 3
-# The new state selector that determines if the new state after the last
-# Metropolis run is better.
-MC_COOLER_STATE_SELECTOR = SelectAlwaysNewer
 
 # The temperatures to use in the Monte Carlo algorithm.
 MC_COOLER_TEMPERATURES = frange(3.0, 0.1, -0.1)
 
 # The path to which to output the AVIZ files.
 MC_COOLER_AVIZ_OUTPUT_PATH = "output/lqs_2_cool"
+# The prefix to the names of the states.
+MC_COOLER_STATE_PREFIX = "lqs_2_cool"
 
 ##################################################################
 #                     General Properties                         #
