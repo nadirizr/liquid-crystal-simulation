@@ -5,11 +5,9 @@
       google.load('visualization', '1', {'packages':['corechart','motionchart']});
       google.setOnLoadCallback(drawAll);
 
-      var chart = null;
       var num_models = %(num_models)s;
       var all_data = %(all_data)s;
       var viz_data = %(viz_data)s;
-      var vizChart = null;
       var data_field_names = ["time", "temperature", "energy",
                               "director_variance", "avg_director_dist",
                               "time_used", "num_directors", "potential",
@@ -26,6 +24,9 @@
           "potential_approx": "Potential Approximation",
           "process": "Process",
       }
+
+      var chart = null;
+      var viz_selected_model = null;
       
       function drawAll() {
         detectScreenSize();
@@ -86,11 +87,7 @@
           }
 
           // If there is a specific time selected, find it.
-          current_time = 0;
-          time_matches = /"time":"([0-9]+)"/.exec(state_string);
-          if (time_matches != null && time_matches.length > 1) {
-            current_time = parseInt(time_matches[1]) - 1900;
-          }
+          current_time = getCurrentTime(chart);
 
           // Determine the X axis type.
           x_axis = 1;
@@ -157,6 +154,20 @@
           }
         }
         return models;
+      }
+
+      function getCurrentTime(chart) {
+        var state_string = chart.getState();
+        if (state_string == null) {
+          return 0;
+        }
+
+        current_time = 0;
+        time_matches = /"time":"([0-9]+)"/.exec(state_string);
+        if (time_matches != null && time_matches.length > 1) {
+          current_time = parseInt(time_matches[1]) - 1900;
+        }
+        return current_time;
       }
 
       function drawParameterComparatorChart(x_axis_index, y_axis_index,
@@ -228,22 +239,67 @@
 
       function drawVisualDisplay(models, time) {
         var img = document.getElementById("viz_display_img");
-        var title = document.getElementById("viz_display_title");
+        var combo = document.getElementById("viz_display_combo");
+
+        for (var i = combo.options.length - 1; i >= 0; --i) {
+          combo.remove(i);
+        }
 
         if (models.length == 0 || models[0] == "--" || time < 0) {
+          setVisualModelImage("--", -1);
+          combo.style.visibility = "hidden";
+          viz_selected_model = null;
+          return;
+        }
+        
+        combo.selectedIndex = 0;
+        for (var model_index in models) {
+          model = models[model_index];
+            
+          var option = document.createElement("option");
+          option.value = "'" + model + "' (time: " + time + ")";
+          option.text = option.value;
+          option.innerHTML = option.value;
+          try {
+            combo.add(option, null);
+          } catch (error) {
+            combo.add(option); // IE
+          }
+
+          if (viz_selected_model != null &&
+              viz_selected_model.indexOf(model) == 0) {
+            combo.selectedIndex = model_index;
+          }
+        }
+        combo.style.visibility = "visible";
+
+        model = models[combo.selectedIndex];
+
+        setVisualModelImage(model, time);
+      }
+
+      function setVisualModelImage(model, time) {
+        var img = document.getElementById("viz_display_img");
+        if (model == "--" || time < 0) {
           img.width = 0;
           img.height = 0;
           img.src = "//:0";
           img.alt = "";
-          title.innerHTML = "";
         } else {
-          model = models[0];
           img.width = parseInt(winH*0.6);
           img.height = parseInt(winH*0.6*0.75);
           img.src = viz_data[model][time].file;
           img.alt = model + "[" + time + "]: " + viz_data[model][time].file;
-          title.innerHTML = "'" + model + "' (time: " + time + ")";
         }
+      }
+
+      function changeVisualModel() {
+        var combo = document.getElementById("viz_display_combo");
+        var selected_models = getSelectedModels(chart);
+        var model = selected_models[combo.selectedIndex];
+        var current_time = getCurrentTime(chart);
+        viz_selected_model = model;
+        setVisualModelImage(model, current_time);
       }
     </script>
   </head>
@@ -255,9 +311,18 @@
         </td>
         <td>
           <div id="viz_display_div">
-            <img name='viz_display_img' id="viz_display_img" src="//:0" width=0 height=0 alt=""/>
-            <br/>
-            <span id="viz_display_title"/>
+            <table>
+              <tr>
+                <td>
+                  <img name='viz_display_img' id="viz_display_img" src="//:0" width=0 height=0 alt=""/>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <select name="viz_display_combo" id="viz_display_combo" onchange="changeVisualModel()" style="visibility:hidden;"></select>
+                </td>
+              </tr>
+            </table>
           </div>
         </td>
       </tr>
