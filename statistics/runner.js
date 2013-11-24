@@ -267,5 +267,6 @@
         </td>
       </tr>
     </table>
+    <div aligm="right"><a href="results.html">[back]</a></div>
   </body>
 </html>
