@@ -1,4 +1,5 @@
 import cProfile
+import glob
 import os
 import shutil
 import sys
@@ -48,6 +49,15 @@ def parseCommandLineArgs(args):
     model = "default"
     if len(args) > 0:
         model = args[0]
+
+    # Check if there is an incomplete run with this name, and if so load it.
+    previous_run_parameters = loadPreviousRun(model)
+    if previous_run_parameters:
+        return previous_run_parameters
+
+    # If this was not a previous run, or the user chose not to continue with it,
+    # treat it as a model.
+    print "Loading configuration: %s" % model
     parameters = readParametersFromFile(model)
     parameters["MODEL"] = model
 
@@ -61,12 +71,58 @@ def parseCommandLineArgs(args):
 
     return parameters
 
+def loadPreviousRun(previous_run_pattern):
+    """
+    Attempts to load a previous run, the latest one that is not complete with
+    the given run pattern.
+    """
+    # Get all previous runs from the runs directory with the given pattern.
+    previous_runs = glob.glob("runs/*%s*" % previous_run_pattern)
+    if not previous_runs:
+        return None
+
+    # Go to the latest one, and check if it's complete.
+    previous_runs.sort(reverse=True)
+    for latest_run in previous_runs:
+        # Find the model file inside the run, and if we can't skip this run.
+        model_files = glob.glob("%s/*.py" % latest_run)
+        if not model_files:
+            continue
+        model_file = model_files[0]
+        model = os.path.basename(model_file)[:-3]
+        run_parameters = readParametersFromFile(model)
+
+        # Set basic parameters.
+        run_parameters["RUN_DIR"] = latest_run
+        run_parameters["PROFILE"] = False
+        run_parameters["MODEL"] = model
+
+        # Check if we have the final state indicating completion, and if it is
+        # a completed run skip it.
+        lc_state_manager = LiquidCrystalSystemStateManager(run_parameters)
+        if "final" in lc_state_manager.getStateNames():
+            continue
+
+        # Ask the user if he wishes to continue this run.
+        print "Previous run found: '%s'" % latest_run
+        user_reply = raw_input("Do you wish to continue this run? [Y/N]: ")
+        user_reply = user_reply.lower()
+        if user_reply == "y" or user_reply == "yes":
+            print "Previous run will be continued."
+            print
+            return run_parameters
+        else:
+            print "A new run will commence now."
+            print
+            return None
+
+    return None
+
 def readParametersFromFile(model):
     """
     Reads the parameter file for the given model.
     """
     filename = "models/%s.py" % model
-    print "Loading configuration: %s" % model
     parameters = {}
     exec file(filename, "r") in parameters
     return parameters
@@ -85,16 +141,20 @@ def main(parameters):
                                               SelectAlwaysNewer)
     INITIAL_STATE = parameters.get("INITIAL_STATE", None)
 
-    # Set the run dir under which all other dirs are created.
-    current_time = time.gmtime()
-    parameters["RUN_DIR"] = "runs/%04d%02d%02d_%02d%02d%02d_%s" % (
-            current_time.tm_year, current_time.tm_mon, current_time.tm_mday,
-            current_time.tm_hour, current_time.tm_min, current_time.tm_sec,
-            parameters["MODEL"])
-    os.makedirs(parameters["RUN_DIR"])
+    # Set the run dir under which all other dirs are created, or if this is a
+    # continued run then use the previous dir.
+    if "RUN_DIR" not in parameters:
+        # Create the run directory itself.
+        current_time = time.gmtime()
+        parameters["RUN_DIR"] = "runs/%04d%02d%02d_%02d%02d%02d_%s" % (
+                current_time.tm_year, current_time.tm_mon, current_time.tm_mday,
+                current_time.tm_hour, current_time.tm_min, current_time.tm_sec,
+                parameters["MODEL"])
+        os.makedirs(parameters["RUN_DIR"])
 
-    # Copy the model file to the run dir.
-    shutil.copy("models/%s.py" % (parameters["MODEL"],), parameters["RUN_DIR"])
+        # Copy the model file to the run dir.
+        shutil.copy("models/%s.py" % (parameters["MODEL"],),
+                                      parameters["RUN_DIR"])
 
     # Set up the state manager.
     lcs_manager = LiquidCrystalSystemStateManager(parameters)
@@ -119,12 +179,12 @@ def main(parameters):
 
     # Heat up the LCS.
     if USE_MC_HEATER:
-        mch = MonteCarloAlgorithm(lcs, MC_HEATER_STATE_SELECTOR(),
+        mch = MonteCarloAlgorithm(lcs, lcs_manager, MC_HEATER_STATE_SELECTOR(),
                                   parameters, parameter_prefix="MC_HEATER_")
-        print "// @@@@@@@ BEFORE HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
+        print "BEFORE HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
         mch.run()
         lcs = mch.getLCS()
-        print "// @@@@@@@ AFTER HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
+        print "AFTER HEATING: lcs.getTemperature() = %s" % lcs.getTemperature()
 
         # Save the heated up state.
         lcs_manager.saveState("heated", lcs)
@@ -132,12 +192,12 @@ def main(parameters):
 
     # Cool down the LCS.
     if USE_MC_COOLER:
-        mcc = MonteCarloAlgorithm(lcs, MC_COOLER_STATE_SELECTOR(),
+        mcc = MonteCarloAlgorithm(lcs, lcs_manager, MC_COOLER_STATE_SELECTOR(),
                                   parameters, parameter_prefix="MC_COOLER_")
-        print "// @@@@@@@ BEFORE COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
+        print "BEFORE COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
         mcc.run()
         lcs = mcc.getLCS()
-        print "// @@@@@@@ AFTER COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
+        print "AFTER COOLING: lcs.getTemperature() = %s" % lcs.getTemperature()
 
         # Save the cooled down state.
         lcs_manager.saveState("cooled", lcs)
@@ -150,6 +210,7 @@ if __name__ == "__main__":
         parameters = parseCommandLineArgs(sys.argv)
     except RuntimeError as e:
         print e
+        print
         printUsage()
         sys.exit(1)
 

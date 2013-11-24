@@ -7,9 +7,10 @@ from util import *
 
 class MonteCarloAlgorithm:
     
-    def __init__(self, lcs, new_state_selector,
+    def __init__(self, lcs, lcs_manager, new_state_selector,
                  parameters, parameter_prefix="MC_"):
         self.lcs = lcs
+        self.lcs_manager = lcs_manager
         self.new_state_selector = new_state_selector
         self.parameters = parameters
         self.parameter_prefix = parameter_prefix
@@ -38,6 +39,8 @@ class MonteCarloAlgorithm:
         AVIZ_OUTPUT_PATH = os.path.join(
             str(self.parameters["RUN_DIR"]),
             str(self.parameters[self.parameter_prefix + "AVIZ_OUTPUT_PATH"]))
+        STATE_PREFIX = str(
+            self.parameters[self.parameter_prefix + "STATE_PREFIX"])
         MC_TEMPERATURES = list(
             self.parameters[self.parameter_prefix + "TEMPERATURES"])
         MC_MAX_STEPS = int(
@@ -50,17 +53,45 @@ class MonteCarloAlgorithm:
         print
         round_number = 0
         aviz_file_number = 0
-        
+
+        # Check if there is already a previous LCS state stored.
+        previous_lcs = self.lcs_manager.loadState(
+                "%s%08d" % (STATE_PREFIX, aviz_file_number))
+        if previous_lcs:
+            self.lcs = previous_lcs
+        else:
+            self.lcs.outputToAvizFile(
+                    "%s%08d.xyz" % (AVIZ_OUTPUT_PATH,
+                                    aviz_file_number))
+            self.lcs.outputInformationToFile(
+                    "%sinfo.txt" % (AVIZ_OUTPUT_PATH))
+            self.lcs_manager.saveState(
+                    "%s%08d" % (STATE_PREFIX, aviz_file_number),
+                    self.lcs)
         self.lcs.print2DSystem()
-        self.lcs.outputToAvizFile(
-                "%s%08d.xyz" % (AVIZ_OUTPUT_PATH,
-                                aviz_file_number))
-        self.lcs.outputInformationToFile(
-                "%sinfo.txt" % (AVIZ_OUTPUT_PATH))
+        
+        # Go over all of the temperatures and run the algorithm for each one.
         for temperature in MC_TEMPERATURES + [MC_TEMPERATURES[-1]]:
             round_number += 1
             print ("--------------------(T* = %s)--------------------" %
                    self.lcs.getTemperature())
+
+            # Check if there is already a previous LCS state stored.
+            previous_lcs = self.lcs_manager.loadState(
+                    "%s%08d" % (STATE_PREFIX, aviz_file_number+1))
+            if previous_lcs:
+                print "Loaded previous state for temperature %s: '%s%08d'" % (
+                        temperature, STATE_PREFIX, aviz_file_number)
+                self.lcs = previous_lcs
+                self.lcs.print2DSystem()
+                aviz_file_number += 1
+
+                # Next step with the next temperature.
+                print ("Changing Temperature ... (T*=%s -> %s)" %
+                       (self.lcs.getTemperature(), temperature))
+                print
+                self.lcs.setTemperature(temperature)
+                continue
     
             # Continue running Metropolis steps until we reach a point where in
             # MAX_NON_IMPROVING_STEPS steps there was no energy improvement.
@@ -89,6 +120,9 @@ class MonteCarloAlgorithm:
                                             aviz_file_number))
                     self.lcs.outputInformationToFile(
                             "%sinfo.txt" % (AVIZ_OUTPUT_PATH))
+                    self.lcs_manager.saveState(
+                            "%s%08d" % (STATE_PREFIX, aviz_file_number),
+                            self.lcs)
                 else:
                     print "--> Didn't get better state (k=%s)" % (k+1)
                     print
@@ -140,7 +174,6 @@ class MonteCarloAlgorithm:
         # If it is out of the cutoff sphere of the original location, keep the
         # old location.
         if distance2 > (MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2):
-            #print "// $$$ distance too big: distance^2 = %s, spacing^2 = %s" % (distance2, MC_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF ** 2)
             return current_location
 
         return new_location
