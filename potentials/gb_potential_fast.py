@@ -4,6 +4,7 @@ from potential import TwoSpinPotential
 try:
     from cpp.potentials.gb_potential_impl import GayBernesPotentialImpl
 except:
+    from gb_potential import GayBernesPotential
     GayBernesPotentialImpl = None
 
 class GayBernesPotentialFast(TwoSpinPotential):
@@ -18,8 +19,11 @@ class GayBernesPotentialFast(TwoSpinPotential):
         KAPPA = float(parameters["KAPPA"])
         KAPPA_TAG = float(parameters["KAPPA_TAG"])
 
-        self.impl = GayBernesPotentialImpl(
-                EPSILON_0, SIGMA_S, MIU, NI, KAPPA, KAPPA_TAG)
+        if GayBernesPotentialImpl is None:
+            self.impl = GayBernesPotential(parameters)
+        else:
+            self.impl = GayBernesPotentialImpl(
+                    EPSILON_0, SIGMA_S, MIU, NI, KAPPA, KAPPA_TAG)
 
     def calculateTwoSpins(self, spin1, location1, spin2, location2):
         """
