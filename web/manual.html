@@ -29,28 +29,29 @@
 To run the system you only need to go to the main project library, and then write in the shell: "<b>./run.sh MODEL_NAME</b>" <br>
 Where MODEL_NAME should be the name of the model you use (if you don't write anything it will use the default model).
 <br> You can choose - "2d_small, "3d_small", "2d_large", "3d", "fixed", "sphere" or "default".
+<br>
 You can also add another model as explained below in "How to write a configuration file" section.
 <br>
 You can find more details about each model under <a href ="#models">"Models"</a> section.
 <br>
 You should not write "MODEL_NAME.py" or give it a path! The system knows to take it from models library automatically.
 <br>
-If you need <b><i>help</i></b> you can also run "<b> ./run.sh MODEL_NAME -h</b>" or "<b>./run.sh MODEL_NAME --help</b>" and get an additional help.
+<li>If you need <b><i>help</i></b> you can also run "<b> ./run.sh MODEL_NAME -h</b>" or "<b>./run.sh MODEL_NAME --help</b>" and get an additional help.</li>
 <br>
-If you wish to <i><b>start from a specific temperature without creating\changing</b></i> another configuration file you can run with the command- "<b>./run.sh MODEL_NAME INITIAL_TEMERATURE=___</b>" and complite the wanted temperature instead of the "___".
+<li>If you wish to <i><b>start from a specific temperature without creating\changing</b></i> another configuration file you can run with the command- "<b>./run.sh MODEL_NAME INITIAL_TEMERATURE=___</b>" and complite the wanted temperature instead of the "___".</li>
 <br>
-<b>If you have already started a simulation and stopped before it has finished, the system will ask you if you want to continue the simulation- write "yes" if you do, "no" if not.
+<li><b>If you have already started a simulation and stopped before it has finished, the system will ask you if you want to continue the simulation- write "yes" if you do, "no" if not.</li>
 <br>
 <br>
 After running the system you can see the visual result in AViz by running: "<b>./aviz.sh OUTPUT_TITLE</b>"<br>
 Where OUTPUT_TITLE should be the name of the run directory as shown after the simulation finishes, or simply the model that was run (it will take the last one chronologically).
 <br>
 More details are under <a href="#runs">"runs"</a> section.
+<br><br>
+<li>If you wish to <b><i>generate some statistics</i></b> of the simulations you have done, that's also very easy - all you need to do is write in the shell (after finishing the simulations): "<b> ./generate_stat.sh MODEL_NAME</b>" <br>
+That will create a web page called "compare_chart.html" inside the folder "web" with all of the statistics neatly displayed.</li>
 <br>
-If you wish to <b><i>generate some statistics</i></b> of the simulations you have done, that's also very easy - all you need to do is write in the shell (after finishing the simulations): "<b> ./generate_stat.sh MODEL_NAME</b>" <br>
-That will create a web page called "compare_chart.html" inside the folder "web" with all of the statistics neatly displayed.
-<br>
-If you want to <b><i>add the animations from AViz</i></b> to those statistics you should add at the end of the line in shell that runs the statistics: "<b>-a</b>" or "<b>--aviz</b>"
+<li>If you want to <b><i>add the animations from AViz</i></b> to those statistics you should add at the end of the line in shell that runs the statistics: "<b>-a</b>" or "<b>--aviz</b>"</li>
 <br>
 More details about the statistics are under <a href="#statistic">"statistic"</a> section.
 <br>
