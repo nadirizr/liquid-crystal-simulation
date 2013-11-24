@@ -1,4 +1,3 @@
-import cProfile
 import glob
 import os
 import shutil
@@ -208,13 +207,14 @@ def main(parameters):
 if __name__ == "__main__":
     try:
         parameters = parseCommandLineArgs(sys.argv)
-    except RuntimeError as e:
+    except RuntimeError, e:
         print e
         print
         printUsage()
         sys.exit(1)
 
     if parameters["PROFILE"]:
+        import cProfile
         cProfile.run("main(parameters)", "profile.out")
     else:
         main(parameters)
