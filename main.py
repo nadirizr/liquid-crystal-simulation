@@ -42,10 +42,10 @@ def main(args):
     parameters = readParametersFromFile(args["model"])
     DIMENSIONS = parameters["DIMENSIONS"]
     INITIAL_TEMPERATURE = float(parameters["INITIAL_TEMPERATURE"])
-    USE_MC_HEATER = bool(parameters["USE_MC_HEATER"])
+    USE_MC_HEATER = bool(parameters.get("USE_MC_HEATER", True))
     MC_HEATER_STATE_SELECTOR = parameters.get("MC_HEATER_STATE_SELECTOR",
                                               SelectAlwaysNewer)
-    USE_MC_COOLER = bool(parameters["USE_MC_COOLER"])
+    USE_MC_COOLER = bool(parameters.get("USE_MC_COOLER", True))
     MC_COOLER_STATE_SELECTOR = parameters.get("MC_COOLER_STATE_SELECTOR",
                                               SelectAlwaysNewer)
     INITIAL_STATE = parameters.get("INITIAL_STATE", None)
