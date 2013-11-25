@@ -53,25 +53,22 @@ class LiquidCrystalSystem:
         self.locations = initial_locations
 
         if original_locations is None:
-            original_locations = self.copyPropertyList(self.locations)
+            original_locations = self.createPropertyList(
+                    lambda indices: array(
+                            [index * INITIAL_SPACING[i]
+                             for i, index in enumerate(indices)]))
         self.original_locations = original_locations
 
     def copy(self):
         """
         Returns a copy of this LiquidCrystalSystem object.
         """
-        #print "// LiquidCrystalSystem.copy:"
         parameters = self.parameters.copy()
         spins = self.copyPropertyList(self.spins)
         locations = self.copyPropertyList(self.locations)
         original_locations = self.copyPropertyList(self.original_locations)
         lcs = LiquidCrystalSystem(parameters, self.temperature,
                                   spins, locations, original_locations)
-        #print "// lcs.getTemperature() = %s" % (lcs.getTemperature(),)
-        #print "// lcs.getPotentialEnergy() = %s" % (lcs.getPotentialEnergy(),)
-        #print "// lcs.getAverageSpinOrientation() = %s, self.getSpinOrientationVariance() = %s" % (lcs.getAverageSpinOrientation(), lcs.getSpinOrientationVariance())
-        #print "// lcs.potential = %s, self.potential = %s" % (lcs.potential, self.potential)
-        #lcs.print2DSystem()
         return lcs
 
     def getTemperature(self):
@@ -513,17 +510,36 @@ class LiquidCrystalSystem:
         # Write the name for the set of data points.
         f.write("Liquid Crystal Spins\n")
 
-        # Write the spins and locations.
-        # Format: X Y Z Sx Sy Sz
+        # Get the temperature, the final spin orientation whose dot product with
+        # a spin will be used to determine how close the spin is to its final
+        # position, and the distance of the molecule from its origin.
+        final_spin_orientation = array(
+            self.parameters["INITIAL_SPIN_ORIENTATION"])
+        temperature = self.getTemperature()
+
+        # Write the spins and locations, along with other properties.
+        # Format: X Y Z Sx Sy Sz DOTwithFINAL DistFromOrig Temperature
         DIMS = 3
+        original_location_iterator = self.getSystemPropertyIterator(
+                self.original_locations)
         location_iterator = self.getSystemPropertyIterator(self.locations)
         spin_iterator = self.getSystemPropertyIterator(self.spins)
-        for (location, spin) in itertools.izip(location_iterator,
-                                               spin_iterator):
+        for (original_location, location, spin) in \
+            itertools.izip(original_location_iterator,
+                           location_iterator,
+                           spin_iterator):
             aviz_location = ([0.0] * (DIMS - len(location))) + list(location)
             aviz_spin = ([0.0] * (DIMS - len(spin))) + list(spin)
-            f.write("Sp %s %s\n" % (" ".join([str(l) for l in aviz_location]),
-                                    " ".join([str(s) for s in aviz_spin])))
+
+            dot_with_original_director = dot(spin, final_spin_orientation)
+            distance_from_origin = linalg.norm(location - original_location)
+
+            f.write("Sp %s %s %.5f %.5f %.5f\n" % (
+                " ".join([str(l) for l in aviz_location]),
+                " ".join([str(s) for s in aviz_spin]),
+                dot_with_original_director,
+                distance_from_origin,
+                temperature))
 
         f.flush()
         f.close()
