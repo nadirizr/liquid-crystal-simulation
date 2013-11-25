@@ -7,6 +7,7 @@ import itertools
 import math
 import numpy
 import random
+import time
 
 from constants import *
 import progressbar

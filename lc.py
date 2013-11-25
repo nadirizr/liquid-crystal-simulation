@@ -563,7 +563,7 @@ class LiquidCrystalSystem:
 
         f = file(filepath, "a")
         f.write("[%s]\t%s\t%s\t%s\t%s\t%s\n" %
-                (time.time(), T, avg_energy, avg_director,
+                (time.clock(), T, avg_energy, avg_director,
                  dot_with_original_director,
                  director_variance))
         f.flush()
