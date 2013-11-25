@@ -139,9 +139,15 @@ class StatisticsGenerator:
                                                           current_run)
             return []
 
-        # Go over all of the events and fill in the information to return.
+        # If the first field is surrounded by [] brackets, then it indicates
+        # time and we should use that instead of the file timestamp.
         output_files.sort()
         start_time = os.path.getmtime(output_files[0])
+        first_event_field = event_infos[0].strip().split("\t")[0]
+        if first_event_field[0] == "[" and first_event_field[-1] == "]":
+          start_time = float(first_event_field[1:-1])
+
+        # Go over all of the events and fill in the information to return.
         events = []
         for i in range(1, len(event_infos)):
             # Get the event time.
@@ -151,6 +157,13 @@ class StatisticsGenerator:
             # Get the event information from the info file.
             event_info = event_infos[i].strip()
             event_info_fields = event_info.split("\t")
+
+            # If the first field is surrounded by [] brackets, then it indicates
+            # time and we should use that instead of the file timestamp.
+            first_event_field = event_info_fields[0]
+            if first_event_field[0] == "[" and first_event_field[-1] == "]":
+                current_time = float(first_event_field[1:-1])
+                event_info_fields.pop(0)
 
             # Get all the fields.
             output_filename = os.path.basename(output_file)[:-4]
