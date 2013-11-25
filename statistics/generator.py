@@ -162,7 +162,7 @@ class StatisticsGenerator:
             # time and we should use that instead of the file timestamp.
             first_event_field = event_info_fields[0]
             if first_event_field[0] == "[" and first_event_field[-1] == "]":
-                current_time = float(first_event_field[1:-1])
+                current_time = float(first_event_field[1:-1]) - start_time
                 event_info_fields.pop(0)
 
             # Get all the fields.
