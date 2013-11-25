@@ -531,7 +531,7 @@ class LiquidCrystalSystem:
             aviz_location = ([0.0] * (DIMS - len(location))) + list(location)
             aviz_spin = ([0.0] * (DIMS - len(spin))) + list(spin)
 
-            dot_with_original_director = dot(spin, final_spin_orientation)
+            dot_with_original_director = abs(dot(spin, final_spin_orientation))
             distance_from_origin = linalg.norm(location - original_location)
 
             f.write("Sp %s %s %.5f %.5f %.5f\n" % (
