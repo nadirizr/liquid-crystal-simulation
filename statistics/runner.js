@@ -238,6 +238,7 @@
       }
 
       function drawVisualDisplay(models, time) {
+        var div = document.getElementById("viz_display_div");
         var img = document.getElementById("viz_display_img");
         var combo = document.getElementById("viz_display_combo");
 
@@ -247,7 +248,7 @@
 
         if (models.length == 0 || models[0] == "--" || time < 0) {
           setVisualModelImage("--", -1);
-          combo.style.visibility = "hidden";
+          div.style.visibility = "hidden";
           viz_selected_model = null;
           return;
         }
@@ -271,7 +272,7 @@
             combo.selectedIndex = model_index;
           }
         }
-        combo.style.visibility = "visible";
+        div.style.visibility = "visible";
 
         model = models[combo.selectedIndex];
 
@@ -310,7 +311,7 @@
           <div id="chart_div"/>
         </td>
         <td>
-          <div id="viz_display_div">
+          <div id="viz_display_div" style="visibility:hidden;">
             <table>
               <tr>
                 <td>
@@ -319,7 +320,7 @@
               </tr>
               <tr>
                 <td>
-                  <select name="viz_display_combo" id="viz_display_combo" onchange="changeVisualModel()" style="visibility:hidden;"></select>
+                  <select name="viz_display_combo" id="viz_display_combo" onchange="changeVisualModel()" align="right"></select>
                 </td>
               </tr>
             </table>
@@ -332,6 +333,6 @@
         </td>
       </tr>
     </table>
-    <div aligm="right"><a href="results.html">[back]</a></div>
+    <div align="right"><a href="results.html">[back]</a></div>
   </body>
 </html>
