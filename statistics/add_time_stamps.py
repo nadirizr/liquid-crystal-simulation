@@ -8,6 +8,7 @@ if not os.path.exists(run_dir):
   sys.exit(1)
 
 output_files = glob.glob("%s/output/*.xyz" % run_dir)
+output_files.sort()
 info_file = glob.glob("%s/output/*.txt" % run_dir)[0]
 events = file(info_file, "r").readlines()
 
@@ -15,5 +16,7 @@ assert len(events) == len(output_files)
 
 fixed_file = file("%s.fixed" % info_file, "w")
 for (i, output_file) in enumerate(output_files):
+  print "Adding time stamp for file: '%s' [%s]" % (
+      output_file, os.path.getmtime(output_file))
   fixed_file.write("[%s]\t%s" % (os.path.getmtime(output_file), events[i]))
 fixed_file.close()
