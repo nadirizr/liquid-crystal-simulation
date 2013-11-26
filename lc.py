@@ -518,7 +518,7 @@ class LiquidCrystalSystem:
         temperature = self.getTemperature()
 
         # Write the spins and locations, along with other properties.
-        # Format: X Y Z Sx Sy Sz DOTwithFINAL DistFromOrig Temperature
+        # Format: X Y Z Sx Sy Sz AngleFromFinal DistFromOrig Temperature
         DIMS = 3
         original_location_iterator = self.getSystemPropertyIterator(
                 self.original_locations)
@@ -531,13 +531,14 @@ class LiquidCrystalSystem:
             aviz_location = ([0.0] * (DIMS - len(location))) + list(location)
             aviz_spin = ([0.0] * (DIMS - len(spin))) + list(spin)
 
-            dot_with_original_director = abs(dot(spin, final_spin_orientation))
+            angle_with_original_director = acos(
+                    abs(dot(spin, final_spin_orientation)))
             distance_from_origin = linalg.norm(location - original_location)
 
             f.write("Sp %s %s %.5f %.5f %.5f\n" % (
                 " ".join([str(l) for l in aviz_location]),
                 " ".join([str(s) for s in aviz_spin]),
-                dot_with_original_director,
+                angle_with_original_director,
                 distance_from_origin,
                 temperature))
 
