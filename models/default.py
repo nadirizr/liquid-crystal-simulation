@@ -5,7 +5,7 @@ from models.common import *
 ##################################################################
 
 # These are the system dimensions.
-DIMENSIONS = [10, 10]
+DIMENSIONS = [5, 5]
 
 # Preiodicity and boundary conditions ("P" = Periodic, "F" = Fixed).
 BOUNDARY_CONDITIONS = ["P", "F"]
@@ -16,20 +16,20 @@ INITIAL_SPACING = [1.0, 1.0]
 # (with the same dimensions as DIMENSIONS).
 INITIAL_SPACING_STDEV = [0.0, 0.0]
 # The initial spin orientation vector (with the same dimensions as DIMENSIONS).
-INITIAL_SPIN_ORIENTATION = [0.0, 1.0]
+INITIAL_SPIN_ORIENTATION = [1.0 / sqrt(2.0), 1.0 / sqrt(2.0)]
 # The standard diviation of the initial spin orientation vector (with the same
 # dimensions as DIMENSIONS).
-INITIAL_SPIN_ORIENTATION_STDEV = [0.0, 0.0]
+INITIAL_SPIN_ORIENTATION_STDEV = [4.0, 4.0]
 
 # Initial effective temperature.
-INITIAL_TEMPERATURE = 0.01
+INITIAL_TEMPERATURE = 3.0
 
 ##################################################################
 #                    Potential Parameters                        #
 ##################################################################
 
 # The potential to use.
-POTENTIAL = SphereNearestNeighboursPotential
+POTENTIAL = FixedNearestNeighboursPotential
 TWO_SPIN_POTENTIAL = GayBernesPotentialFast
 
 # The potential parameters.
@@ -46,8 +46,8 @@ EPSILON_S = 1.0
 EPSILON_E = EPSILON_S / KAPPA_TAG
 
 # Nearest neighbours parameters.
-NEAREST_NEIGHBOURS_MAX_RADIUS = SIGMA_S * 3.8
-NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 3
+NEAREST_NEIGHBOURS_MAX_RADIUS = SIGMA_S * 3.0
+NEAREST_NEIGHBOURS_MAX_INDEX_RANGE = 1
 NEAREST_NEIGHBOURS_UPDATE_CYCLES = 100
 
 ##################################################################
@@ -55,7 +55,7 @@ NEAREST_NEIGHBOURS_UPDATE_CYCLES = 100
 ##################################################################
 
 # Use the heating algorithm.
-USE_MC_HEATER = True
+USE_MC_HEATER = False
 
 # The standard deviation of the gaussian random spacing in the system.
 MC_HEATER_SPACING_STDEV = 0.1
@@ -96,7 +96,7 @@ MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV * 5.0
 MC_COOLER_SPIN_STDEV = 0.05
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_COOLER_METROPOLIS_NUM_STEPS = 10000
+MC_COOLER_METROPOLIS_NUM_STEPS = 1000
 # Number of steps in the cooling process to perform the Metropolis algorithm
 # before lowering the temperature further.
 MC_COOLER_MAX_STEPS = 1
