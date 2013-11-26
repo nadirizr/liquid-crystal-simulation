@@ -48,12 +48,16 @@ You should not write "MODEL_NAME.py" or give it a path! The system knows to take
 After running the system you can see the visual result in AViz by running: "<b>./aviz.sh OUTPUT_TITLE</b>"<br>
 Where OUTPUT_TITLE should be the name of the run directory as shown after the simulation finishes, or simply the model that was run (it will take the last one chronologically).
 <br>
+<li><b>You must have <a href="http://phycomp.technion.ac.il/~aviz/" targe="_blanck">AViz</a> in order to use it.</b></li>
+<br>
 More details are under <a href="#runs">"runs"</a> section.
 <br><br>
 <li>If you wish to <b><i>generate some statistics</i></b> of the simulations you have done, that's also very easy - all you need to do is write in the shell (after finishing the simulations): "<b> ./generate_stat.sh MODEL_NAME</b>" <br>
 That will create a web page called "compare_chart.html" inside the folder "web" with all of the statistics neatly displayed.</li>
 <br>
 <li>If you want to <b><i>add the animations from AViz</i></b> to those statistics you should add at the end of the line in shell that runs the statistics: "<b>-a</b>" or "<b>--aviz</b>"</li>
+<br>
+<li><li><b>You must have <a href="http://phycomp.technion.ac.il/~aviz/" targe="_blanck">AViz</a> in order to use it.</b></li></li>
 <br>
 More details about the statistics are under <a href="#statistic">"statistic"</a> section.
 <br>
@@ -179,7 +183,11 @@ Now you need to write the calculation code. Use other potentials as boiler plate
 <br>
 <li>In order to <i><b>change the axes</b></i> you should only click on the axis's name and change it to what you want, the Chart will change respectively. </li>
 <br>
-<li>If you press "play" key you will see the animation moving on the right of the page showing the right points on the left chart. </li>
+<li>If you choose a place in the scroll-bar you will see the animation moving on the right of the page showing the right points on the left chart. </li>
+<br>
+<li>You must have run the statistic generator with the <b><i>"-a"</i></b> or <b><i>"--aviz"</i></b> command </li> to see the Aviz pictures on the right of the page.
+<br>
+read more about it in <a href="#run">"how to run the system"</a> section.</li>
 <br>
 <li>It is also possible to choose the models you wish to investigate. It is done by selecting the wanted models on the right side of the main chart. </li> 
 <br>
@@ -187,7 +195,6 @@ Now you need to write the calculation code. Use other potentials as boiler plate
 <br>
 <li>You can also change the <b><i>type of chart</i></b>- linear, time bubbles etc...</li>
 <br>
-<li>By clicking on a dot in the chart the picture on the right will replaced by the correct state of the system.</li>
 <br>
 
 <br>
