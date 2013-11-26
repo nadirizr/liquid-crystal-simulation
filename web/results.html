@@ -11,8 +11,8 @@
 	<br>
 	<center><H2>2D Simulation</H2></center>
 	<P>
-	
-	We simulated 10X10 particles in two dimensions.
+	<center><H3>2D Simulation - first try</H3></center>
+		We simulated 10X10 particles in two dimensions.
 	<br>
 	We use <center><img src="TStar().jpg" height="10%"/></center><br>
 	where T is the temperature of the system.
@@ -20,16 +20,13 @@
 	Beginning with <img src="TStar.jpg" height="2%"/> = 3 and <img src="sigma.jpg" height="2.5%"/> = 0.5 ,<img src="epsilon0.jpg" height="2.5%"/> = 1 , 
 	<img src="kappa.jpg" height="2%"/> = 3  ,   <img src="kappa'.jpg" height="2%"/> = 5  ,  <img src="meu.jpg" height="2%"/> = 1  , <img src="neu.jpg" height="2%"/> = 3.
 	<br> 
-	<!--If we take an ordered system of spins, and heat it up at once to <img src="TStar.jpg" height="2%"/> = 3, we finally get a mess. <br>
-	
-	We can see the steps here from our output to AViz:<br><br><br>!-->
-	
+	The changing of temperature at each cooling step was 0.05.
 	
 	</P>
 	<br>
 	<P>
 	Now we shall begin our cooling process. <br>
-	In each step (temperature) we allow at most 100000 Metropolis tries and then continue cooling.<br>
+	At each step (temperature) we allow at most 100000 Metropolis tries and then continue cooling.<br>
 	As we can see here in our output we get an order out of the mess:<br><br>
 	</P>
 	<center><img src="gif.gif"/></center>
@@ -37,10 +34,10 @@
 	<br>
 	<CENTER>
 	<IMG SRC="models/2d_large/lqs_2_cool00000000.png" HEIGHT="20%"\></CENTER>
-	<IMG SRC="models/2d_large/lqs_2_cool00000000.png" HEIGHT="20%"\></CENTER>
 	<BR>
 	<P>
 	We can also see the change of phase at around <img src="TStar.jpg" height="2%"/> = 2.5, where it changed from Nematic Liquid Crystal to Smectic. 
+	<br>
 	<br><CENTER><IMG SRC="models/2d_large/lqs_2_cool00000009.png" HEIGHT="20%"\><IMG SRC="models/2d_large/lqs_2_cool00000015.png" HEIGHT="20%"\></CENTER>
 	<br>
 	
@@ -52,6 +49,50 @@
 	Later wards there is a fast quench at around <img src="TStar.jpg" height="2%"/> = 0.5.
 	<br><CENTER><IMG SRC="models/2d_large/lqs_2_cool00000025.png" HEIGHT="20%"\>
 	<IMG SRC="models/2d_large/lqs_2_cool00000031.png" HEIGHT="20%"\></CENTER>
+	<br><br>
+	You can read more about the change of phase in Liquid Crystal <a href="tutorial/LCPhases.html"> in our explanation page</a>	
+	</P>
+	The full statistics with the charts and animations can be found <a href="compare_chart.html">here</a>.
+	<br> <br>
+	More explanation of how to use the statistics can be fin in the <a href="manual.html#statistic">manual page</a>.
+	<br>
+	<br><br><br><br>
+	
+	
+	
+	
+	
+	<center><H3>Second try with simulation 2D system</h3></center>
+	
+	We now simulated again 10X10 particles in two dimensions, with the same system parameter .
+	except for the initial temperature- <img src="TStar.jpg" height="2%"/> = 4, and the changing of temperature at each cooling step-
+	now it is 0.01 between <img src="TStar.jpg" height="2%"/> = 1.5 to <img src="TStar.jpg" height="2%"/> = 0.01 , so we get a slower cooling.
+	<br>
+	We will be able to see more changes in Phase. <br>
+	</P>
+	<br>
+	At the begging we had an isotropic state:
+	<CENTER>
+	<IMG SRC="models/2d_large_slow/lqs_2_cool00000000.png" HEIGHT="20%"\></CENTER>
+	<BR>
+	<P>
+	Now we can actually see  change of phase at around <img src="TStar.jpg" height="2%"/> = 3.5, where it changed to Nematic Liquid Crystal. 
+	<br><CENTER><IMG SRC="models/2d_large_slow/lqs_2_cool00000006.png" HEIGHT="20%"\><IMG SRC="models/2d_large_slow/lqs_2_cool00000012.png" HEIGHT="20%"\></CENTER>
+	<br>
+	We can see the change of phase at around <img src="TStar.jpg" height="2%"/> = 2.5 from Nematic to Smectic A Liquid Crystal.
+	<br><CENTER><IMG SRC="models/2d_large_slow/lqs_2_cool00000025.png" HEIGHT="20%"\><IMG SRC="models/2d_large_slow/lqs_2_cool00000035.png" HEIGHT="20%"\></CENTER>
+	Then there is another change of phase at around <img src="TStar.jpg" height="2%"/> = 1.5 , where it changed from Smectic A to Smectic B Liquid Crystal.
+	<br>
+	<CENTER><IMG SRC="models/2d_large_slow/lqs_2_cool00000040.png" HEIGHT="20%"\><IMG SRC="models/2d_large_slow/lqs_2_cool00000055.png" HEIGHT="20%"\></CENTER>
+	<br>
+	Then there is  change of phase at around <img src="TStar.jpg" height="2%"/> = 1 , where it changed from Smectic B to Smectic C Liquid Crystal.
+	<br>
+	<CENTER><IMG SRC="models/2d_large/_slowlqs_2_cool00000097.png" HEIGHT="20%"\><IMG SRC="models/2d_large_slow/lqs_2_cool00000117.png" HEIGHT="20%"\></CENTER>
+	<br>
+	Finally there is a fast quench at around <img src="TStar.jpg" height="2%"/> = 0.38.
+	<br><CENTER><IMG SRC="models/2d_large_slow/lqs_2_cool000001130.png" HEIGHT="20%"\>
+	<IMG SRC="models/2d_large_slow/lqs_2_cool00000201.png" HEIGHT="20%"\></CENTER>
+	
 	<br><br>
 	You can read more about the change of phase in Liquid Crystal <a href="tutorial/LCPhases.html"> in our explanation page</a>	
 	</P>
