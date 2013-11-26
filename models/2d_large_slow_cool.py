@@ -22,7 +22,7 @@ INITIAL_SPIN_ORIENTATION = [1.0 / sqrt(2.0), 1.0 / sqrt(2.0)]
 INITIAL_SPIN_ORIENTATION_STDEV = [4.0, 4.0]
 
 # Initial effective temperature.
-INITIAL_TEMPERATURE = 3.0
+INITIAL_TEMPERATURE = 4.0
 
 # The initial state to use.
 #INITIAL_STATE = "states/initial_10_10.dat"
@@ -99,7 +99,7 @@ MC_COOLER_SPACING_FROM_ORIGINAL_LOCATION_CUTOFF = MC_COOLER_SPACING_STDEV * 5.0
 MC_COOLER_SPIN_STDEV = 0.05
 
 # Number of Metropolis steps to perform in each cooling steps.
-MC_COOLER_METROPOLIS_NUM_STEPS = 100000
+MC_COOLER_METROPOLIS_NUM_STEPS = 5000
 # Number of steps in the cooling process to perform the Metropolis algorithm
 # before lowering the temperature further.
 MC_COOLER_MAX_STEPS = 1
@@ -108,7 +108,7 @@ MC_COOLER_MAX_STEPS = 1
 MC_COOLER_MAX_NON_IMPROVING_STEPS = 3
 
 # The temperatures to use in the Monte Carlo algorithm.
-MC_COOLER_TEMPERATURES = frange(3.0, 0.1, -0.1)
+MC_COOLER_TEMPERATURES = frange(4.0, 1.5, -0.05) + frange(1.5, 0.01, -0.01);
 
 # The path to which to output the AVIZ files.
 MC_COOLER_AVIZ_OUTPUT_PATH = "output/lqs_2_cool"
