@@ -68,8 +68,8 @@
         for (var model in all_data) {
           for (var time_index in all_data[model]) {
             var r = all_data[model][time_index];
-            data.addRow([model, parseInt(time_index), r.temperature, r.energy,
-                         r.director_variance, r.avg_director_dist,
+            data.addRow([model, parseInt(time_index)+2000, r.temperature,
+                         r.energy, r.director_variance, r.avg_director_dist,
                          r.time_used, r.num_directors, r.potential,
                          r.potential_approx, r.process]);
           }
@@ -78,7 +78,7 @@
         chart = new google.visualization.MotionChart(document.getElementById('chart_div'));
         chart.draw(data,
                    {width: parseInt(winW*0.5), height: parseInt(winH*0.5),
-                    state: '{"xZoomedIn":false,"showTrails":true,"yZoomedDataMin":0,"yZoomedIn":false,"xAxisOption":"_TIME","orderedByX":false,"xLambda":1,"colorOption":"_UNIQUE_COLOR","nonSelectedAlpha":0.4,"playDuration":15000,"xZoomedDataMax":3,"sizeOption":"5","iconKeySettings":[],"duration":{"multiplier":1,"timeUnit":"Y"},"yZoomedDataMax":1,"orderedByY":false,"iconType":"BUBBLE","xZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"time":"1900","uniColorForNonSelected":false,"yLambda":1,"yAxisOption":"3"}'});
+                    state: '{"xZoomedIn":false,"showTrails":true,"yZoomedDataMin":0,"yZoomedIn":false,"xAxisOption":"_TIME","orderedByX":false,"xLambda":1,"colorOption":"_UNIQUE_COLOR","nonSelectedAlpha":0.4,"playDuration":15000,"xZoomedDataMax":3,"sizeOption":"5","iconKeySettings":[],"duration":{"multiplier":1,"timeUnit":"Y"},"yZoomedDataMax":1,"orderedByY":false,"iconType":"BUBBLE","xZoomedDataMin":0,"dimensions":{"iconDimensions":["dim0"]},"time":"2000","uniColorForNonSelected":false,"yLambda":1,"yAxisOption":"3"}'});
 
         google.visualization.events.addListener(chart, 'statechange', function() {
           var state_string = chart.getState();
@@ -165,7 +165,7 @@
         current_time = 0;
         time_matches = /"time":"([0-9]+)"/.exec(state_string);
         if (time_matches != null && time_matches.length > 1) {
-          current_time = parseInt(time_matches[1]) - 1900;
+          current_time = parseInt(time_matches[1]) - 2000;
         }
         return current_time;
       }
