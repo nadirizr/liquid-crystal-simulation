@@ -19,7 +19,7 @@
 <ul><li><a href="#runs">runs</a></li></ul>
 </ul>
 <ul><li><a href="#config">How to write a configuration file</a></li></ul>
-<ul><li><a href="#potential">How to add new potential</a></li></ul>
+<ul><li><a href="#potential">How to add a new potential</a></li></ul>
 <ul><li><a href="#statistic">How to use the statistic page</a></li></ul>
 <br>
 <br><br>
@@ -27,9 +27,12 @@
 <P>
 <br>
 <b>To run the system you need to have Python 2.4 and up, and if you want to use a fast version of Gay - Bern potential you need Swig 1.3 and up.</b>
+<li>These are present on Phelafel and Tamnun.</li>
+<br>
+
 <br>
 To start running, you only need to go to the main project library, and then write in the shell: "<b>./run.sh MODEL_NAME</b>" <br>
-Where MODEL_NAME should be the name of the model you use (if you don't write anything it will use the default model).
+Where MODEL_NAME should be <b>replaced</b> with  the name of the model you use (if you don't write anything it will use the default model).
 <br> You can choose - "2d_small, "3d_small", "2d_large", "3d", "fixed", "sphere" or "default".
 <br>
 You can also add another model as explained below in "How to write a configuration file" section.
@@ -40,15 +43,15 @@ You should not write "MODEL_NAME.py" or give it a path! The system knows to take
 <br>
 <li>If you need <b><i>help</i></b> you can also run "<b> ./run.sh MODEL_NAME -h</b>" or "<b>./run.sh MODEL_NAME --help</b>" and get an additional help.</li>
 <br>
-<li>If you wish to <i><b>start from a specific temperature without creating\changing</b></i> another configuration file you can run with the command- "<b>./run.sh MODEL_NAME INITIAL_TEMERATURE=___</b>" and complite the wanted temperature instead of the "___".</li>
+<li>If you wish to <i><b>start from a specific temperature without creating\changing</b></i> another configuration file you can run with the command- "<b>./run.sh MODEL_NAME INITIAL_TEMPERATURE=___</b>" and complete the wanted temperature instead of the "___".</li>
 <br>
 <li><b>If you have already started a simulation and stopped before it has finished, the system will ask you if you want to continue the simulation- write "yes" if you do, "no" if not.</li>
 <br>
 <br>
 After running the system you can see the visual result in AViz by running: "<b>./aviz.sh OUTPUT_TITLE</b>"<br>
-Where OUTPUT_TITLE should be the name of the run directory as shown after the simulation finishes, or simply the model that was run (it will take the last one chronologically).
+Where OUTPUT_TITLE should be replaced by the name of the run directory as shown after the simulation finishes, or simply the model that was run (it will take the last one chronologically).
 <br>
-<li><b>You must have <a href="http://phycomp.technion.ac.il/~aviz/" targe="_blanck">AViz</a> in order to use it.</b></li>
+<li><b>You must have <a href="http://phycomp.technion.ac.il/~aviz/" target="_blanck">AViz</a> in order to use it.</b></li>
 <br>
 More details are under <a href="#runs">"runs"</a> section.
 <br><br>
@@ -57,9 +60,9 @@ That will create a web page called "compare_chart.html" inside the folder "web" 
 <br>
 <li>If you want to <b><i>add the animations from AViz</i></b> to those statistics you should add at the end of the line in shell that runs the statistics: "<b>-a</b>" or "<b>--aviz</b>"</li>
 <br>
-<li><li><b>You must have <a href="http://phycomp.technion.ac.il/~aviz/" targe="_blanck">AViz</a> in order to use it.</b></li></li>
+<li><b>You must have <a href="http://phycomp.technion.ac.il/~aviz/" target="_blanck">AViz</a> in order to use it.</b></li>
 <br>
-More details about the statistics are under <a href="#statistic">"statistic"</a> section.
+More details about the statistics are under the<a href="#statistic">"statistics"</a> section.
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 </P>
@@ -71,45 +74,45 @@ More details about the statistics are under <a href="#statistic">"statistic"</a>
 <img src="prtsc2.jpg" height="100"/><br><br><img src="prtsc3.jpg" height="100"/></center>
 
 <br>
-<ul><font size="+1.5"><b> lc.py - </b></font>This class represents the system that we are working with
+<ul><font size="+1.5"><b> lc.py - </b></font>This class represents the system that we are working with.
 It holds the positions and angles of molecules in a liquid crystal, and can
 perform a Monte Carlo Metropolis cooling of the liquid crystal.</ul>
 <br>
-<ul><font size="+1.5"><b> Constants.py - </b></font>contains physical constants such as Boltzman's constant, Plunck's constant and the g factor. <br> it is possible to add some other constant here if one wishes to.
+<ul><font size="+1.5"><b> Constants.py - </b></font>contains physical constants such as Boltzman's constant, Planck's constant and the g factor. <br> It is possible to add some other constant here if one wishes to.
 </ul><br>
 <ul><font size="+1.5"><b> utils.py - </b></font>contains some useful methods, some of them can be find in newer additions of Python.
 </ul>
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 <br>
-<H3><center><a name="algorithms">Algorithms:</a></center></H3>
+<H3><center><a name="algorithms">"algorithms" folder:</a></center></H3>
 This folder contains the Monte Carlo algorithm methods.
 <br> You should not change anything here.
 <br><div align="right"><a href="#up">[up]</a></div>
 <br><br>
-<H3><center><a name="models">Models:</a></center></H3>
+<H3><center><a name="models">"models" folder:</a></center></H3>
 <br> You can choose: 
-<ul><li><i>"fixed"</i> - the spins will stay at their places</li></ul>
-<ul><li><i>"2d_small"</i> - A system of 3X3 spins in 2 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in one direction, the other is fixed.</li></ul>
-<ul><li><i>"3d_small"</i> - A system of 5X5X5 spins in 3 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in two directions, the other is fixed.</li></ul>
-<ul><li><i>"2d_large"</i> - A system of 10X10 spins in 2 dimensions, uses the Gay- Berne Potential.Periodic boundary conditions in one direction, the other is fixed.</li></ul>
-<ul><li><i>"3d"</i> - A system of 10X10X10 spins in 3 dimensions, uses the Gay- Berne Potential, Periodic boundary conditions in two directions, the other is fixed.</li></ul>
+<ul><li><i>"fixed"</i> - the cylinders will stay at their places</li></ul>
+<ul><li><i>"2d_small"</i> - A system of 3X3 cylinders in 2 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in one direction, the other is fixed.</li></ul>
+<ul><li><i>"3d_small"</i> - A system of 5X5X5 cylinders in 3 dimensions, uses the Gay- Berne Potential. Periodic boundary conditions in two directions, the other is fixed.</li></ul>
+<ul><li><i>"2d_large"</i> - A system of 10X10 cylinders in 2 dimensions, uses the Gay- Berne Potential.Periodic boundary conditions in one direction, the other is fixed.</li></ul>
+<ul><li><i>"3d"</i> - A system of 10X10X10 cylinders in 3 dimensions, uses the Gay- Berne Potential, Periodic boundary conditions in two directions, the other is fixed.</li></ul>
 <ul><li><i> "sphere"</i></li></ul>
 <ul><li><i>"default"</i> = 2d_large.</li></ul>
 You can also add another one as written below in <a href="#config">"How to add a configuration file"</a>. 
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 <br><br>
-<H3><center><a name="potentials">Potentials:</a></center></H3>
+<H3><center><a name="potentials">"potentials" folder:</a></center></H3>
 We have 
 <ul><li><i>"FixedNearestNeighboursPotential"</i> approximation </li><li><i/> "SphereNearestNeighboursPotential"</i> approximation</li></ul> 
 The potentials - <ul><li><i>"GayBernesPotential"</i> </li><li> <i>"LenardJonesPotential"</i></li></ul> 
-You can also add another one as written below in<a href="#potential"> "How to add new potential"</a>. 
+You can also add another one as written below in<a href="#potential"> "How to add a new potential"</a>. 
 </P>
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 <br>
-<H3><center><a name="runs">runs:</a></center></H3>
+<H3><center><a name="runs">"runs" folder:</a></center></H3>
 After each run of the simulation the system will save all of the states it has gone through, as well as the ".xyz" files for AViz.
 <br>
 Inside the "runs" folder you can find a sub folder for each model you have used so far.
@@ -131,7 +134,7 @@ First of all you should go to the library <i>"models"</i>, then you can copy the
 Now you only need to change the parameters in your file, so it would be like the system you are willing to get. 
 <br><br>
 More explanations for some <b>system parameters</b>: <br>
-<ul><li><i>DIMENSIONS</i> = [number of spins in x direction, number of spins in y direction, number of spins in z direction]</li></ul>
+<ul><li><i>DIMENSIONS</i> = [number of cylinders in x direction, number of cylinders in y direction, number of cylinders in z direction]</li></ul>
 <ul><li><i>BOUNDARY_CONDITIONS</i> = ["Boundary condition for the first direction", "Boundary condition for the second direction",...,"Boundary condition for the n'th direction"] - <i>"P"</i> for Periodic, <i>"F"</i> for fixed.</li></ul>
 <ul><li><i>INITIAL_SPACING</i> = [The spacing between spin locations in x direction, The spacing between spin locations in y direction , The spacing between spin locations in z direction]</li></ul>
 <ul><li><i>INITIAL_SPIN_ORIENTATION</i> = [The initial spin orientation vector in x direction , The initial spin orientation vector in y direction , The initial spin orientation vector in z direction]</li></ul>
@@ -140,10 +143,10 @@ There are more parameters you can change but everything is explained in the file
 <br><br>
 You can change all the <b>potential parameter</b>- <img src="meu.jpg" height="2%"/>,<img src="neu.jpg" height="2%"/> ,<img src="kappa.jpg" height="2%"/> ,<img src="kappa'.jpg" height="2%"/> ,<img src="epsilon0.jpg" height="2%"/>
 <br>
-<ul><li><i>POTENTIAL</i> = name of the potential approximation you want to use, your can choose-"FixedNearestNeighboursPotential" , "SphereNearestNeighboursPotential" , or add a new potential as explained below in "How to add new potential section".</li></ul>
-<ul><li><i>TWO_SPINS_POTENTIAL</i>= "GayBernesPotential" , "LenardJonesPotential" , or add a new potential as explained below in "How to add new potential section".</li></ul>
+<ul><li><i>POTENTIAL</i> = name of the potential approximation you want to use, your can choose-"FixedNearestNeighboursPotential" , "SphereNearestNeighboursPotential" , or add a new potential as explained below in "How to add a new potential section".</li></ul>
+<ul><li><i>TWO_SPINS_POTENTIAL</i>= "GayBernesPotential" , "LenardJonesPotential" , or add a new potential as explained below in "How to add a new potential section".</li></ul>
 <br><br>
-You should only write the name of the potential as in the potential file, with out a suffix of any kind.
+You should only write the name of the potential as in the potential file, without a suffix of any kind.
 
 <br><br>
 It is also possible to change settings for nearest neighbours such as maximum radius for neighbours.<br>
@@ -162,7 +165,7 @@ You can also change the <b>Cooling and Heating Algorithms properties</b> such as
 <div align="right"><a href="#up">[up]</a></div>
 </P>
 <br><br><br><br><br>
-<H2><center><a name="potential">How to add new potential:</a></center></H2>
+<H2><center><a name="potential">How to add a new potential:</a></center></H2>
 <br>
 <P>
 First of all you should go to the library "potentials", then you should copy the content of the file "potential.py" and name your file as you wish (with the end of .py of course). You might opt to copy an existing potential that more closely fits your needs, and create a new file to start with.
