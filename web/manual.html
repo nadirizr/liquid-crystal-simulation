@@ -7,9 +7,7 @@
 <a name="up"/>
 <BODY BGCOLOR="#FFFFFF" vLink=#4C0B5F aLink=#4C0B5F link=#4C0B5F>
 <H1><CENTER>Manual Instructions</CENTER></H1>
-<br><br>
 <H2>Table of Contents:</H2>
-<br>
 <ul><li><a href="#running">Running the system:</a></li>
 <br>
   <ul><li><a href="#prequisites">Prequisites for running the system</a></li></ul>
@@ -27,8 +25,8 @@
 <ul><li><a href="#config">How to write a configuration file</a></li></ul>
 <ul><li><a href="#potential">How to add a new potential</a></li></ul>
 <ul><li><a href="#statistic">How to use the statistic page</a></li></ul>
-<ul><li><a href="#aviz_config">How to configure AViz to generate the images</a></li></ul>
 <br>
+
 <H2><center><a name="prequisites">Prequisites for running the system:</a></center></H2>
 <P>
 <b>To run the system you need to have the following:</b><br>
@@ -42,6 +40,7 @@ There is no need to run them again, as both the models and the results are inclu
 You can just watch them in AViz if you want and see the statistics.<br>
 More details about how to run them on AViz will be <a href="#aviz">explained later</a>.</li>
 </P>
+<div align="right"><a href="#up">[up]</a></div>
 
 <H2><center><a name="run">How to run the system:</a></center></H2>
 <P>
@@ -60,7 +59,9 @@ Additional options for running:<br>
 <li>If you need <b><i>help</i></b> you can run the following commands for a list of command line arguments and options:<br>
 <br>
 <tt><strong>./run.sh -h</strong></tt><br>
+<br>
 OR<br>
+<br>
 <tt><strong>./run.sh --help</strong></tt><br>
 <br>
 <li>If you wish to override model parameters from the command line, such as to <i><b>start from a different initial temperature without creating\changing</b></i> a configuration file you can run with the command:<br>
@@ -79,8 +80,12 @@ If you wish to continue a specific run, look for it in the <b>runs</b> directory
 Where [RUN_NAME] should be <b>replaced</b> with the aforementioned name of the run in the <b>runs</b> directory.<br>
 If the run is incomplete, it will ask you if you wish to continue it, and resume from where it left off.<br>
 </li>
-<br><br>
+<br>
+</P>
+<div align="right"><a href="#up">[up]</a></div>
+
 <H2><center><a name="aviz">How to view the simulation in AViz:</a></center></H2>
+<P>
 First of all, you need to <a href="download.html">download AViz</a> to be able to peform this.<br>
 <br>
 After running the system you can render the visual model in AViz by running:<br>
@@ -88,11 +93,21 @@ After running the system you can render the visual model in AViz by running:<br>
 <tt><strong>./aviz.sh [OUTPUT_TITLE]</strong></tt><br>
 <br>
 Where [OUTPUT_TITLE] should be replaced by the name of the run directory as shown after the simulation finishes, or simply the model that was run (it will take the last one chronologically).<br>
-More details on this are under <a href="#runs">"runs"</a> section.
+More details on this are under <a href="#runs">"runs"</a> section.<br>
 <br>
-To configure AViz the way we did to generate the images on this website, follow these <a href="#aviz_config">instructions</a>.<br>
-<br><br>
+To configure AViz the way we did to generate the images on this website, follow these steps:<br>
+<li>Set the <b>Mode</b> to be <b>LiquidCrystal</b>.</li><br>
+<li>Set the <b>Style</b> to be <b>Lines</b>.</li><br>
+<li>Click in the top menu on <b>Elements -> Liquid Crystals...</b></li><br>
+<li>Set the <b>Thickness</b> to be <b>Thick</b> or <b>Fat</b>.</li><br>
+<li>Set the <b>Color Criterion</b> to be <b>Property</b>, and then set the <b>Property</b> number to be <b>4</b>.</li><br>
+The last setting for property 4 sets the color of the cylinders according to the angle from the final expected directory.<br>
+You can also set it  to property 5 to set the color according to the distance of the indicators from their original lattice positions.<br>
+</P>
+<div align="right"><a href="#up">[up]</a></div>
+
 <H2><center><a name="gen_statistics">How to generate statistics and graphs:</a></center></H2>
+<P>
 If you wish to <b><i>generate some statistics</i></b> of the simulations you have done, that's also very easy - all you need to do is write in the shell (after finishing the simulations): "<br>
 <br>
 <tt><strong>./generate_stat.sh</strong></tt><br>
@@ -102,7 +117,9 @@ That will create a web page called "compare_chart.html" inside the folder "web" 
 If you want to <b><i>add the animations from AViz</i></b> to those statistics, you should run the same command with an additional flag:<br>
 <br>
 <tt><strong>./run.sh --a</strong></tt><br>
+<br>
 OR<br>
+<br>
 <tt><strong>./run.sh --aviz</strong></tt><br>
 <br>
 This will add the images as PNG files in the "web/models/[MODEL_NAME]" directory (where [MODEL_NAME] is the name of a model that was run in the simulator).<br>
@@ -110,9 +127,10 @@ NOTE: <b>You must have <a href="download.html" target="_blanck">AViz</a> install
 <br>
 More details about using the statistics page are under the<a href="#statistic">"statistics"</a> section.
 <br>
-<div align="right"><a href="#up">[up]</a></div>
 </P>
+<div align="right"><a href="#up">[up]</a></div>
 <br><br>
+
 <H2><center><a name="structure">General structure and main components:</a></center></H2>
 <br>
 <P>
@@ -130,13 +148,16 @@ It is possible to add other constant here if they are needed.</ul><br>
 <br>
 <div align="right"><a href="#up">[up]</a></div>
 <br>
+
 <H3><center><a name="algorithms">"algorithms" folder:</a></center></H3>
+<P>
 This folder contains the Monte Carlo algorithm methods.
 <br><b>You should not change anything here, unless you know what your'e doing.</b><br>
+</P>
 <div align="right"><a href="#up">[up]</a></div>
-<br><br>
+
 <H3><center><a name="models">"models" folder:</a></center></H3>
-<br>
+<P>
 This is where all model files are.<br>
 A model file contains all of the system, algorithm and potential parameters for a simulation.<br>
 If you wish to start a simulation, you can choose a pre-existing model or create your own.<br>
@@ -150,10 +171,11 @@ The following models are implemented already and come packaged with the sources:
 <ul><li><i>"3d"</i> - A system of 10X10X10 cylinders in 3 dimensions, uses the Gay-Bernes Potential, Periodic boundary conditions in two directions, the other is fixed.</li></ul>
 <ul><li><i>"default"</i> - A system of 5x5 cylindes in 2 dimensions, with fixed positions.</li></ul>
 You can also add another one as written below in <a href="#config">"How to add a configuration file"</a>.<br>
-<br>
+</P>
 <div align="right"><a href="#up">[up]</a></div>
-<br><br>
+
 <H3><center><a name="potentials">"potentials" folder:</a></center></H3>
+<P>
 This is where all of the potential implementations are.<br>
 A potential is responsible for the way the system models interactions between the molecules.<br>
 <br>
@@ -178,10 +200,10 @@ We have the following potentials implemented:<br>
 <br>
 You can also add another potential by following the instructions below in<a href="#potential"> "How to add a new potential"</a>. 
 </P>
-<br>
 <div align="right"><a href="#up">[up]</a></div>
-<br>
+
 <H3><center><a name="runs">"runs" folder:</a></center></H3>
+<P>
 After each run of the simulation the system will save all of the states it has gone through, as well as the ".xyz" files for AViz, in a dedicated run directory.<br>
 Inside the "runs" folder you can find a sub folder for each simulation you have run so far.<br>
 The run directory will have in its name the name of the model you have run, as well as the date and time.<br>
@@ -192,9 +214,10 @@ It also contains a "info.txt" file that records various statistics over time use
 <ul><li><i>states</i> - Contains all the states the system went through during the simulation.</li></ul>
 <ul><li><i>run.log</i> - A log file with all the simulation details shown during the simulation.</li></ul>
 <ul><li><i>MODEL_NAME.py</i> - The model file the simulation was run with.</li></ul>
-<br>
+</P>
 <div align="right"><a href="#up">[up]</a></div>
 <br><br>
+
 <H2><center><a name="config">How to write a configuration file:</a></center></H2>
 <P>
 <br>
@@ -234,12 +257,11 @@ You can also change the <b>Cooling and Heating Algorithms properties</b> such as
 <ul><li><i>MC_COOLER_AVIZ_OUTPUT_PATH</i> = The path to which to output the AVIZ files</li></ul>
 <br>
 <font size="+1"><b> You should only change the values and nothing else! </b></font>
-<br>
-<div align="right"><a href="#up">[up]</a></div>
 </P>
-<br>
+<div align="right"><a href="#up">[up]</a></div>
+<br><br>
+
 <H2><center><a name="potential">How to add a new potential:</a></center></H2>
-<br>
 <P>
 First of all you should go to the library "potentials", and copy the content of the file "potential.py" and name your file as you wish (with the ".py" suffix of course).<br>
 You might opt to copy an existing potential that more closely fits your needs, and create a new file to start with.<br>
@@ -254,12 +276,13 @@ Now you need to write the potential calculation code.<br>
 Use other potentials as boiler plates, they are well documented.<br>
 <br>
 The last thing you need to do in order to use your new potential, is to write its name in the configuration file.<br>
-You can read more about this in <a href="#config">"How to create a new configuration file" above</a>.)
+You can read more about this in <a href="#config">"How to create a new configuration file"</a> above.
 </P>
 <div align="right"><a href="#up">[up]</a></div>
 <br><br>
+
 <H2><center><a name="statistic">How to use the statistics page:</a></center></H2>
-<br>
+<P>
 The statistics page is what you see under <a href="compare_chart.html">"Simulation Statistics"</a>.<br>
 This is an auto-generated statistics webpage that is based on various outputs of the simulations, and it is generated as explained <a href="#gen_statistics">above</a>.<br>
 It is a very easy and powerfull way to view and analyze the various system parameters, especially when comparing models to one another.<br>
@@ -290,10 +313,7 @@ This has the benefit of displaying more data on the main chart, and can distingu
 <br>
 You must run the statistic generator with the <b><i>"-a"</i></b> or <b><i>"--aviz"</i></b> flag to see the AViz pictures on the right of the page.<br>
 Read more about it in <a href="#gen_statistics">"How to generate statistics and graphs"</a> section.<br>
-<br>
-
-<br>
+</P>
 <div align="right"><a href="#up">[up]</a></div>
-<br>
 </BODY>
 </HTML>
