@@ -5,23 +5,72 @@
 
 </HEAD>
 <BODY BGCOLOR="#FFFFFF">
-<H1><CENTER>Download the project</CENTER></H1>
+<H1><CENTER>Download the Project</CENTER></H1>
 
 
 <br>
 There are two ways to download the project:
 <ol>
 <li>
-By <b> svn </b>:
+By <b>svn</b>:
 <br>
-just go to the place you want to put the files and run in shell- "svn checkout http://liquid-crystal-simulation.googlecode.com/svn/ liquid-crystal-simulation-read-only"
+<br>
+Just go to the place you want to put the files and run the following command in the shell:
+<br>
+<tt><strong>svn checkout http://liquid-crystal-simulation.googlecode.com/svn/trunk liquid-crystal-simulation-read-only</strong></tt>
+<br>
+<br>
+The project will be in the directory: ./liquid-crystal-simulation-read-only
 </li>
+<br>
 <br>
 <li>
 <b>Download directly</b> by 
 <a href="lc_simulation_src.tar.gz">clicking here</a>
+<br>
+<br>
+To unpack the files, put the downloaded file in the directory where you want the project to be, and run the following command in the shell:
+<br>
+<tt><strong>tar -xzvf lc_simulation_src.tar.gz</strong></tt>
+<br>
+<br>
+The project will be in the directory: ./lc_simulation_src
+<br>
+<br>
 </li>
 </ol>
+<br>
+
+
+<H1><CENTER>Download Additional Programs</CENTER></H1>
+
+
+<br>
+The following programs may be needed in addition to the project files:
+<ol>
+<li>
+<a href="http://www.python.org/download/releases/2.4/">python 2.4</a> (and any version above that):
+<br>
+Needed in case it is not installed - it should be available on any linux system.
+</li>
+<br>
+<br>
+<li>
+[OPTIONAL] <a href="http://phycomp.technion.ac.il/~aviz/download/download.html">aviz 5.6</a> (and any version above that):
+<br>
+Needed in order to render and display the model images.
+The simulator can still run and generate statistics, graphs of Energy and Temperature, and a timeline, without using AViz.
+</li>
+<br>
+<br>
+<li>
+[OPTIONAL] <a href="http://sourceforge.net/projects/swig/files/swig/swig-1.3.39/">swig 1.3</a> (and any version above that):
+<br>
+Needed if you want to be able to use the fast implementation of the Gay-Bernes potential (implemented in C++).
+It is used to wrap the C++ code into Python that can be used by the simulator.
+</li>
+</ol>
+
 
 </BODY>
 </HTML>
