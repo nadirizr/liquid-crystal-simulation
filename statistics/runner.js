@@ -303,8 +303,13 @@
         setVisualModelImage(model, current_time);
       }
     </script>
+    <title>Simulation Statistics</title>
   </head>
   <body>
+    <H1><CENTER>Simulation Statistics</CENTER></H1>
+    <br>
+    For explanations on how to use the tools and graphs on this page, see these <a href="manual.html#statistic">instructions</a>.<br>
+    <br>
     <table>
       <tr>
         <td>
