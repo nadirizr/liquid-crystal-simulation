@@ -2,16 +2,36 @@
 	<header>
 	</header>
 	<body>
+  <a name="up"/>
 	<H1><center>Simulation Results</center></H1>
 	<P>
 	As we said in the simulation page, we wanted to explore the changing in phase of liquid crystals undergoing a cooling process. 
 	<br> 
-	We did this by implementing the Monte Carlo method with the <A href="simulation.html">Gay-Berne potential</A>.
-	</p>
-	<br>
-	<center><H2>2D Simulation</H2></center>
+  We did this by implementing the Monte Carlo method with the <A href="simulation.html">Gay-Berne potential</A>.<br>
+  Each simulation had detailed instructions on how to rerun it, and how we
+  processed and analyzed the results (see <a href="manual.html#running">here</a>
+  for further details on running the simulations and generating statistics).<br>
+  </P>
+  <br><br>
+
+  <H2>Table of Contents:</H2>
+  <ul><li><a href="#2d">2D simulations (10x10):</a></li>
+  <br>
+    <ul><li><a href="#2d_first">First Try - Fast Cooling</a></li></ul>
+    <ul><li><a href="#2d_second">Second Try - Slow Cooling</a></li></ul>
+    <ul><li><a href="#2d_conclusions">Conclusions and Comparison</a></li></ul>
+  </ul>
+  <ul><li><a href="#3d">3D simulations (5x5x5):</a></li>
+  <br>
+    <ul><li><a href="#3d_first">First Try - Fast Cooling</a></li></ul>
+    <ul><li><a href="#3d_second">Second Try - Slow Cooling</a></li></ul>
+    <ul><li><a href="#3d_conclusions">Conclusions and Comparison</a></li></ul>
+  </ul>
+  <br>
+
+	<center><a name="2d"><H2>2D Simulation</H2></center>
 	<P>
-	<center><H3>2D Simulation - first try</H3></center>
+	<center><a name="2d_first"><H3>2D Simulation - first try</H3></center>
   We simulated 10X10 particles in two dimensions.
 	<br>
   We used an effective temperature defined as:
@@ -100,9 +120,10 @@
   <br><br>
   Information on how to configure AViz to show the images for this simulation can be found <a href="manual.html#aviz">here</a>
 	</P>
+  <div align="right"><a href="#up">[up]</a></div>
 	<br><br><br><br>
 	
-	<center><H3>2D Simulation - Second try</h3></center>
+	<center><a name="2d_second"><H3>2D Simulation - Second try</h3></center>
 	
   We now simulated a 10X10 particle system in two dimensions, with the same system parameters.<br>
   The only changes in the simulation were that the initial temperature used was <img src="TStar.jpg" height="2%"/> = 4.0, and the temperature
@@ -206,9 +227,11 @@
   <br><br>
   Information on how to configure AViz to show the images for this simulation can be found <a href="manual.html#aviz">here</a>
 	</P>
+  <div align="right"><a href="#up">[up]</a></div>
+  <br><br><br><br>
 
-	<br><br><br><br>
-	<center><H3>2D Simulation - Conclusions</h3></center>	
+	<center><a name="2d_conclusions"><H3>2D Simulation - Conclusions</h3></center>	
+  <P>
   Most of the analysis was done using the <a href="compare_chart.html">statistics page</a>
   (Explanations for how to use it can be found <a href="manual.html#statistic">here</a>).<br>
   <br>
@@ -238,12 +261,13 @@
   method demonstrates most of the physics involved.<br>
   This is especially evident in the changes noted above between slow and fast
   cooling and their effects on the system.<br>
+  </P>
+  <div align="right"><a href="#up">[up]</a></div>
+  <br><br><br><br>
 
-
-	<br><br><br><br>
-	<center><H2>3D Simulation</H2></center>
+	<center><a name="3d"><H2>3D Simulation</H2></center>
 	<P>
-	<center><H3>3D Simulation - first try</H3></center>
+	<center><a name="3d_first"><H3>3D Simulation - first try</H3></center>
 	
 	Now we simulated a 5X5X5 particle system in 3 dimensions.
 	<br>
@@ -318,9 +342,10 @@
   <br><br>
   Information on how to configure AViz to show the images for this simulation can be found <a href="manual.html#aviz">here</a>
 	</P>
+  <div align="right"><a href="#up">[up]</a></div>
 	<br><br><br><br>
 	
-	<center><H3>3D Simulation - Second try</h3></center>
+	<center><a name="3d_second"><H3>3D Simulation - Second try</h3></center>
 	
   Finally, we simulated a 5x5x5 particle system in three dimensions, with the same system parameters as before.<br>
   The only changes in the simulation were that the initial temperature used was <img src="TStar.jpg" height="2%"/> = 4.0, and the temperature
@@ -424,9 +449,11 @@
   <br><br>
   Information on how to configure AViz to show the images for this simulation can be found <a href="manual.html#aviz">here</a>
 	</P>
+  <div align="right"><a href="#up">[up]</a></div>
+  <br><br><br><br>
 
-	<br><br><br><br>
-	<center><H3>3D Simulation - Conclusions</h3></center>	
+  <center><a name="3d_conclusions"><H3>3D Simulation - Conclusions</h3></center>
+  <P>
   Most of the analysis was done using the <a href="compare_chart.html">statistics page</a>
   (Explanations for how to use it can be found <a href="manual.html#statistic">here</a>).<br>
   <br>
@@ -483,6 +510,8 @@
   Of course this generalization cannot be made based on the few simulations we ran, but it was mainly
   reasurring to us that the physics stays the same in different system parameters, and the simulation
   system itself is consistent.<br>
+  </P>
+  <div align="right"><a href="#up">[up]</a></div>
   <br><br><br><br>
 
 	</body>
