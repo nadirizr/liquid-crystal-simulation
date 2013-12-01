@@ -102,10 +102,6 @@
 	</P>
 	<br><br><br><br>
 	
-	
-	
-	
-	
 	<center><H3>2D Simulation - Second try</h3></center>
 	
   We now simulated a 10X10 particle system in two dimensions, with the same system parameters.<br>
@@ -247,6 +243,7 @@
 	<br><br><br><br>
 	<center><H2>3D Simulation</H2></center>
 	<P>
+	<center><H3>3D Simulation - first try</H3></center>
 	
 	Now we simulated a 5X5X5 particle system in 3 dimensions.
 	<br>
@@ -321,5 +318,172 @@
   <br><br>
   Information on how to configure AViz to show the images for this simulation can be found <a href="manual.html#aviz">here</a>
 	</P>
+	<br><br><br><br>
+	
+	<center><H3>3D Simulation - Second try</h3></center>
+	
+  Finally, we simulated a 5x5x5 particle system in three dimensions, with the same system parameters as before.<br>
+  The only changes in the simulation were that the initial temperature used was <img src="TStar.jpg" height="2%"/> = 4.0, and the temperature
+  change at each cooling step was 0.01 between <img src="TStar.jpg" height="2%"/> = 1.5 to <img src="TStar.jpg" height="2%"/> = 0.01, so we get
+  a slower cooling of the system in those critical temperatures.
+	<br>
+	With these changes in the cooling process, we will again be able to see more changes in phase, and now in 3D.
+  <br>
+  <br>
+  The model we used was: <b>3d_small_slow_cool</b>
+  <br>
+  To run this simulation in the program, use the command:
+  <br>
+  <tt><strong>./run.sh 3d_small_slow_cool</strong></tt>
+
+	</P>
+	<br>
+	At the beginning we had an isotropic state:
+	<br><br>
+	<CENTER><table>
+	  <tr>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000000.png" HEIGHT="40%"\></td>
+    </tr>
+	  <tr>
+      <td><small><center>Isotropic Phase</center></small></td>
+    </tr>
+	</table></CENTER>
+	<br><br>
+	<P>
+	In this simulation we can again see the change of phase at around <img src="TStar.jpg" height="2%"/> = 3.5, where it changed into a Nematic Liquid Crystal:
+  <br><br>
+  <CENTER><table>
+	  <tr>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000006.png" HEIGHT="40%"\></td>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000012.png" HEIGHT="40%"\></td>
+    </tr>
+	  <tr>
+      <td><small><center>Almost Isotropic Phase</center></small></td>
+      <td><small><center>Nematic Phase</center></small></td>
+    </tr>
+	</table></CENTER>
+	<br><br>
+	We can see the change of phase at around <img src="TStar.jpg" height="2%"/> = 2.5 from Nematic to Smectic A Liquid Crystal:
+  <br><br>
+  <CENTER><table>
+	  <tr>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000025.png" HEIGHT="40%"\></td>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000035.png" HEIGHT="40%"\></td>
+    </tr>
+	  <tr>
+      <td><small><center>Nematic Phase</center></small></td>
+      <td><small><center>Smectic A Phase</center></small></td>
+    </tr>
+  </table></CENTER>
+  <br><br>
+	Then there is another change of phase at around <img src="TStar.jpg" height="2%"/> = 1.5, where it changed from Smectic A to Smectic B Liquid Crystal:
+	<br><br>
+	<CENTER><table>
+	  <tr>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000040.png" HEIGHT="40%"\></td>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000055.png" HEIGHT="40%"\></td>
+    </tr>
+	  <tr>
+      <td><small><center>Smectic A Phase</center></small></td>
+      <td><small><center>Smectic B Phase</center></small></td>
+    </tr>
+	</table></CENTER>
+	<br><br>
+	Then there is a change of phase at around <img src="TStar.jpg" height="2%"/> = 1.0, where it changed from Smectic B to Smectic C Liquid Crystal:
+	<br><br>
+	<CENTER><table>
+	  <tr>
+      <td><IMG SRC="models/3d_sma;;_slow_cool/lqs_2_cool00000097.png" HEIGHT="40%"\></td>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000117.png" HEIGHT="40%"\></td>
+    </tr>
+	  <tr>
+      <td><small><center>Smectic B Phase</center></small></td>
+      <td><small><center>Smectic C Phase</center></small></td>
+    </tr>
+	</table></CENTER>
+	<br><br>
+	Finally there is again a fast quench at around <img src="TStar.jpg" height="2%"/> = 0.38:
+  <br><br>
+  <CENTER><table>
+	  <tr>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000130.png" HEIGHT="40%"\></td>
+      <td><IMG SRC="models/3d_small_slow_cool/lqs_2_cool00000201.png" HEIGHT="40%"\></td>
+    </tr>
+	  <tr>
+      <td><small><center>Smectic C Phase</center></small></td>
+      <td><small><center>Almost Solid State</center></small></td>
+    </tr>
+  </table></CENTER>
+	
+	<br><br>
+	You can read more about phase changes in Liquid Crystals <a href="tutorial/LCPhases.html"> in our explanation page</a>	
+	<br><br>
+	The full statistics with the charts and animations can be found <a href="compare_chart.html">here</a>.
+	<br><br>
+	More explanations on how to use the statistics can be found in the <a href="manual.html#statistic">manual page</a>.
+  <br><br>
+  Information on how to configure AViz to show the images for this simulation can be found <a href="manual.html#aviz">here</a>
+	</P>
+
+	<br><br><br><br>
+	<center><H3>3D Simulation - Conclusions</h3></center>	
+  Most of the analysis was done using the <a href="compare_chart.html">statistics page</a>
+  (Explanations for how to use it can be found <a href="manual.html#statistic">here</a>).<br>
+  <br>
+  We will discuss several points we arrived at:<br>
+  <li>As with the 2D simulations, we witnessed several differences between the fast and slow cooling.</li>
+  <li>We also noticed a difference in the slow cooling here, compared to the 2D slow cooling.</li>
+  <li>Finally, we will compare as a whole the 2D system to the 3D system.</li>
+  <br>
+  To the first point, in both 3D simulations the phase changes are visible to some extent.<br>
+  As in the 2D simulation, in the slow cooling process more phase changes can be seen,
+  and they are again more prominent as well.<br>
+  This is good, since it shows consistency in the results of the simulations, and that
+  different models behave the same in the same physical conditions.<br>
+  The fast quench happens in both cases (as in the 2D variant), and once again shows that
+  even the slow cooling isn't slow enough, and solidification occurs at the end.<br>
+  <br>
+  When we view the Energy vs. Temperature graph for both processes, it
+  can be seen that they overlap almost exactly, and the general trend is the
+  same (as we have seen in the 2D simulations).<br>
+  This again shows consistency in the results, in both 2D and 3D.<br>
+  The faster cooling is as expected more erratic, and they both converge in the same area
+  of temperatures and start loosing energy rapidly.<br>
+  This can be seen clearly in the graph itself:<br>
+  <center><img src="3d_small_vs_slow_cool_temperature.png" height="50%"\></center>
+  <br>
+  When viewing the timeline of both systems it can be seen that we again reach
+  a lower energy at the final temperature in the slower cooling system.<br>
+  This is very encouragin evidence, as it shows that twice now, in two different
+  systems, with slower cooling and carefull equalibiration of the system at each
+  temperature, we can achieve a lower total system energy.<br>
+  This of course makes sense both physically and in the Monte Carlo simulation
+  itself, and can be seen in the following graph:<br>
+  <center><img src="3d_small_vs_slow_cool_time.png" height="50%"\></center>
+  <br>
+  To the second point, the slow cooling in the 3D simulation is decidedly different in several
+  aspects from its 2D counterpart.<br>
+  For one thing, it is much harder to notice the subtle changes in phase in the 3D model than
+  in the 2D model, and not only because of the visual representation.<br>
+  In both runs, because we were somewhat limited by computer time and resources (we did not want
+  to run a simulation that took weeks), we had to limit the number of Metropolis steps to 10,000.<br>
+  This is not a high number, and it would be much better had we used between 40,000 and 60,000
+  steps, but that would take much much longer than the few days it took to run our simulations.<br>
+  While in the 2D model this was apparently enough to see most of the results, in the 3D model it
+  was simply not enough to get very good results.<br>
+  A second run of this slow cooling process with more Metropolis steps would allow the system to
+  reach a more stable equalibrium at each temperature, and allow for more minute details to show.<br>
+  Note that the system is fully capable of running said simulations, and much more intensive runs
+  were made on smaller systems.<br>
+  <br>
+  The final point in the results regards comparing the 2D simulation as a whole to the 3D simulation.<br>
+  It is interesting to note that in essence these two systems are not all that different.<br>
+  The simulation behaves the same, and while the energy scale is very different, and the temperatures at
+  which phase changes occur are somewhat different, the general route both systems take is the same.<br>
+  Of course this generalization cannot be made based on the few simulations we ran, but it was mainly
+  reasurring to us that the physics stays the same in different system parameters, and the simulation
+  system itself is consistent.<br>
+  <br><br><br><br>
+
 	</body>
 </html>
