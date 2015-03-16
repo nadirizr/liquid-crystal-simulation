@@ -1,0 +1,1 @@
+simulation of nematic and smectic lc under change of temperature
